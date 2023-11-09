@@ -15,4 +15,8 @@ router.post('/logout', (req, res) => {
     userLogout(req, res)
 })
 
+router.get('/', (req, res) => {
+    res.send('test')
+})
+
 export default router;
