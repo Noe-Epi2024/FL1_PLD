@@ -1,15 +1,11 @@
 type User = {
-    email: string;
-    role: "utilisateur" | "admin";
+    userId: string;
     name: string;
-    surname: string;
-    birthDate: string;
-    phoneNumber: string;
     photo: string;
 }
 
 type Credential = {
-    email: string;
+    name: string;
     password: string;
 }
 

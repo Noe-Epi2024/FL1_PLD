@@ -14,17 +14,6 @@ function decodeAccessToken(token: string) {
     }
 }
 
-function decodeRefreshToken(token: string) {
-    try {
-        const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!);
-        return decoded;
-    } catch (error: any) {
-        console.error('JWT verification error:', error.message);
-        return null;
-    }
-}
-
 export {
     decodeAccessToken,
-    decodeRefreshToken
 };

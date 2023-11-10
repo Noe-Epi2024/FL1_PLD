@@ -1,7 +1,7 @@
 import { Model, Schema, model } from "mongoose";
 
 interface Credential {
-    email: string;
+    name: string;
     password: string;
 }
 
@@ -10,7 +10,7 @@ interface UserMethods { }
 type CredentialModel = Model<Credential, {}, UserMethods>;
 
 const schema = new Schema<Credential, CredentialModel, UserMethods>({
-    email: { type: String, required: true },
+    name: { type: String, required: true },
     password: { type: String, required: true },
 });
 
