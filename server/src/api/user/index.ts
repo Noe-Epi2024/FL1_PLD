@@ -5,13 +5,13 @@ import { decodeAccessToken } from "../../functions/token/decode";
 
 async function getMe(req: Request, res: Response) {
     try {
-        const userId = req.headers.authorization;
+        const token = req.headers.authorization;
 
-        if (!userId) {
+        if (!token) {
             return res.status(400).send({ success: false, message: "No access token sent" });
         }
 
-        const accessToken = decodeAccessToken(userId) as Token;
+        const accessToken = decodeAccessToken(token) as Token;
 
         if (!accessToken) {
             return res.status(400).send({ success: false, message: "Invalid access token" });
@@ -25,19 +25,19 @@ async function getMe(req: Request, res: Response) {
 
         res.status(200).send({ success: true, email: user.email, name: user.name, photo: user.photo });
     } catch (err) {
-        console.log(err);
+        return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
 }
 
 async function patchMe(req: Request, res: Response) {
     try {
-        const userId = req.headers.authorization;
+        const token = req.headers.authorization;
 
-        if (!userId) {
+        if (!token) {
             return res.status(400).send({ success: false, message: "No access token sent" });
         }
 
-        const accessToken = decodeAccessToken(userId) as Token;
+        const accessToken = decodeAccessToken(token) as Token;
 
         if (!accessToken) {
             return res.status(400).send({ success: false, message: "Invalid access token" });
@@ -49,19 +49,29 @@ async function patchMe(req: Request, res: Response) {
         const user = await UserModel.findOne({ _id: filter });
 
         if (!user) {
-            return res.status(409).send({success: false, message: "User not found"});
+            return res.status(409).send({ success: false, message: "User not found" });
         }
 
         const response = await UserModel.updateOne({ _id: filter }, update);
 
         if (!response || !response.acknowledged) {
-            return res.status(400).send({success: false, message: "Can't update user, data invalid"});
+            return res.status(400).send({ success: false, message: "Can't update user, data invalid" });
         }
 
         res.status(200).send({ success: true, message: "Value successfully modified" });
     } catch (err) {
-        console.log(err);
+        return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
 }
 
-export { getMe, patchMe };
+async function getUsers(req: Request, res: Response) {
+    try {
+        const users = await UserModel.find({});
+
+        return res.status(200).send({ success: true, users: users });
+    } catch (err) {
+        return res.status(409).send({ success: false, message: "Internal Server Error" });
+    }
+}
+
+export { getMe, patchMe, getUsers };

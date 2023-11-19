@@ -42,7 +42,7 @@ async function userRegister(req: Request, res: Response) {
 
         res.status(201).send({ success: true, message: "New user created successfully", accessToken: token });
     } catch (err) {
-        console.log(err);
+        return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
 };
 
@@ -80,7 +80,7 @@ async function userLogin(req: Request, res: Response) {
 
         res.status(200).send({ success: true, message: "User successfully logged in", accessToken: token });
     } catch (err) {
-        console.log(err);
+        return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
 }
 

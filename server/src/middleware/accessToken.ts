@@ -17,7 +17,6 @@ export default function refreshTokenExist(req: Request, res: Response, next: Nex
 
         return next();
     } catch (err) {
-        console.log(err);
         return res.status(409).send({ success: false, message: "Server Error" });
     }
 }

@@ -12,10 +12,12 @@ mongo().catch(console.error);
 // ADD Routes
 import auth from './src/routes/auth';
 import user from './src/routes/user';
+import project from './src/routes/project';
 
 // Use Routes
 app.use("/", auth);
 app.use("/user", user);
+app.use("/project", project);
 
 const port = process.env.PORT || 8080;
 
