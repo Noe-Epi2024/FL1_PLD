@@ -1,15 +1,15 @@
 import { Model, Schema, model } from "mongoose";
 
 interface User {
+    email: string;
     name: string;
     photo: string;
 }
 
-interface UserMethods { }
+type UserSchema = Model<User>;
 
-type UserModel = Model<User, {}, UserMethods>;
-
-const schema = new Schema<User, UserModel, UserMethods>({
+const schema = new Schema<User, UserSchema>({
+    email: { type: String, required: true },
     name: { type: String, required: true },
     photo: {
         type: String,
@@ -18,4 +18,4 @@ const schema = new Schema<User, UserModel, UserMethods>({
     },
 });
 
-export const UserSchema = model<User, UserModel>("users", schema);
+export const UserModel = model<User, UserSchema>("users", schema);

@@ -1,54 +1,46 @@
-import { UserSchema } from "../../database/schema/users";
-import { CredentialSchema } from "../../database/schema/credentials";
-import { User, Credential } from "../../types/users";
+import { UserModel } from "../../database/schema/users";
+import { CredentialModel } from "../../database/schema/credentials";
+import { Credential } from "../../types/users";
 import { pbkdf2Sync, randomBytes } from "crypto";
 import { generateAccessToken } from "../../functions/token/generate";
 import { Request, Response } from 'express';
 import * as dotenv from "dotenv";
 dotenv.config();
 
-
 async function userRegister(req: Request, res: Response) {
     try {
-        const userData: User = req.body;
         const userCredentials: Credential = req.body;
 
-        // Get user input
-        if (!(userCredentials.name && userCredentials.password )) {
-            res.status(400).send("All input with red asterix are required");
+        if (!(userCredentials.email && userCredentials.password)) {
+            res.status(400).send({ success: false, message: "All input with red asterix are required" });
         }
 
-        // check if user already exist
-        const oldUser = await UserSchema.findOne({ name: userCredentials.name.toLowerCase() });
+        const oldUser = await UserModel.findOne({ email: userCredentials.email.toLowerCase() });
 
         if (oldUser) {
-            return res.status(409).send("User Already Exist. Please Login");
+            return res.status(409).send({ success: false, message: "User Already Exist. Please Login" });
         }
 
-        // Generate a random salt
         const salt = randomBytes(16).toString('hex');
 
-        // Create a hash using the salt and password
         const hash = pbkdf2Sync(userCredentials.password, salt, 10000, 64, 'sha256').toString('hex');
 
-        // Merge the salt and hash together
         const storedPassword = `${salt}:${hash}`;
 
-        // Create user in our database
-        const user = await UserSchema.create({
-            name: userData.name.toLowerCase(),
-            photo: "default",
+        const user = await UserModel.create({
+            name: userCredentials.email.toLowerCase().split('@')[0],
+            email: userCredentials.email.toLowerCase(),
         });
 
-        // Create credentials in our database
-        const Credentials = await CredentialSchema.create({
-            name: userCredentials.name.toLowerCase(),
+        const Credentials = await CredentialModel.create({
+            userId: user._id,
+            email: userCredentials.email.toLowerCase(),
             password: storedPassword,
         });
 
-        const token = generateAccessToken(user)
+        const token = generateAccessToken(user._id)
 
-        res.status(200).send({ accessToken: token });
+        res.status(201).send({ success: true, message: "New user created successfully", accessToken: token });
     } catch (err) {
         console.log(err);
     }
@@ -58,33 +50,35 @@ async function userLogin(req: Request, res: Response) {
     try {
         const userCredentials: Credential = req.body;
 
-        if (!(userCredentials.name && userCredentials.password)) {
-            res.status(400).send("All input with red asterix are required");
+        if (!(userCredentials.email && userCredentials.password)) {
+            res.status(400).send({ success: false, message: "All input with red asterix are required" });
         }
 
-        const oldCredential = await CredentialSchema.findOne({ name: userCredentials.name.toLowerCase() });
-        const oldUser = await UserSchema.findOne({ name: userCredentials.name.toLowerCase() });
+        const oldCredential = await CredentialModel.findOne({ email: userCredentials.email.toLowerCase() });
 
-        if (!oldCredential || !oldUser) {
-            return res.status(409).send("User doesn't Exist. Please Register");
+        if (!oldCredential) {
+            return res.status(409).send({ success: false, message: "User doesn't Exist. Please Register" });
         }
 
-        // Extract the stored salt and hash from the stored password
         const [storedSalt, storedHash] = oldCredential.password.split(':');
 
-        // Compute the hash of the input password with the stored salt
         const inputHash = pbkdf2Sync(userCredentials.password, storedSalt, 10000, 64, 'sha256',);
 
-        // Compare the computed hash with the stored hash
         const password = inputHash.toString('hex') === storedHash;
 
         if (!password) {
-            return res.status(400).send("Invalid Credentials");
+            return res.status(400).send({ success: false, message: "Invalid Credentials" });
         }
 
-        const token = generateAccessToken(oldUser)
+        const oldUser = await UserModel.findOne({ _id: oldCredential.userId });
 
-        res.status(200).send({ accessToken: token });
+        if (!oldUser) {
+            return res.status(409).send({ success: false, message: "User not found. Please Register" });
+        }
+
+        const token = generateAccessToken(oldUser._id)
+
+        res.status(200).send({ success: true, message: "User successfully logged in", accessToken: token });
     } catch (err) {
         console.log(err);
     }

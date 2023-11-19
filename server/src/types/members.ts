@@ -1,4 +1,6 @@
+import { Types } from "mongoose";
+
 export interface Member {
-    userId: string;
+    userId: Types.ObjectId;
     role: string;
 }

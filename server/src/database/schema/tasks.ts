@@ -1,18 +1,17 @@
 import { Model, Schema, model } from "mongoose";
 
 import { Task } from "../../types/tasks";
+import { SubtaskModel } from "./subtaks";
 
-interface UserMethods { }
+type TaskSchema = Model<Task>;
 
-type TaskModel = Model<Task, {}, UserMethods>;
-
-const schema = new Schema<Task, TaskModel, UserMethods>({
+const schema = new Schema<Task, TaskSchema>({
     name: { type: String, required: true },
     ownerId: { type: String, required: true },
-    description: { type: String, required: false },
-    startDate: { type: Date, required: false, default: new Date()},
-    endDate: { type: Date, required: false},
-    subtasks: { type: [String], required: false},
+    description: { type: String, required: false, default: "" },
+    startDate: { type: Date, required: false, default: new Date() },
+    endDate: { type: Date, required: false },
+    subtasks: { type: [SubtaskModel], required: false, default: [] },
 });
 
-export const TaskSchema = model<Task, TaskModel>("Tasks", schema);
+export const TaskModel = model<Task, TaskSchema>("tasks", schema);

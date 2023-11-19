@@ -4,18 +4,16 @@ import { Project } from "../../types/projects";
 import { Member } from "../../types/members";
 
 const memberSchema = new Schema<Member>({
-    userId: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, required: true },
     role: { type: String, required: true },
 });
 
-interface UserMethods { }
+type ProjectSchema = Model<Project>;
 
-type ProjectModel = Model<Project, {}, UserMethods>;
-
-const schema = new Schema<Project, ProjectModel, UserMethods>({
+const schema = new Schema<Project, ProjectSchema>({
     name: { type: String, required: true },
     members: { type: [memberSchema], required: true },
-    tasks: { type: [String], required: true },
+    tasks: { type: [Schema.Types.ObjectId], required: true },
 });
 
-export const ProjectSchema = model<Project, ProjectModel>("Projects", schema);
+export const ProjectModel = model<Project, ProjectSchema>("projects", schema);

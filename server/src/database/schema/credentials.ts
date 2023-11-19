@@ -1,17 +1,17 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, Types, model } from "mongoose";
 
 interface Credential {
-    name: string;
+    userId: Types.ObjectId;
+    email: string;
     password: string;
 }
 
-interface UserMethods { }
+type CredentialSchema = Model<Credential>;
 
-type CredentialModel = Model<Credential, {}, UserMethods>;
-
-const schema = new Schema<Credential, CredentialModel, UserMethods>({
-    name: { type: String, required: true },
+const schema = new Schema<Credential, CredentialSchema>({
+    userId: { type: Schema.Types.ObjectId, required: true },
+    email: { type: String, required: true },
     password: { type: String, required: true },
 });
 
-export const CredentialSchema = model<Credential, CredentialModel>("credentials", schema);
+export const CredentialModel = model<Credential, CredentialSchema>("credentials", schema);

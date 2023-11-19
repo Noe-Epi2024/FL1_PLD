@@ -1,11 +1,8 @@
 import jwt from 'jsonwebtoken';
+import { Types } from "mongoose";
 
-interface User {
-    _id: object;
-}
-
-function generateAccessToken(User: User) {
-    const payload = { user_id: User._id, };
+function generateAccessToken(UserId: Types.ObjectId) {
+    const payload = { userId: UserId };
 
     const token = jwt.sign(
         payload,

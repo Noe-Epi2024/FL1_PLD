@@ -1,11 +1,14 @@
+import { Types } from "mongoose";
+
 type User = {
-    userId: string;
+    email: string;
     name: string;
     photo: string;
 }
 
 type Credential = {
-    name: string;
+    userId: Types.ObjectId;
+    email: string;
     password: string;
 }
 

@@ -5,13 +5,11 @@ interface Subtask {
     isDone: boolean;
 }
 
-interface UserMethods { }
+type SubtaskSchema = Model<Subtask>;
 
-type SubtaskModel = Model<Subtask, {}, UserMethods>;
-
-const schema = new Schema<Subtask, SubtaskModel, UserMethods>({
+const schema = new Schema<Subtask, SubtaskSchema>({
     name: { type: String, required: true },
     isDone: { type: Boolean, required: false, default: false },
 });
 
-export const SubtaskSchema = model<Subtask, SubtaskModel>("Subtasks", schema);
+export const SubtaskModel = model<Subtask, SubtaskSchema>("subtasks", schema);

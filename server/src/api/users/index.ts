@@ -1,4 +1,4 @@
-import { UserSchema } from "../../database/schema/users";
+import { UserModel } from "../../database/schema/users";
 import { Token } from "../../types/token";
 import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
@@ -17,13 +17,13 @@ async function getMe(req: Request, res: Response) {
             return res.status(400).send({ success: false, message: "Invalid access token" });
         }
 
-        const user = await UserSchema.findById(accessToken.user_id);
+        const user = await UserModel.findById(accessToken.userId);
 
         if (!user) {
-            return res.status(400).send({ success: false, message: "No user found" });
+            return res.status(409).send({ success: false, message: "No user found" });
         }
 
-        res.status(200).send({ success: true, name: user.name, photo: user.photo });
+        res.status(200).send({ success: true, email: user.email, name: user.name, photo: user.photo });
     } catch (err) {
         console.log(err);
     }
@@ -43,19 +43,19 @@ async function patchMe(req: Request, res: Response) {
             return res.status(400).send({ success: false, message: "Invalid access token" });
         }
 
-        const filter = accessToken.user_id;
+        const filter = accessToken.userId;
         const update = req.body;
 
-        const user = await UserSchema.findOne({ _id: filter });
+        const user = await UserModel.findOne({ _id: filter });
 
         if (!user) {
-            return res.status(409).send("User not found");
+            return res.status(409).send({success: false, message: "User not found"});
         }
 
-        const response = await UserSchema.updateOne({ _id: filter }, update);
+        const response = await UserModel.updateOne({ _id: filter }, update);
 
         if (!response || !response.acknowledged) {
-            return res.status(400).send("Can't update user, data invalid");
+            return res.status(400).send({success: false, message: "Can't update user, data invalid"});
         }
 
         res.status(200).send({ success: true, message: "Value successfully modified" });
