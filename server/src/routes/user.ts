@@ -13,7 +13,7 @@ router.patch('/me', accessToken, isUserExist, (req, res) => {
     patchMe(req, res)
 })
 
-router.get('/users', accessToken, isUserExist, (req, res) => {
+router.get('/all', accessToken, isUserExist, (req, res) => {
     getUsers(req, res)
 })
 

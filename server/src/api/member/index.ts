@@ -9,15 +9,15 @@ async function getMembers(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
 
-        var id = req.params.id;
+        var projectId = req.params.id;
 
-        if (!token || !id) {
-            return res.status(400).send({ success: false, message: "No access token or Id provided" });
+        if (!token || !projectId) {
+            return res.status(400).send({ success: false, message: "No access token or projectId provided" });
         }
 
         const userId = decodeAccessToken(token) as Token;
 
-        const projects = await ProjectModel.findOne({ "_id": id })
+        const projects = await ProjectModel.findOne({ _id: projectId })
 
         if (projects === null) {
             return res.status(409).send({ success: false, message: "Project not found" });
@@ -61,19 +61,21 @@ async function getMembers(req: Request, res: Response) {
 async function postMember(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
-        var id = req.params.id;
+        var projectId = req.params.id;
+        const memberId = req.body.userId;
+        const memberRole = req.body.role;
 
-        if (!token || !id) {
-            return res.status(400).send({ success: false, message: "No access token or Id provided" });
+        if (!token || !projectId) {
+            return res.status(400).send({ success: false, message: "No access token or projectId provided" });
         }
 
-        if (!req.body.userId || !req.body.role) {
+        if (!memberId || !memberRole) {
             return res.status(400).send({ success: false, message: "No userId or role provided" });
         }
 
         const userId = decodeAccessToken(token) as Token;
 
-        const projects = await ProjectModel.findOne({ "_id": id })
+        const projects = await ProjectModel.findOne({ _id: projectId })
 
         if (projects === null) {
             return res.status(409).send({ success: false, message: "Project not found" });
@@ -89,24 +91,28 @@ async function postMember(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "Member not owner in project" });
         }
 
-        const userExists = await UserModel.findOne({ _id: req.body.userId });
+        const userExists = await UserModel.findOne({ _id: memberId });
 
         if (!userExists) {
             return res.status(409).send({ success: false, message: "Member can not be added because it does not exist" });
         }
 
-        const MemberAlreadyInProject = projects.members.find(member => String(member.userId) === req.body.userId);
+        const MemberAlreadyInProject = projects.members.find(member => String(member.userId) === memberId);
 
         if (MemberAlreadyInProject) {
             return res.status(409).send({ success: false, message: "Member already in project" });
         }
 
         const newMember = {
-            userId: req.body.userId,
-            role: req.body.role
+            userId: memberId,
+            role: memberRole
         };
 
-        const newMembers = await ProjectModel.updateOne({ "_id": id }, { $push: { members: newMember } });
+        const newMembers = await ProjectModel.updateOne({ _id: projectId }, { $push: { members: newMember } });
+
+        if (!newMembers || !newMembers.modifiedCount) {
+            return res.status(400).send({ success: false, message: "Can't add member to project" });
+        }
 
         return res.status(200).send({ success: true, message: "members added to the project" });
     }
@@ -118,19 +124,21 @@ async function postMember(req: Request, res: Response) {
 async function patchMember(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
-        var id = req.params.id;
+        var projectId = req.params.id;
+        const memberId = req.body.userId;
+        const memberRole = req.body.role;
 
-        if (!token || !id) {
-            return res.status(400).send({ success: false, message: "No access token or Id provided" });
+        if (!token || !projectId) {
+            return res.status(400).send({ success: false, message: "No access token or projectId provided" });
         }
 
-        if (!req.body.userId || !req.body.role) {
+        if (!memberId || !memberRole) {
             return res.status(400).send({ success: false, message: "No userId or role provided" });
         }
 
         const userId = decodeAccessToken(token) as Token;
 
-        const projects = await ProjectModel.findOne({ "_id": id })
+        const projects = await ProjectModel.findOne({ _id: projectId })
 
         if (projects === null) {
             return res.status(409).send({ success: false, message: "Project not found" });
@@ -146,21 +154,21 @@ async function patchMember(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "Member not owner in project" });
         }
 
-        const userExists = await UserModel.findOne({ _id: req.body.userId });
+        const userExists = await UserModel.findOne({ _id: memberId });
 
         if (!userExists) {
-            return res.status(409).send({ success: false, message: "Member can't be added because it does not exist" });
+            return res.status(409).send({ success: false, message: "Member can't be edited because it does not exist" });
         }
 
-        const newMemberAlreadyInProject = projects.members.find(member => String(member.userId) === req.body.userId);
+        const newMemberAlreadyInProject = projects.members.find(member => String(member.userId) === memberId);
 
         if (!newMemberAlreadyInProject) {
             return res.status(409).send({ success: false, message: "Member not in project" });
         }
 
-        const newMembers = await ProjectModel.updateOne({ "_id": id, "members.userId": req.body.userId }, { $set: { "members.$.role": req.body.role } });
+        const memberData = await ProjectModel.updateOne({ _id: projectId, "members.userId": memberId }, { $set: { "members.$.role": memberRole } });
 
-        if (!newMembers || !newMembers.modifiedCount) {
+        if (!memberData || !memberData.modifiedCount) {
             return res.status(400).send({ success: false, message: "Can't update member role" });
         }
 
@@ -174,19 +182,20 @@ async function patchMember(req: Request, res: Response) {
 async function deleteMember(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
-        var id = req.params.id;
+        var projectId = req.params.id;
+        var memberId = req.body.userId;
 
-        if (!token || !id) {
-            return res.status(400).send({ success: false, message: "No access token or Id provided" });
+        if (!token || !projectId) {
+            return res.status(400).send({ success: false, message: "No access token or projectId provided" });
         }
 
-        if (!req.body.userId) {
+        if (!memberId) {
             return res.status(400).send({ success: false, message: "No userId provided" });
         }
 
         const userId = decodeAccessToken(token) as Token;
 
-        const projects = await ProjectModel.findOne({ "_id": id })
+        const projects = await ProjectModel.findOne({ _id: projectId })
 
         if (projects === null) {
             return res.status(409).send({ success: false, message: "Project not found" });
@@ -202,22 +211,22 @@ async function deleteMember(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "Member not owner in project" });
         }
 
-        const userExists = await UserModel.findOne({ _id: req.body.userId });
+        const userExists = await UserModel.findOne({ _id: memberId });
 
         if (!userExists) {
             return res.status(409).send({ success: false, message: "Member can not be deleted because it does not exist" });
         }
 
-        const memberAlreadyInProject = projects.members.find(member => String(member.userId) === req.body.userId);
+        const memberAlreadyInProject = projects.members.find(member => String(member.userId) === memberId);
 
         if (!memberAlreadyInProject) {
             return res.status(409).send({ success: false, message: "Member not in project" });
         }
 
-        const response = await ProjectModel.updateOne({ "_id": id }, { $pull: { members: { userId: req.body.userId } } });
+        const response = await ProjectModel.updateOne({ _id: projectId }, { $pull: { members: { userId: memberId } } });
 
         if (!response || !response.modifiedCount) {
-            return res.status(400).send({ success: false, message: "Can't delete project" });
+            return res.status(400).send({ success: false, message: "Can't delete member" });
         }
 
         return res.status(200).send({ success: true, message: `Member removed` })

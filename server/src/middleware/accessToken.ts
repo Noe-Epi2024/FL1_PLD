@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { decodeAccessToken } from "../functions/token/decode";
 
-export default function refreshTokenExist(req: Request, res: Response, next: NextFunction) {
+export default function accessTokenExist(req: Request, res: Response, next: NextFunction) {
     const token = req.headers.authorization;
 
     if (!token) {

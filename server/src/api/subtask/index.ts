@@ -4,14 +4,19 @@ import { Token } from "../../types/token";
 import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
 
-async function getTask(req: Request, res: Response) {
+async function postSubTask(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
         var projectId = req.params.id;
         var taskId = req.params.taskId;
+        const subTaskName = req.body.name;
 
         if (!token || !projectId || !taskId) {
-            return res.status(400).send({ success: false, message: "No access token or task/project id sent" });
+            return res.status(400).send({ success: false, message: "No access token or project/task id sent" });
+        }
+
+        if (!subTaskName) {
+            return res.status(409).send({ success: false, message: "Missing parameter name" });
         }
 
         const userId = decodeAccessToken(token) as Token;
@@ -24,63 +29,6 @@ async function getTask(req: Request, res: Response) {
 
         if (!userExists) {
             return res.status(409).send({ success: false, message: "User does not exist" });
-        }
-
-        const projects = await ProjectModel.findOne({ _id: projectId })
-
-        if (!projects) {
-            return res.status(409).send({ success: false, message: "Project not found" });
-        }
-
-        const userInProject = projects.members.find(member => String(member.userId) === userId.userId);
-
-        if (!userInProject) {
-            return res.status(409).send({ success: false, message: "User not found in project" });
-        }
-
-        const task = projects.tasks.find(task => String(task.id) === taskId);
-
-        if (!task) {
-            return res.status(409).send({ success: false, message: "Project not found in project" });
-        }
-
-        return res.status(200).send({ success: true, message: "Task successfully found", data: task });
-    }
-    catch (error) {
-        return res.status(409).send({ success: false, message: "Internal Server Error" });
-    }
-}
-
-async function postTask(req: Request, res: Response) {
-    try {
-        const token = req.headers.authorization;
-        var projectId = req.params.id;
-        const task = req.body;
-
-        if (!token || !projectId) {
-            return res.status(400).send({ success: false, message: "No access token or project id sent" });
-        }
-
-        if (!task.name || !task.description || !task.startDate || !task.endDate || !task.ownerId) {
-            return res.status(409).send({ success: false, message: "Missing parameters" });
-        }
-
-        const userId = decodeAccessToken(token) as Token;
-
-        if (!userId) {
-            return res.status(409).send({ success: false, message: "User not found" });
-        }
-
-        const userExists = await UserModel.findOne({ _id: userId.userId });
-
-        if (!userExists) {
-            return res.status(409).send({ success: false, message: "User does not exist" });
-        }
-
-        const ownerOfTaskId = await UserModel.findOne({ _id: task.ownerId });
-
-        if (!ownerOfTaskId) {
-            return res.status(409).send({ success: false, message: "User selected for being owner of the task does not exist" });
         }
 
         const projects = await ProjectModel.findOne({ _id: projectId })
@@ -99,11 +47,15 @@ async function postTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not owner of the project" });
         }
 
-        const newTask = await ProjectModel.updateOne({ _id: projectId }, { $push: { tasks: task } });
+        const task = projects.tasks.find(task => String(task.id) === taskId);
 
-        if (!newTask || !newTask.modifiedCount) {
-            return res.status(400).send({ success: false, message: "Can't add task to the project" });
+        if (!task) {
+            return res.status(404).send({ success: false, message: "Task not found in the project" });
         }
+
+        task.subtasks.push({ name: subTaskName, isDone: false });
+
+        await projects.save();
 
         return res.status(200).send({ success: true, message: "Task successfully created" });
     }
@@ -112,14 +64,19 @@ async function postTask(req: Request, res: Response) {
     }
 }
 
-async function deleteTask(req: Request, res: Response) {
+async function deleteSubTask(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
         var projectId = req.params.id;
-        var taskId = req.body.taskId;
+        var taskId = req.params.taskId;
+        var subtaskId = req.body.subtaskId;
 
         if (!token || !projectId || !taskId) {
-            return res.status(400).send({ success: false, message: "No access token or project/task id sent" });
+            return res.status(400).send({ success: false, message: "Missing parameter token or project/task id" });
+        }
+
+        if (!subtaskId) {
+            return res.status(409).send({ success: false, message: "Missing parameter subtaskId" });
         }
 
         const userId = decodeAccessToken(token) as Token;
@@ -150,10 +107,16 @@ async function deleteTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not owner of the project" });
         }
 
-        const response = await ProjectModel.updateOne({ _id: projectId }, { $pull: { tasks: { _id: taskId } } });
+        const task = projects.tasks.find(task => String(task.id) === taskId);
+
+        if (!task) {
+            return res.status(404).send({ success: false, message: "Task not found in the project" });
+        }
+
+        const response = await ProjectModel.updateOne({ _id: projectId, "tasks._id": taskId }, { $pull: { "tasks.$.subtasks": { _id: subtaskId } } });
 
         if (!response || !response.modifiedCount) {
-            return res.status(400).send({ success: false, message: "Can't delete task to project" });
+            return res.status(400).send({ success: false, message: "Can't delete not existing task to project" });
         }
 
         return res.status(200).send({ success: true, message: "Task successfully deleted" });
@@ -163,7 +126,7 @@ async function deleteTask(req: Request, res: Response) {
     }
 }
 
-async function patchTask(req: Request, res: Response) {
+async function patchSubTask(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
         var projectId = req.params.id;
@@ -265,4 +228,4 @@ async function patchTask(req: Request, res: Response) {
     }
 }
 
-export { getTask, postTask, deleteTask, patchTask };
+export { postSubTask, deleteSubTask, patchSubTask };

@@ -3,8 +3,7 @@ import { UserModel } from "../../database/schema/users";
 import { Token } from "../../types/token";
 import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
-import tokenToEmail from "../../functions/token/tokenToEmail";
-import { Project, Projects, ProjectById } from "../../types/projects";
+import { Projects, ProjectById } from "../../types/projects";
 
 async function getProject(req: Request, res: Response) {
     try {
@@ -18,7 +17,7 @@ async function getProject(req: Request, res: Response) {
 
         const userId = decodeAccessToken(token) as Token;
 
-        const projects = await ProjectModel.findOne({ "_id": id })
+        const projects = await ProjectModel.findOne({ _id: id })
 
         if (projects === null) {
             return res.status(409).send({ success: false, message: "Project not found" });
@@ -82,6 +81,7 @@ async function getProjects(req: Request, res: Response) {
 
         const projects = await ProjectModel.find({ "members.userId": userId.userId })
 
+
         const response: Projects[] = projects.map(project => {
             const userInProject = project.members.find(member => String(member.userId) === userId.userId);
             return {
@@ -143,7 +143,7 @@ async function patchProject(req: Request, res: Response) {
 
         const userId = decodeAccessToken(token) as Token;
 
-        const projects = await ProjectModel.findOne({ "_id": id })
+        const projects = await ProjectModel.findOne({ _id: id })
 
         if (projects === null) {
             return res.status(409).send({ success: false, message: "Project not found" });
@@ -183,7 +183,7 @@ async function deleteProject(req: Request, res: Response) {
 
         const userId = decodeAccessToken(token) as Token;
 
-        const projects = await ProjectModel.findOne({ "_id": id })
+        const projects = await ProjectModel.findOne({ _id: id })
 
         if (projects === null) {
             return res.status(409).send({ success: false, message: "Project not found" });
