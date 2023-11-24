@@ -51,8 +51,7 @@ async function getMembers(req: Request, res: Response) {
             }
         }));
 
-
-        return res.status(200).send({ success: true, message: "members list found", data: response });
+        return res.status(200).send({ success: true, message: "members list found", data: { members: response } });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });

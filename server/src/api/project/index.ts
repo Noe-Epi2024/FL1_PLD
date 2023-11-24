@@ -92,7 +92,7 @@ async function getProjects(req: Request, res: Response) {
             };
         });
 
-        return res.status(200).send({ success: true, message: "Projects found", data: response });
+        return res.status(200).send({ success: true, message: "Projects found", data: { projects: response } });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
