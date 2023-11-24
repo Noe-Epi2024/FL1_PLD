@@ -40,7 +40,7 @@ async function userRegister(req: Request, res: Response) {
 
         const token = generateAccessToken(user._id)
 
-        res.status(201).send({ success: true, message: "New user created successfully", accessToken: token });
+        res.status(201).send({ success: true, message: "New user created successfully", data: token });
     } catch (err) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
@@ -78,7 +78,7 @@ async function userLogin(req: Request, res: Response) {
 
         const token = generateAccessToken(oldUser._id)
 
-        res.status(200).send({ success: true, message: "User successfully logged in", accessToken: token });
+        res.status(200).send({ success: true, message: "User successfully logged in", data: token });
     } catch (err) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }

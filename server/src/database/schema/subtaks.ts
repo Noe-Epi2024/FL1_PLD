@@ -7,9 +7,11 @@ interface Subtask {
 
 type SubtaskSchema = Model<Subtask>;
 
-const schema = new Schema<Subtask, SubtaskSchema>({
+const SubtasksSchema = new Schema<Subtask, SubtaskSchema>({
     name: { type: String, required: true },
     isDone: { type: Boolean, required: false, default: false },
 });
 
-export const SubtaskModel = model<Subtask, SubtaskSchema>("subtasks", schema);
+const SubtaskModel = model<Subtask, SubtaskSchema>("subtasks", SubtasksSchema);
+
+export { SubtaskModel, SubtasksSchema }

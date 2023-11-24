@@ -1,6 +1,8 @@
+import { Types } from 'mongoose';
 import { Subtask } from './subtasks';
 
 export interface Task {
+    id: Types.ObjectId;
     ownerId: string;
     description: string;
     name: string;

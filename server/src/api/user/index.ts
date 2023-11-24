@@ -23,7 +23,13 @@ async function getMe(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "No user found" });
         }
 
-        res.status(200).send({ success: true, email: user.email, name: user.name, photo: user.photo });
+        const response = {
+            email: user.email,
+            name: user.name,
+            photo: user.photo
+        };
+
+        res.status(200).send({ success: true, message: "OK", data: response });
     } catch (err) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
@@ -68,7 +74,7 @@ async function getUsers(req: Request, res: Response) {
     try {
         const users = await UserModel.find({});
 
-        return res.status(200).send({ success: true, users: users });
+        return res.status(200).send({ success: true, message: "Users successfully retrieved", data: users });
     } catch (err) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
