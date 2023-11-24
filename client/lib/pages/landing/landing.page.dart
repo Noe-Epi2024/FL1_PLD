@@ -1,108 +1,62 @@
-import 'dart:ui';
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
-import '../../components/generators/layer.generator.dart';
-import '../../global/navigator.dart';
-import '../../theme/theme.dart';
-import '../login/login.page.dart';
+import "../../components/generators/layout.generator.dart";
+import "../../global/navigation.dart";
+import "../login/login.page.dart";
+import "landing.page.desktop.dart";
+import "landing.page.mobile.dart";
+import "landing.page.tablet.dart";
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
-  Widget get _logo => SizedBox(
-        height: 128,
-        width: 128,
-        child: Image.network(
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Wikimedia_Commons_logo_white.png/1200px-Wikimedia_Commons_logo_white.png",
+  @protected
+  Widget letsGoButton(context) => ElevatedButton(
+        onPressed: () => Navigation.push(LoginPage()),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 32),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("C'est parti !"),
+              Icon(Icons.arrow_forward_ios_rounded, size: 16),
+            ],
+          ),
         ),
       );
 
-  Image get _backgroundImage => Image.network(
-        "https://images.pexels.com/photos/1477199/pexels-photo-1477199.jpeg?cs=srgb&dl=pexels-artem-saranin-1477199.jpg&fm=jpg",
-        fit: BoxFit.cover,
-      );
-
-  Widget get _welcomeText => Text.rich(
-        TextSpan(
-          style: TextStyle(color: Colors.white),
+  @protected
+  Widget textBody(BuildContext context) => RichText(
+        text: TextSpan(
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(height: 1.5),
           children: [
-            TextSpan(
-              text: "Bienvenue sur\n",
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-              ),
+            const TextSpan(
+              text:
+                  "HyperTools a été conçu pour simplifier la planification, l'organisation et la collaboration au sein de votre équipe, afin de mener vos projets à bien de manière transparente.\n\n",
             ),
-            TextSpan(
-              text: "HyperTools,\n\n",
-              style: TextStyle(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-              ),
+            const TextSpan(
+              text:
+                  "Notre interface conviviale vous permet de créer facilement des tâches en quelques clics. Définissez les détails, attribuez des responsabilités et fixez des échéances, le tout en un seul endroit.\n\n",
             ),
-            TextSpan(
-              text: "la plateforme tout-en-un de gestion de VOTRE projet !",
-              style: TextStyle(fontSize: 22),
+            const TextSpan(
+              text:
+                  "Restez informé de l'avancement de chaque tâche grâce à notre tableau de bord en temps réel. Visualisez les progrès, identifiez les éventuels obstacles et ajustez votre plan en conséquence.",
             ),
           ],
         ),
-        textAlign: TextAlign.center,
       );
 
-  Widget _connectionButton(context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: ElevatedButton(
-          style: ButtonStyle(
-            textStyle: MaterialStatePropertyAll(
-              TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          onPressed: () => Navigation.push(LoginPage()),
-          child: Text("Connexion"),
-        ),
-      );
-
-  Widget _registerButton(context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: ElevatedButton(
-          onPressed: () => Navigation.push(LoginPage()),
-          child: Text("Inscription"),
-          style: ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll(Colors.white),
-            textStyle: MaterialStatePropertyAll(
-              TextStyle(fontWeight: FontWeight.bold),
-            ),
-            foregroundColor:
-                MaterialStatePropertyAll(ThemeGenerator.kThemeColor),
-          ),
-        ),
+  @protected
+  Widget textTitle(BuildContext context, {TextStyle? style}) => Text(
+        "Bienvenue dans une nouvelle ère de collaboration et de réussite professionnelle.",
+        style: style ?? Theme.of(context).textTheme.displaySmall,
       );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            _backgroundImage,
-            LayerGenerator.blur,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 36),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _logo,
-                  _welcomeText,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _connectionButton(context),
-                      _registerButton(context),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => LayoutGenerator.adaptativeLayout(
+        context,
+        mobileLayout: const LandingPageMobile(),
+        tabletLayout: const LandingPageTablet(),
+        desktopLayout: const LandingPageDesktop(),
       );
 }

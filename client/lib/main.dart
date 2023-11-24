@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
-import 'app.dart';
-import 'global/messenger.dart';
-import 'global/navigator.dart';
+import "hypertools.dart";
+import "global/messenger.dart";
+import "global/navigation.dart";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,10 +14,5 @@ void main() {
   Navigation.setNavigatorKey(navigatorKey);
   Messenger.setMessengerKey(messengerKey);
 
-  runApp(
-    App(
-      navigatorKey: navigatorKey,
-      messengerKey: messengerKey,
-    ),
-  );
+  runApp(HyperTools(navigatorKey: navigatorKey, messengerKey: messengerKey));
 }

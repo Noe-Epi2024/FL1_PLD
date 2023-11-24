@@ -1,40 +1,37 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
 
 class ThemeGenerator {
-  static const Color kThemeColor = Colors.deepOrange;
-  static const double kBorderRadius = 24;
-
-  static MaterialColor _materialColor() =>
-      MaterialColor(kThemeColor.value, const {
-        50: kThemeColor,
-        100: kThemeColor,
-        200: kThemeColor,
-        300: kThemeColor,
-        400: kThemeColor,
-        500: kThemeColor,
-        600: kThemeColor,
-        700: kThemeColor,
-        800: kThemeColor,
-        900: kThemeColor,
-      });
+  static const double kBorderRadius = 32;
 
   static CheckboxThemeData get _checkBoxTheme => CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith(
           (states) {
             if (states.contains(MaterialState.selected)) {
-              return kThemeColor;
+              return _colorScheme.primary;
             }
             return null;
           },
         ),
       );
 
-  static TextTheme get _textTheme => Typography.blackCupertino;
+  static TextTheme get _textTheme => GoogleFonts.openSansTextTheme();
 
-  static ColorScheme get _colorScheme => ColorScheme.fromSwatch(
-        primarySwatch: _materialColor(),
+  static ColorScheme get _colorScheme => const ColorScheme(
+        background: Color(0xFFF2F1F7),
+        onBackground: Colors.black,
+        primary: Color(0xFFFF7F11),
+        onPrimary: Colors.white,
+        secondary: Color(0xFF1191FF),
+        onSecondary: Colors.white,
+        tertiary: Color(0xFFFF973C),
+        onTertiary: Colors.white,
+        surface: Colors.white,
+        onSurface: Colors.black,
         brightness: Brightness.light,
-      ).copyWith(secondary: kThemeColor);
+        error: Colors.red,
+        onError: Colors.white,
+      );
 
   static InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
         filled: true,
@@ -47,22 +44,22 @@ class ThemeGenerator {
             return const TextStyle(color: Colors.red);
           }
           if (states.contains(MaterialState.focused)) {
-            return const TextStyle(color: kThemeColor);
+            return TextStyle(color: _colorScheme.primary);
           }
           return TextStyle(color: Colors.grey.shade600);
         }),
-        labelStyle: TextStyle(color: Colors.grey.shade500),
+        labelStyle: TextStyle(color: Colors.grey.shade500, letterSpacing: 0),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: BorderSide(color: Colors.grey, width: 0.5),
+          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: const BorderSide(color: kThemeColor, width: 0.5),
+          borderSide: BorderSide(color: _colorScheme.primary, width: 0.5),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: BorderSide(color: Colors.grey, width: 0.5),
+          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
@@ -82,12 +79,12 @@ class ThemeGenerator {
         behavior: SnackBarBehavior.floating,
       );
 
-  static TabBarTheme get _tabBarTheme => const TabBarTheme(
-        labelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        unselectedLabelStyle: TextStyle(fontSize: 12),
-        labelColor: kThemeColor,
+  static TabBarTheme get _tabBarTheme => TabBarTheme(
+        labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        unselectedLabelStyle: const TextStyle(fontSize: 12),
+        labelColor: _colorScheme.primary,
         unselectedLabelColor: Colors.black,
-        indicator: BoxDecoration(color: Colors.transparent),
+        indicator: const BoxDecoration(color: Colors.transparent),
       );
 
   static FloatingActionButtonThemeData get _floatingActionButtonTheme =>
@@ -96,28 +93,40 @@ class ThemeGenerator {
   static SwitchThemeData get _switchTheme => SwitchThemeData(
         trackColor: MaterialStateProperty.resolveWith<Color>((states) {
           if (states.contains(MaterialState.selected)) {
-            return kThemeColor.withAlpha(100);
+            return _colorScheme.primary.withAlpha(100);
           }
           return Colors.grey.withAlpha(100);
         }),
         thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.selected)) return kThemeColor;
+          if (states.contains(MaterialState.selected))
+            return _colorScheme.primary;
           return Colors.grey;
         }),
       );
 
-  static AppBarTheme get _appBarTheme => const AppBarTheme(
-        color: kThemeColor,
-        shadowColor: Colors.black,
-        elevation: 3,
+  static AppBarTheme get _appBarTheme => AppBarTheme(
+        surfaceTintColor: Colors.transparent,
+        color: _colorScheme.surface,
+        shape:
+            Border(bottom: BorderSide(width: .5, color: _dividerTheme.color!)),
+        shadowColor: Colors.transparent,
       );
 
   static ElevatedButtonThemeData get _elevatedButtonTheme =>
       ElevatedButtonThemeData(
         style: ButtonStyle(
-          padding: MaterialStatePropertyAll(
-            const EdgeInsets.symmetric(vertical: 16),
+          animationDuration: Duration.zero,
+          overlayColor: null,
+          textStyle: MaterialStatePropertyAll(
+            _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
+          backgroundColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.hovered))
+              return _colorScheme.tertiary;
+            return _colorScheme.primary;
+          }),
+          shadowColor: const MaterialStatePropertyAll(Colors.transparent),
+          foregroundColor: const MaterialStatePropertyAll(Colors.white),
           shape: MaterialStateProperty.resolveWith(
             (states) => RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(kBorderRadius),
@@ -128,13 +137,26 @@ class ThemeGenerator {
 
   static TextButtonThemeData get _textButtonTheme => TextButtonThemeData(
         style: ButtonStyle(
-          textStyle: MaterialStatePropertyAll(
-            TextStyle(fontWeight: FontWeight.bold),
-          ),
+          animationDuration: Duration.zero,
+          overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+          textStyle: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.hovered))
+              return _textTheme.bodyMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+                decorationThickness: 4,
+                decorationColor: _colorScheme.primary,
+              );
+            return _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold);
+          }),
         ),
       );
 
+  static DividerThemeData get _dividerTheme =>
+      DividerThemeData(color: Colors.grey.shade500);
+
   static ThemeData generate() => ThemeData(
+        dividerTheme: _dividerTheme,
         colorScheme: _colorScheme,
         textTheme: _textTheme,
         checkboxTheme: _checkBoxTheme,
