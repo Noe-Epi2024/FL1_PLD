@@ -1,113 +1,92 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 
-import '../../components/fields/password.field.dart';
-import '../../components/generators/text.generator.dart';
-import '../../helpers/validator.helpers.dart';
+import "../../bloc/authentication/authentication.bloc.dart";
+import "../../components/fields/password.field.dart";
+import "../../components/generators/layout.generator.dart";
+import "../../global/messenger.dart";
+import "../../global/navigation.dart";
+import "../../helpers/validator.helpers.dart";
+import "../home/home.page.dart";
+import "../register/register.page.dart";
+import "login.page.mobile.dart";
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
+  @protected
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+  void _submit(BuildContext context) {
+    if (!formKey.currentState!.validate()) return;
+
+    context.read<AuthenticationBloc>().add(
+          AuthenticationLoginEvent(
+            _emailController.text,
+            _passwordController.text,
+          ),
+        );
   }
 
-  Widget get _appBar => SliverAppBar(
-        flexibleSpace: FlexibleSpaceBar(
-          background: Hero(
-            tag: "backgroundImage",
-            child: Image.network(
-              "https://images.pexels.com/photos/1477199/pexels-photo-1477199.jpeg?cs=srgb&dl=pexels-artem-saranin-1477199.jpg&fm=jpg",
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        centerTitle: true,
-        forceElevated: true,
-        toolbarHeight: 0,
-        collapsedHeight: 0,
-        expandedHeight: 250,
-      );
+  @protected
+  void listener(BuildContext context, AuthenticationState state) =>
+      switch (state) {
+        AuthenticationSuccessState() =>
+          Navigation.push(const HomePage(), replaceAll: true),
+        AuthenticationFailureState() =>
+          Messenger.showSnackBarError(state.error.errorMessage),
+        AuthenticationLoadingState() || AuthenticationInitialState() => null,
+      };
 
-  Widget get _usernameField => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: TextFormField(
-          controller: _usernameController,
-          decoration: InputDecoration(
-            label: Text("Entrez votre nom d'utilisateur"),
-            prefixIcon: Icon(Icons.person),
-          ),
-          validator: (value) => ValidatorHelper.isNullOrEmptyValidator(
-            value,
-            "Veuillez entrer votre nom d'utilisateur",
-          ),
+  @protected
+  Widget get emailField => TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        controller: _emailController,
+        decoration: const InputDecoration(
+          label: Text("Entrez votre adresse email"),
+          prefixIcon: Icon(Icons.person),
+        ),
+        validator: (value) => ValidatorHelper.isNullOrEmptyValidator(
+          value,
+          "Veuillez entrer votre adresse email",
         ),
       );
 
-  Widget get _passwordField => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: PasswordField(
-          controller: _passwordController,
-        ),
+  @protected
+  Widget get passwordField => PasswordField(controller: _passwordController);
+
+  @protected
+  Widget loginButton(BuildContext context) => ElevatedButton(
+        onPressed: () => _submit(context),
+        child: const Text("Connexion"),
       );
 
-  Widget get _loginButton => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: ElevatedButton(
-          onPressed: _submit,
-          child: Text("Connexion"),
-        ),
-      );
-
-  Widget get _starLoggedIn => Row(
+  @protected
+  Widget stayLoggedIn(BuildContext context, bool value) => Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Text("Rester connecter"),
-          Checkbox(value: false, onChanged: (value) {}),
+          const Text("Rester connecter"),
+          Checkbox(
+            value: value,
+            onChanged: (value) => context
+                .read<AuthenticationBloc>()
+                .add(AuthenticationSetStayLoggedInEvent(value!)),
+          ),
         ],
       );
 
-  Widget get _createAccount =>
-      TextButton(onPressed: () {}, child: Text("Créer un compte"));
+  @protected
+  Widget get createAccountButton => TextButton(
+        onPressed: () =>
+            Navigation.push(const RegisterPage(), replaceOne: true),
+        child: const Text("Créer un compte"),
+      );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            _appBar,
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 22,
-                    vertical: 36,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextGenerator.headline(
-                        "Connexion à HyperTools",
-                        textAlign: TextAlign.center,
-                      ),
-                      TextGenerator.title("Nom d'utilisateur"),
-                      _usernameField,
-                      TextGenerator.title("Mot de passe"),
-                      _passwordField,
-                      _starLoggedIn,
-                      _loginButton,
-                      Divider(height: 32),
-                      _createAccount,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => LayoutGenerator.adaptativeLayout(
+        context,
+        mobileLayout: LoginPageMobile(),
       );
 }
