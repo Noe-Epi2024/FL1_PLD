@@ -242,6 +242,10 @@ async function patchTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
+        if (userInProject.role !== "owner") {
+            return res.status(409).send({ success: false, message: "User not owner of the project" });
+        }
+
         const task = projects.tasks.find(task => String(task.id) === taskId);
 
         if (!task) {

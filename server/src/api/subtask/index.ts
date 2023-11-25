@@ -131,55 +131,27 @@ async function patchSubTask(req: Request, res: Response) {
         const token = req.headers.authorization;
         var projectId = req.params.id;
         var taskId = req.params.taskId;
+        var subtaskId = req.params.subtaskId;
         var data = req.body;
 
-        const allowedFields = ['name', 'description', 'startDate', 'endDate', 'ownerId'];
-        const updateFields: { [key: string]: any } = {};
+        console.log(taskId, subtaskId, data.isDone);
 
-        if (!token || !projectId || !taskId) {
-            return res.status(400).send({ success: false, message: "No access token or task/project id sent" });
+        if (!token) {
+            return res.status(400).send({ success: false, message: "No access token provided" });
+        }
+
+        if (!subtaskId || !projectId || !taskId) {
+            return res.status(400).send({ success: false, message: "Missing parameter subtaskId or project/task id" });
         }
 
         if (!data || Object.keys(data).length === 0) {
             return res.status(409).send({ success: false, message: "No data sent" });
         }
 
-        if (data.ownerId) {
-            try {
-                const newOwner = await UserModel.findOne({ _id: data.ownerId });
-            } catch (error) {
-                return res.status(409).send({ success: false, message: "User selected for being owner of the task does not exist" });
-            }
+        if (!data.name && !data.isDone) {
+            console.log(data.name, data.isDone);
+            return res.status(409).send({ success: false, message: "Missing or wrong data to change" });
         }
-
-        if (data.startDate || data.endDate) {
-            try {
-                const startDate = new Date(data.startDate);
-                const endDate = new Date(data.endDate);
-
-                if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                    return res.status(409).send({ success: false, message: "Invalid date format" });
-                }
-            } catch (error) {
-                return res.status(409).send({ success: false, message: "Invalid date format" });
-            }
-        }
-
-        if (data.startDate && data.endDate) {
-            try {
-                if (data.startDate > data.endDate) {
-                    return res.status(409).send({ success: false, message: "Start date can't be after end date" });
-                }
-            } catch (error) {
-                return res.status(409).send({ success: false, message: "Invalid date format" });
-            }
-        }
-
-        allowedFields.forEach(field => {
-            if (data[field]) {
-                updateFields[`tasks.$.${field}`] = data[field];
-            }
-        });
 
         const userId = decodeAccessToken(token) as Token;
 
@@ -211,17 +183,35 @@ async function patchSubTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "Task not found in project" });
         }
 
-        const taskData = await ProjectModel.updateOne({ _id: projectId, "tasks._id": taskId }, { $set: updateFields });
+        const taskData = await ProjectModel.updateOne(
+            {
+                _id: projectId,
+                "tasks._id": taskId,
+                "tasks.subtasks._id": subtaskId
+            },
+            {
+                $set: {
+                    "tasks.$[outer].subtasks.$[inner].name": data.name,
+                    "tasks.$[outer].subtasks.$[inner].isDone": data.isDone
+                }
+            },
+            {
+                arrayFilters: [
+                    { "outer._id": taskId },
+                    { "inner._id": subtaskId }
+                ]
+            }
+        );
 
         if (!taskData) {
-            return res.status(400).send({ success: false, message: "Can't update task data" });
+            return res.status(400).send({ success: false, message: "Can't update Subtask data" });
         }
 
         if (taskData.modifiedCount === 0 && taskData.matchedCount !== 0) {
-            return res.status(409).send({ success: false, message: "Task data already up to date" });
+            return res.status(409).send({ success: false, message: "SubTask data already up to date" });
         }
 
-        return res.status(200).send({ success: true, message: "Task successfully modified" });
+        return res.status(200).send({ success: true, message: "SubTask successfully modified" });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });

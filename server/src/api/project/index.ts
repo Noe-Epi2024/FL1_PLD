@@ -37,13 +37,17 @@ async function getProject(req: Request, res: Response) {
                 try {
                     const user = await UserModel.findById(task.ownerId);
                     if (user) {
+                        const totalSubtasks = task.subtasks.length;
+                        const completedSubtasks = task.subtasks.filter(subtask => subtask.isDone).length;
+                        const progress = totalSubtasks > 0 ? Math.ceil((completedSubtasks / totalSubtasks) * 100) : 0;
+
                         return {
                             id: task.id,
                             ownerName: user.name,
                             name: task.name,
                             startDate: task.startDate,
                             endDate: task.endDate,
-                            progress: 0
+                            progress: progress
                         };
                     } else {
                         throw new Error(`User not found for task with ID: ${task.id}`);
@@ -56,7 +60,7 @@ async function getProject(req: Request, res: Response) {
                         name: task.name,
                         startDate: task.startDate,
                         endDate: task.endDate,
-                        progress: 0
+                        progress: 0 // If error occurs, set progress to 0
                     };
                 }
             }))

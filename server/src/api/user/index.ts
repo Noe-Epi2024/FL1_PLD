@@ -1,7 +1,9 @@
 import { UserModel } from "../../database/schema/users";
+import { ProjectModel } from "../../database/schema/projects";
 import { Token } from "../../types/token";
 import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
+import { User } from "../../types/users";
 
 async function getMe(req: Request, res: Response) {
     try {
@@ -72,12 +74,35 @@ async function patchMe(req: Request, res: Response) {
 
 async function getUsers(req: Request, res: Response) {
     try {
-        const users = await UserModel.find({});
+        const { exclude, filter } = req.query;
+
+        let users: User[] | null = null;
+
+        if (!exclude && filter) {
+            return res.status(400).send({ success: false, message: "Can't filter without excluding" });
+        }
+
+        if (!exclude && !filter) {
+            users = await UserModel.find({});
+        }
+
+        if (exclude && !filter) {
+            const userInProject = await ProjectModel.findById(exclude);
+            const userList = userInProject?.members.map(member => member.userId);
+            users = await UserModel.find({ _id: { $nin: userList } });
+        }
+
+        if (exclude && filter) {
+            const userInProject = await ProjectModel.findById(exclude);
+            const userList = userInProject?.members.map(member => member.userId);
+            users = await UserModel.find({ $and: [{ _id: { $nin: userList } }, { name: { $regex: filter as string, $options: 'i' } }] });
+        }
 
         return res.status(200).send({ success: true, message: "Users successfully retrieved", data: users });
     } catch (err) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
 }
+
 
 export { getMe, patchMe, getUsers };
