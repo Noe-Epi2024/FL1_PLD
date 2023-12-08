@@ -16,9 +16,9 @@ class AuthenticationLayoutTablet extends StatelessWidget
               const EdgeInsets.only(left: 32, right: 32, top: 32, bottom: 64),
           children: [
             header(context, border: false),
-            const SizedBox(height: 32),
+            32.ph,
             Resources.illustration(),
-            const SizedBox(height: 32),
+            32.ph,
             ...children,
           ],
         ),

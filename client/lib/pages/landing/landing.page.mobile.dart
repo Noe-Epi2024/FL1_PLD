@@ -15,9 +15,9 @@ class LandingPageMobile extends LandingPage with AuthenticationLayout {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               textTitle(context, style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 64),
+              64.ph,
               SizedBox(height: 48, child: registerButton(context)),
-              const SizedBox(height: 8),
+              8.ph,
               connectionButton(context),
             ],
           ),

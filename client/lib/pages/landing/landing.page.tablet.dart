@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "../../components/layouts/authentication.layout.tablet.dart";
+import "../../extensions/num.extension.dart";
 import "landing.page.dart";
 
 class LandingPageTablet extends LandingPage {
@@ -12,9 +13,9 @@ class LandingPageTablet extends LandingPage {
         body: AuthenticationLayoutTablet(
           children: [
             textTitle(context),
-            const SizedBox(height: 64),
+            64.ph,
             textBody(context),
-            const SizedBox(height: 64),
+            64.ph,
             SizedBox(width: 256, height: 56, child: letsGoButton(context)),
           ],
         ),
