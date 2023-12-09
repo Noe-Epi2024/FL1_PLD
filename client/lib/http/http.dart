@@ -38,6 +38,7 @@ class Http {
 
       // request sent error
       ErrorModel error = ErrorModel.fromJson(body);
+      print(error.errorMessage);
       return Future.error(error);
     }
     // request timeout

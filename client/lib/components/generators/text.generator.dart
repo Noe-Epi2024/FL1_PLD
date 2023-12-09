@@ -1,30 +1,18 @@
 import "package:flutter/material.dart";
 
-class TextGenerator {
-  static Widget title(
-    String text, {
-    TextAlign textAlign = TextAlign.start,
-    EdgeInsetsGeometry? padding,
-  }) =>
-      Padding(
-        padding: padding ?? EdgeInsets.zero,
-        child: Text(
-          text,
-          textAlign: textAlign,
-          style: const TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
+class HeadlineText extends StatelessWidget {
+  const HeadlineText(
+    this.text, {
+    super.key,
+    this.textAlign = TextAlign.start,
+    this.padding,
+  });
+  final String text;
+  final TextAlign textAlign;
+  final EdgeInsetsGeometry? padding;
 
-  static Widget headline(
-    context,
-    String text, {
-    TextAlign textAlign = TextAlign.start,
-    EdgeInsetsGeometry? padding,
-  }) =>
-      Padding(
+  @override
+  Widget build(BuildContext context) => Padding(
         padding: padding ?? EdgeInsets.zero,
         child: Text(
           text,
@@ -33,6 +21,31 @@ class TextGenerator {
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
             color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      );
+}
+
+class TitleText extends StatelessWidget {
+  const TitleText(
+    this.text, {
+    super.key,
+    this.textAlign = TextAlign.start,
+    this.padding,
+  });
+  final String text;
+  final TextAlign textAlign;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: padding ?? EdgeInsets.zero,
+        child: Text(
+          text,
+          textAlign: textAlign,
+          style: const TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
       );

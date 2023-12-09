@@ -3,10 +3,8 @@ import "package:flutter/material.dart";
 import "../../components/generators/decoration.generator.dart";
 import "../../extensions/num.extension.dart";
 import "../../resources/resources.dart";
-import "authentication.layout.dart";
 
-class AuthenticationLayoutMobile extends StatelessWidget
-    with AuthenticationLayout {
+class AuthenticationLayoutMobile extends StatelessWidget {
   AuthenticationLayoutMobile({super.key, this.child});
 
   final Widget? child;

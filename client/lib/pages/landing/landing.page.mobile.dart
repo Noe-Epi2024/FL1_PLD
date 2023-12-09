@@ -2,9 +2,10 @@ import "package:flutter/material.dart";
 
 import "../../components/layouts/authentication.layout.dart";
 import "../../components/layouts/authentication.layout.mobile.dart";
+import "../../extensions/num.extension.dart";
 import "landing.page.dart";
 
-class LandingPageMobile extends LandingPage with AuthenticationLayout {
+class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
   const LandingPageMobile({super.key});
 
   @override
@@ -16,9 +17,9 @@ class LandingPageMobile extends LandingPage with AuthenticationLayout {
             children: [
               textTitle(context, style: Theme.of(context).textTheme.titleLarge),
               64.ph,
-              SizedBox(height: 48, child: registerButton(context)),
+              SizedBox(height: 48, child: registerButton),
               8.ph,
-              connectionButton(context),
+              connectionButton,
             ],
           ),
         ),

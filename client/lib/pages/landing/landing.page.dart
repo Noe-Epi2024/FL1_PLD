@@ -1,17 +1,16 @@
 import "package:flutter/material.dart";
 
-import "../../components/generators/layout.generator.dart";
+import "../../components/adaptative_layout.dart";
 import "../../global/navigation.dart";
 import "../login/login.page.dart";
 import "landing.page.desktop.dart";
 import "landing.page.mobile.dart";
-import "landing.page.tablet.dart";
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
   @protected
-  Widget letsGoButton(context) => ElevatedButton(
+  Widget get letsGoButton => ElevatedButton(
         onPressed: () => Navigation.push(LoginPage()),
         child: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 32),
@@ -53,10 +52,8 @@ class LandingPage extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => LayoutGenerator.adaptativeLayout(
-        context,
-        mobileLayout: const LandingPageMobile(),
-        tabletLayout: const LandingPageTablet(),
-        desktopLayout: const LandingPageDesktop(),
+  Widget build(BuildContext context) => const AdaptativeLayout(
+        mobileLayout: LandingPageMobile(),
+        desktopLayout: LandingPageDesktop(),
       );
 }

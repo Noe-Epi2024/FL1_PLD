@@ -5,15 +5,15 @@ import "package:flutter/material.dart";
 /// Allows external manupulation of a [FutureWidget] such as [refresh]ing it.
 /// Refreshing [FutureWidget] will start its whole life cycle from the beginning.
 class FutureWidgetController {
+  _FutureWidgetState? _state;
+
   void refresh({bool noRebuild = false}) {
     if (noRebuild) {
-      _futureWidget?._initialize();
+      _state?._initialize();
     } else {
-      _futureWidget?._invokeFuture();
+      _state?._invokeFuture();
     }
   }
-
-  _FutureWidgetState? _futureWidget;
 }
 
 class FutureWidget<T> extends StatefulWidget {
@@ -150,7 +150,7 @@ class _FutureWidgetState<T> extends State<FutureWidget<T>> {
   @override
   void initState() {
     super.initState();
-    if (widget.controller != null) widget.controller!._futureWidget = this;
+    if (widget.controller != null) widget.controller!._state = this;
     _initialize();
   }
 

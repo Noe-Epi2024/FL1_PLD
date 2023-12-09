@@ -11,13 +11,16 @@ class LandingPageDesktop extends LandingPage {
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: AuthenticationLayoutDesktop(
-          children: [
-            textTitle(context),
-            64.ph,
-            textBody(context),
-            64.ph,
-            SizedBox(width: 256, height: 56, child: letsGoButton(context)),
-          ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              textTitle(context),
+              64.ph,
+              textBody(context),
+              64.ph,
+              SizedBox(width: 256, height: 56, child: letsGoButton),
+            ],
+          ),
         ),
       );
 }

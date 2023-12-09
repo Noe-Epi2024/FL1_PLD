@@ -7,5 +7,5 @@ class Routes {
 
   static Uri get register => _uri("register");
 
-  static Uri get projects => _uri("projects");
+  static Uri get projectAll => _uri("project/all");
 }
