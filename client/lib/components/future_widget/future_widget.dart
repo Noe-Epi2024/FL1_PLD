@@ -2,19 +2,7 @@ import "dart:async";
 import "package:async/async.dart";
 import "package:flutter/material.dart";
 
-/// Allows external manupulation of a [FutureWidget] such as [refresh]ing it.
-/// Refreshing [FutureWidget] will start its whole life cycle from the beginning.
-class FutureWidgetController {
-  _FutureWidgetState? _state;
-
-  void refresh({bool noRebuild = false}) {
-    if (noRebuild) {
-      _state?._initialize();
-    } else {
-      _state?._invokeFuture();
-    }
-  }
-}
+part "future_widget_controller.dart";
 
 class FutureWidget<T> extends StatefulWidget {
   /// Generic wrapper of [FutureBuilder] to provide more flexibility.

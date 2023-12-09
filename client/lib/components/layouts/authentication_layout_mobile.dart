@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
-import "../../components/generators/decoration.generator.dart";
-import "../../extensions/num.extension.dart";
+import "../generators/decoration_generator.dart";
+import "../../extensions/num_extension.dart";
 import "../../resources/resources.dart";
 
 class AuthenticationLayoutMobile extends StatelessWidget {

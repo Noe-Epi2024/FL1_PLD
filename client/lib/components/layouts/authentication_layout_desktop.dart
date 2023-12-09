@@ -2,8 +2,8 @@ import "package:flutter/material.dart";
 
 import "../../resources/resources.dart";
 import "../evenly_spaced_children.dart";
-import "../generators/decoration.generator.dart";
-import "authentication.layout.dart";
+import "../generators/decoration_generator.dart";
+import "authentication_layout.dart";
 
 class AuthenticationLayoutDesktop extends StatelessWidget
     with AuthenticationLayoutKit {

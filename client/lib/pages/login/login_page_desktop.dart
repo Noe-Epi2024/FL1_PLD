@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
-import "../../components/layouts/authentication.layout.desktop.dart";
-import "login.page.dart";
+import "../../components/layouts/authentication_layout_desktop.dart";
+import "login_page.dart";
 import "login_provider.dart";
 
 class LoginPageDesktop extends LoginPage {

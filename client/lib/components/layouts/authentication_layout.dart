@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 
 import "../../global/navigation.dart";
-import "../../pages/login/login.page.dart";
-import "../../pages/register/register.page.dart";
+import "../../pages/login/login_page.dart";
+import "../../pages/register/register_page.dart";
 
 mixin AuthenticationLayoutKit {
   @protected

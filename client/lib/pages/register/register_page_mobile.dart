@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
-import "../../components/layouts/authentication.layout.mobile.dart";
-import "register.page.dart";
+import "../../components/layouts/authentication_layout_mobile.dart";
+import "register_page.dart";
 
 class RegisterPageMobile extends RegisterPage {
   RegisterPageMobile({super.key});

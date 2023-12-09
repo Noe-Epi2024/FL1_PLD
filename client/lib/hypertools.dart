@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "pages/landing/landing.page.dart";
+import "pages/landing/landing_page.dart";
 import "theme/theme.dart";
 
 class HyperTools extends StatelessWidget {

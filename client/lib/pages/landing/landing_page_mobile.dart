@@ -1,9 +1,9 @@
 import "package:flutter/material.dart";
 
-import "../../components/layouts/authentication.layout.dart";
-import "../../components/layouts/authentication.layout.mobile.dart";
-import "../../extensions/num.extension.dart";
-import "landing.page.dart";
+import "../../components/layouts/authentication_layout.dart";
+import "../../components/layouts/authentication_layout_mobile.dart";
+import "../../extensions/num_extension.dart";
+import "landing_page.dart";
 
 class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
   const LandingPageMobile({super.key});

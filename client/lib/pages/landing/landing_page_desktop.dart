@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 
-import "../../components/layouts/authentication.layout.desktop.dart";
-import "../../extensions/num.extension.dart";
-import "landing.page.dart";
+import "../../components/layouts/authentication_layout_desktop.dart";
+import "../../extensions/num_extension.dart";
+import "landing_page.dart";
 
 class LandingPageDesktop extends LandingPage {
   const LandingPageDesktop({super.key});

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
-import "../../components/layouts/authentication.layout.desktop.dart";
-import "register.page.dart";
+import "../../components/layouts/authentication_layout_desktop.dart";
+import "register_page.dart";
 
 class RegisterPageDekstop extends RegisterPage {
   RegisterPageDekstop({super.key});

@@ -2,19 +2,20 @@ import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
 import "../../components/adaptative_layout.dart";
-import "../../components/fields/password.field.dart";
-import "../../components/generators/text.generator.dart";
+import "../../components/fields/password_field.dart";
+import "../../components/texts/headline_text.dart";
+import "../../components/texts/title_text.dart";
 import "../../global/messenger.dart";
 import "../../global/navigation.dart";
-import "../../helpers/validator.helpers.dart";
+import "../../helpers/validator_helpers.dart";
 import "../../http/http.dart";
 import "../../http/requests/authentication/register_requests.dart";
-import "../../models/authentication.model.dart";
-import "../../models/error.model.dart";
-import "../home/home.page.dart";
-import "../login/login.page.dart";
-import "register.page.desktop.dart";
-import "register.page.mobile.dart";
+import "../../models/authentication_model.dart";
+import "../../models/error_model.dart";
+import "../home/home_page.dart";
+import "../login/login_page.dart";
+import "register_page_desktop.dart";
+import "register_page_mobile.dart";
 import "register_provider.dart";
 
 class RegisterPage extends StatelessWidget {

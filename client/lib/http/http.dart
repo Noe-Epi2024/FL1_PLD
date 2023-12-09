@@ -4,8 +4,8 @@ import "dart:io";
 
 import "package:http/http.dart" as http;
 
-import "../models/error.model.dart";
-import "../models/success.model.dart";
+import "../models/error_model.dart";
+import "../models/success_model.dart";
 
 class Http {
   static String? _accessToken;

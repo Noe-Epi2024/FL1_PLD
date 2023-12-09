@@ -1,4 +1,4 @@
-import "../../../models/authentication.model.dart";
+import "../../../models/authentication_model.dart";
 import "../post_request.dart";
 import "../../routes.dart";
 

@@ -2,9 +2,9 @@ import "package:flutter/material.dart";
 
 import "../../components/adaptative_layout.dart";
 import "../../global/navigation.dart";
-import "../login/login.page.dart";
-import "landing.page.desktop.dart";
-import "landing.page.mobile.dart";
+import "../login/login_page.dart";
+import "landing_page_desktop.dart";
+import "landing_page_mobile.dart";
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
