@@ -1,16 +1,16 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
 class LoginProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  void set isLoading(bool value) {
+  set isLoading(bool value) {
     _isLoading = value;
     notifyListeners();
   }
 
   bool _shouldStayLoggedIn = false;
   bool get shouldStayLoggedIn => _shouldStayLoggedIn;
-  void set shouldStayLoggedIn(bool value) {
+  set shouldStayLoggedIn(bool value) {
     _shouldStayLoggedIn = value;
     notifyListeners();
   }

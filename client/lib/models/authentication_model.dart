@@ -1,8 +1,7 @@
 class AuthenticationModel {
-  final String accessToken;
-
   AuthenticationModel({required this.accessToken});
 
-  factory AuthenticationModel.fromJson(json) =>
-      AuthenticationModel(accessToken: json["accessToken"]);
+  factory AuthenticationModel.fromJson(Map<String, dynamic> json) =>
+      AuthenticationModel(accessToken: json['accessToken']);
+  final String accessToken;
 }

@@ -1,11 +1,10 @@
-import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
-
-import "../../resources/resources.dart";
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hyper_tools/resources/resources.dart';
 
 class DecorationGenerator {
   static Widget logo({bool withText = true, bool withIcon = true}) => Row(
-        children: [
+        children: <Widget>[
           if (withText)
             Padding(
               padding: const EdgeInsets.only(right: 16),
@@ -17,7 +16,7 @@ class DecorationGenerator {
             ),
           if (withIcon)
             Text(
-              "HyperTools",
+              'HyperTools',
               style: GoogleFonts.lexend(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,

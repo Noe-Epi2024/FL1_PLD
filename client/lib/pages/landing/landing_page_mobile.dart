@@ -1,9 +1,8 @@
-import "package:flutter/material.dart";
-
-import "../../components/layouts/authentication_layout.dart";
-import "../../components/layouts/authentication_layout_mobile.dart";
-import "../../extensions/num_extension.dart";
-import "landing_page.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/components/layouts/authentication_layout.dart';
+import 'package:hyper_tools/components/layouts/authentication_layout_mobile.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/pages/landing/landing_page.dart';
 
 class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
   const LandingPageMobile({super.key});
@@ -14,7 +13,7 @@ class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
         body: AuthenticationLayoutMobile(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+            children: <Widget>[
               textTitle(context, style: Theme.of(context).textTheme.titleLarge),
               64.ph,
               SizedBox(height: 48, child: registerButton),

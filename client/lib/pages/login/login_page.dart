@@ -1,23 +1,24 @@
-import "package:flutter/material.dart";
-import "package:provider/provider.dart";
-
-import "../../components/adaptative_layout.dart";
-import "../../components/fields/password_field.dart";
-import "../../components/texts/headline_text.dart";
-import "../../components/texts/title_text.dart";
-import "../../extensions/num_extension.dart";
-import "../../global/messenger.dart";
-import "../../global/navigation.dart";
-import "../../helpers/validator_helpers.dart";
-import "../../http/http.dart";
-import "../../http/requests/authentication/login_requests.dart";
-import "../../models/authentication_model.dart";
-import "../../models/error_model.dart";
-import "../home/home_page.dart";
-import "../register/register_page.dart";
-import "login_page_mobile.dart";
-import "login_page_desktop.dart";
-import "login_provider.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/components/adaptative_layout.dart';
+import 'package:hyper_tools/components/fields/password_field.dart';
+import 'package:hyper_tools/components/texts/headline_text.dart';
+import 'package:hyper_tools/components/texts/title_text.dart';
+import 'package:hyper_tools/consts/consts.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/global/navigation.dart';
+import 'package:hyper_tools/helpers/validator_helpers.dart';
+import 'package:hyper_tools/http/http.dart';
+import 'package:hyper_tools/http/requests/authentication/login_requests.dart';
+import 'package:hyper_tools/local_storage/local_storage.dart';
+import 'package:hyper_tools/models/authentication_model.dart';
+import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/pages/home/home_page.dart';
+import 'package:hyper_tools/pages/login/login_page_desktop.dart';
+import 'package:hyper_tools/pages/login/login_page_mobile.dart';
+import 'package:hyper_tools/pages/login/login_provider.dart';
+import 'package:hyper_tools/pages/register/register_page.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -26,7 +27,7 @@ class LoginPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _onClickSubmit(BuildContext context) async {
+  Future<void> _onClickSubmit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
     context.read<LoginProvider>().isLoading = true;
@@ -39,7 +40,14 @@ class LoginPage extends StatelessWidget {
 
       Http.accessToken = authenticationModel.accessToken;
 
-      Navigation.push(const HomePage(), replaceAll: true);
+      if (context.read<LoginProvider>().shouldStayLoggedIn) {
+        await LocalStorage.write(
+          Consts.accessTokenKey,
+          authenticationModel.accessToken,
+        );
+      }
+
+      await Navigation.push(const HomePage(), replaceAll: true);
     } on ErrorModel catch (e) {
       Messenger.showSnackBarError(e.errorMessage);
     } catch (_) {
@@ -53,12 +61,12 @@ class LoginPage extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: _emailController,
         decoration: const InputDecoration(
-          label: Text("Entrez votre adresse email"),
+          label: Text('Entrez votre adresse email'),
           prefixIcon: Icon(Icons.person),
         ),
-        validator: (value) => ValidatorHelper.isNullOrEmptyValidator(
+        validator: (String? value) => ValidatorHelper.isNullOrEmptyValidator(
           value,
-          "Veuillez entrer votre adresse email",
+          'Veuillez entrer votre adresse email',
         ),
       );
 
@@ -67,18 +75,18 @@ class LoginPage extends StatelessWidget {
 
   @protected
   Widget loginButton(BuildContext context) => ElevatedButton(
-        onPressed: () => _onClickSubmit(context),
-        child: const Text("Connexion"),
+        onPressed: () async => _onClickSubmit(context),
+        child: const Text('Connexion'),
       );
 
   @protected
   Widget stayLoggedInCheckbox(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          const Text("Rester connecter"),
+        children: <Widget>[
+          const Text('Rester connecter'),
           Checkbox(
             value: context.watch<LoginProvider>().shouldStayLoggedIn,
-            onChanged: (value) =>
+            onChanged: (bool? value) =>
                 context.read<LoginProvider>().shouldStayLoggedIn = value!,
           ),
         ],
@@ -86,8 +94,9 @@ class LoginPage extends StatelessWidget {
 
   @protected
   Widget get createAccountButton => TextButton(
-        onPressed: () => Navigation.push(RegisterPage(), replaceOne: true),
-        child: const Text("Créer un compte"),
+        onPressed: () async =>
+            Navigation.push(RegisterPage(), replaceOne: true),
+        child: const Text('Créer un compte'),
       );
 
   @protected
@@ -96,32 +105,32 @@ class LoginPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             const HeadlineText(
-              "Connexion à HyperTools",
+              'Connexion à HyperTools',
               textAlign: TextAlign.center,
             ),
             32.ph,
-            const TitleText("Adresse email"),
+            const TitleText('Adresse email'),
             8.ph,
             emailField,
             16.ph,
-            const TitleText("Mot de passe"),
+            const TitleText('Mot de passe'),
             8.ph,
             passwordField,
             stayLoggedInCheckbox(context),
             8.ph,
             SizedBox(height: 64, child: loginButton(context)),
             8.ph,
-            const Center(child: Text("ou")),
+            const Center(child: Text('ou')),
             createAccountButton,
           ],
         ),
       );
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (context) => LoginProvider(),
+  Widget build(BuildContext context) => ChangeNotifierProvider<LoginProvider>(
+        create: (BuildContext context) => LoginProvider(),
         child: AdaptativeLayout(
           mobileLayout: LoginPageMobile(),
           desktopLayout: LoginPageDesktop(),

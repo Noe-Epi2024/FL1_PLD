@@ -1,23 +1,23 @@
-import "dart:async";
-import "dart:convert";
-import "dart:io";
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
-import "package:http/http.dart" as http;
-
-import "../models/error_model.dart";
-import "../models/success_model.dart";
+import 'package:http/http.dart' as http;
+import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/models/success_model.dart';
 
 class Http {
   static String? _accessToken;
   static set accessToken(String value) => _accessToken = value;
 
   static Map<String, String> _header({bool private = true}) {
-    if (private == true && _accessToken == null)
-      throw Exception("Access token not found");
+    if (private == true && _accessToken == null) {
+      throw Exception('Access token not found');
+    }
 
-    return {
-      "content-type": "application/json",
-      if (private) "Authorization": _accessToken!,
+    return <String, String>{
+      'content-type': 'application/json',
+      if (private) 'Authorization': _accessToken!,
     };
   }
 
@@ -32,28 +32,29 @@ class Http {
 
       // request sent success
       if (statusCode >= 200 && statusCode < 300) {
-        SuccessModel success = SuccessModel.fromJson(body);
+        final SuccessModel success = SuccessModel.fromJson(body);
         return onSuccess(success.data);
       }
 
       // request sent error
-      ErrorModel error = ErrorModel.fromJson(body);
-      print(error.errorMessage);
-      return Future.error(error);
+      final ErrorModel error = ErrorModel.fromJson(body);
+      return Future<T>.error(error);
     }
     // request timeout
     on TimeoutException catch (_) {
-      return Future.error(
-        ErrorModel(errorMessage: "La requête a pris trop de temps"),
+      return Future<T>.error(
+        ErrorModel(errorMessage: 'La requête a pris trop de temps'),
       );
     }
     // server offline
     on SocketException catch (_) {
-      return Future.error(ErrorModel(errorMessage: "Serveur inaccessible"));
+      return Future<T>.error(ErrorModel(errorMessage: 'Serveur inaccessible'));
     }
     // other exception
     catch (_) {
-      return Future.error(ErrorModel(errorMessage: "Erreur non categorisée"));
+      return Future<T>.error(
+        ErrorModel(errorMessage: 'Erreur non categorisée'),
+      );
     }
   }
 

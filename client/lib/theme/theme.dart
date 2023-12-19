@@ -1,12 +1,12 @@
-import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ThemeGenerator {
   static const double kBorderRadius = 32;
 
   static CheckboxThemeData get _checkBoxTheme => CheckboxThemeData(
         fillColor: MaterialStateProperty.resolveWith(
-          (states) {
+          (Set<MaterialState> states) {
             if (states.contains(MaterialState.selected)) {
               return _colorScheme.primary;
             }
@@ -39,7 +39,8 @@ class ThemeGenerator {
         contentPadding:
             const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         hintStyle: TextStyle(color: Colors.grey.shade600),
-        floatingLabelStyle: MaterialStateTextStyle.resolveWith((states) {
+        floatingLabelStyle:
+            MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.error)) {
             return const TextStyle(color: Colors.red);
           }
@@ -91,15 +92,18 @@ class ThemeGenerator {
       const FloatingActionButtonThemeData(foregroundColor: Colors.white);
 
   static SwitchThemeData get _switchTheme => SwitchThemeData(
-        trackColor: MaterialStateProperty.resolveWith<Color>((states) {
+        trackColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
           if (states.contains(MaterialState.selected)) {
             return _colorScheme.primary.withAlpha(100);
           }
           return Colors.grey.withAlpha(100);
         }),
-        thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.selected))
+        thumbColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) {
             return _colorScheme.primary;
+          }
           return Colors.grey;
         }),
       );
@@ -116,19 +120,21 @@ class ThemeGenerator {
       ElevatedButtonThemeData(
         style: ButtonStyle(
           animationDuration: Duration.zero,
-          overlayColor: null,
-          textStyle: MaterialStatePropertyAll(
+          textStyle: MaterialStatePropertyAll<TextStyle>(
             _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
           ),
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.hovered))
+          backgroundColor:
+              MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+            if (states.contains(MaterialState.hovered)) {
               return _colorScheme.tertiary;
+            }
             return _colorScheme.primary;
           }),
-          shadowColor: const MaterialStatePropertyAll(Colors.transparent),
-          foregroundColor: const MaterialStatePropertyAll(Colors.white),
+          shadowColor:
+              const MaterialStatePropertyAll<Color>(Colors.transparent),
+          foregroundColor: const MaterialStatePropertyAll<Color>(Colors.white),
           shape: MaterialStateProperty.resolveWith(
-            (states) => RoundedRectangleBorder(
+            (Set<MaterialState> states) => RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(kBorderRadius),
             ),
           ),
@@ -138,15 +144,18 @@ class ThemeGenerator {
   static TextButtonThemeData get _textButtonTheme => TextButtonThemeData(
         style: ButtonStyle(
           animationDuration: Duration.zero,
-          overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-          textStyle: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.hovered))
+          overlayColor:
+              const MaterialStatePropertyAll<Color>(Colors.transparent),
+          textStyle:
+              MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+            if (states.contains(MaterialState.hovered)) {
               return _textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.bold,
                 decoration: TextDecoration.underline,
                 decorationThickness: 4,
                 decorationColor: _colorScheme.primary,
               );
+            }
             return _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold);
           }),
         ),

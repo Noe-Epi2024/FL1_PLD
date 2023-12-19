@@ -1,15 +1,15 @@
-import "../../../models/authentication_model.dart";
-import "../post_request.dart";
-import "../../routes.dart";
+import 'package:hyper_tools/http/requests/post_request.dart';
+import 'package:hyper_tools/http/routes.dart';
+import 'package:hyper_tools/models/authentication_model.dart';
 
 class PostLogin extends PostRequest<AuthenticationModel> {
+  PostLogin({required this.email, required this.password});
   final String email;
   final String password;
 
-  PostLogin({required this.email, required this.password});
-
   @override
-  Map<String, dynamic> get body => {"email": email, "password": password};
+  Map<String, dynamic> get body =>
+      <String, dynamic>{'email': email, 'password': password};
 
   @override
   AuthenticationModel builder(Map<String, dynamic> json) =>

@@ -1,8 +1,7 @@
-import "package:flutter/material.dart";
-
-import "hypertools.dart";
-import "global/messenger.dart";
-import "global/navigation.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/global/navigation.dart';
+import 'package:hyper_tools/hypertools.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,8 +1,7 @@
-import "package:flutter/material.dart";
-
-import "../../components/layouts/authentication_layout_desktop.dart";
-import "../../extensions/num_extension.dart";
-import "landing_page.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/components/layouts/authentication_layout_desktop.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/pages/landing/landing_page.dart';
 
 class LandingPageDesktop extends LandingPage {
   const LandingPageDesktop({super.key});
@@ -13,7 +12,7 @@ class LandingPageDesktop extends LandingPage {
         body: AuthenticationLayoutDesktop(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               textTitle(context),
               64.ph,
               textBody(context),

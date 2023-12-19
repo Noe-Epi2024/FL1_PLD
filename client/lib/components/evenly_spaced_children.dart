@@ -1,9 +1,8 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
 class EvenlySpacedChildren extends StatelessWidget {
   const EvenlySpacedChildren({
-    super.key,
-    required this.children,
+    required this.children, super.key,
     this.axis = Axis.horizontal,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.crossAxisAlignment = CrossAxisAlignment.center,
@@ -16,17 +15,18 @@ class EvenlySpacedChildren extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (axis == Axis.horizontal)
+    if (axis == Axis.horizontal) {
       return Row(
         crossAxisAlignment: crossAxisAlignment,
         mainAxisAlignment: mainAxisAlignment,
-        children: children.map((e) => Expanded(child: e, flex: 1)).toList(),
+        children: children.map((Widget e) => Expanded(child: e)).toList(),
       );
+    }
 
     return Column(
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
-      children: children.map((e) => Flexible(child: e, flex: 1)).toList(),
+      children: children.map((Widget e) => Flexible(child: e)).toList(),
     );
   }
 }

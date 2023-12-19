@@ -1,16 +1,15 @@
-import "package:flutter/material.dart";
-
-import "../../resources/resources.dart";
-import "../evenly_spaced_children.dart";
-import "../generators/decoration_generator.dart";
-import "authentication_layout.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/components/evenly_spaced_children.dart';
+import 'package:hyper_tools/components/generators/decoration_generator.dart';
+import 'package:hyper_tools/components/layouts/authentication_layout.dart';
+import 'package:hyper_tools/resources/resources.dart';
 
 class AuthenticationLayoutDesktop extends StatelessWidget
     with AuthenticationLayoutKit {
   AuthenticationLayoutDesktop({super.key, this.child});
 
   final Widget? child;
-  static const double kHeaderHeight = 64.0;
+  static const double kHeaderHeight = 64;
 
   Widget header(BuildContext context, {bool border = true}) => Container(
         height: kHeaderHeight,
@@ -29,17 +28,17 @@ class AuthenticationLayoutDesktop extends StatelessWidget
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+            children: <Widget>[
               DecorationGenerator.logo(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
+                children: <Widget>[
+                  SizedBox(
                     height: 36,
                     width: 128,
                     child: registerButton,
                   ),
-                  Container(
+                  SizedBox(
                     height: 36,
                     width: 128,
                     child: connectionButton,
@@ -62,7 +61,7 @@ class AuthenticationLayoutDesktop extends StatelessWidget
 
   @override
   Widget build(BuildContext context) => ListView(
-        children: [
+        children: <Widget>[
           header(context),
           ConstrainedBox(
             constraints: BoxConstraints(
@@ -70,7 +69,7 @@ class AuthenticationLayoutDesktop extends StatelessWidget
             ),
             child: IntrinsicHeight(
               child: EvenlySpacedChildren(
-                children: [
+                children: <Widget>[
                   _bodyLeft,
                   Resources.illustration(),
                 ],

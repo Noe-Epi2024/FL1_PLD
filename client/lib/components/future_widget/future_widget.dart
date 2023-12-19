@@ -1,8 +1,8 @@
-import "dart:async";
-import "package:async/async.dart";
-import "package:flutter/material.dart";
+import 'dart:async';
+import 'package:async/async.dart';
+import 'package:flutter/material.dart';
 
-part "future_widget_controller.dart";
+part 'future_widget_controller.dart';
 
 class FutureWidget<T> extends StatefulWidget {
   /// Generic wrapper of [FutureBuilder] to provide more flexibility.
@@ -13,9 +13,9 @@ class FutureWidget<T> extends StatefulWidget {
   /// A [FutureWidgetController] can be assigned to a [FutureWidget] to allow external manipulation such as refreshing the [FutureWidget], aka invoking [future] again.
   /// Refreshing [FutureWidget] will start its whole life cycle from the beginning.
   const FutureWidget({
-    super.key,
     required this.future,
     required this.widget,
+    super.key,
     this.errorWidget,
     this.loader,
     this.controller,
@@ -36,7 +36,7 @@ class FutureWidget<T> extends StatefulWidget {
   final Widget? loader;
 
   /// Allows external manupulation of a [FutureWidget] such as [refresh]ing it.
-  final FutureWidgetController? controller;
+  final FutureWidgetController<T>? controller;
 
   /// Duration to wait before the operation timeouts.
   final Duration timeLimit;
@@ -77,24 +77,24 @@ class _FutureWidgetState<T> extends State<FutureWidget<T>> {
   }
 
   /// Initializes the state operation.
-  void _initialize() {
+  Future<void> _initialize() async {
     // initializes the Completer that handles the content of page built
     _completer = Completer<T>();
 
     // initializes the CancelableOperation and makes it trigger _onSuccess and _onError if applicable
-    _cancelableOperation = CancelableOperation.fromFuture(widget.future());
+    _cancelableOperation = CancelableOperation<T>.fromFuture(widget.future());
     _cancelableOperation.then(_onSuccess, onError: _onError);
 
     // initializes the timeout Timer
     _timer = Timer(
       widget.timeLimit,
-      () => _cancel(reason: "Timeout after ${widget.timeLimit}"),
+      () async => _cancel(reason: 'Timeout after ${widget.timeLimit}'),
     );
   }
 
   /// Called when the operation is canceled, ie when the widget is disposed or timeouts.
-  void _cancel({String reason = "Cancel"}) {
-    if (!_cancelableOperation.isCanceled) _cancelableOperation.cancel();
+  Future<void> _cancel({String reason = 'Cancel'}) async {
+    if (!_cancelableOperation.isCanceled) await _cancelableOperation.cancel();
     if (_timer.isActive) _timer.cancel();
     if (!_completer.isCompleted) _completer.completeError(reason);
   }
@@ -103,7 +103,7 @@ class _FutureWidgetState<T> extends State<FutureWidget<T>> {
   Widget _error(String error) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             const Icon(Icons.error),
             Text(error),
             if (widget.allowRefresh)
@@ -131,20 +131,21 @@ class _FutureWidgetState<T> extends State<FutureWidget<T>> {
 
   @override
   void dispose() {
-    _cancel();
+    unawaited(_cancel());
     super.dispose();
   }
 
   @override
   void initState() {
-    super.initState();
     if (widget.controller != null) widget.controller!._state = this;
-    _initialize();
+    unawaited(_initialize());
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) => FutureBuilder<T>(
         future: _completer.future,
-        builder: (context, snapshot) => _buildState(snapshot),
+        builder: (BuildContext context, AsyncSnapshot<T> snapshot) =>
+            _buildState(snapshot),
       );
 }

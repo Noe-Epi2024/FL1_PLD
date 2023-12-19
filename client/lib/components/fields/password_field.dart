@@ -1,11 +1,10 @@
-import "package:flutter/material.dart";
-
-import "../../helpers/validator_helpers.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/helpers/validator_helpers.dart';
 
 class PasswordField extends StatefulWidget {
   const PasswordField({
-    super.key,
     required this.controller,
+    super.key,
     this.validator,
     this.label,
   });
@@ -25,12 +24,11 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) => TextFormField(
-        maxLines: 1,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: widget.controller,
         obscureText: _obscureText,
         decoration: InputDecoration(
-          label: Text(widget.label ?? "Entrez votre mot de passe"),
+          label: Text(widget.label ?? 'Entrez votre mot de passe'),
           prefixIcon: const Icon(Icons.key),
           suffixIcon: TextButton(
             onPressed: _toggleObscureText,
@@ -46,9 +44,9 @@ class _PasswordFieldState extends State<PasswordField> {
           ),
         ),
         validator: widget.validator ??
-            (value) => ValidatorHelper.isNullOrEmptyValidator(
+            (String? value) => ValidatorHelper.isNullOrEmptyValidator(
                   value,
-                  "Veuillez entrer votre mot de passe",
+                  'Veuillez entrer votre mot de passe',
                 ),
       );
 }

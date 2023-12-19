@@ -1,6 +1,6 @@
-import "../../../models/projects_model.dart";
-import "../../routes.dart";
-import "../get_request.dart";
+import 'package:hyper_tools/http/requests/get_request.dart';
+import 'package:hyper_tools/http/routes.dart';
+import 'package:hyper_tools/models/projects_model.dart';
 
 class GetProjects extends GetRequest<ProjectsModel> {
   @override

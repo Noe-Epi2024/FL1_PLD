@@ -1,9 +1,8 @@
-import "package:flutter/material.dart";
-import "package:provider/provider.dart";
-
-import "../../components/layouts/authentication_layout_mobile.dart";
-import "login_page.dart";
-import "login_provider.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/components/layouts/authentication_layout_mobile.dart';
+import 'package:hyper_tools/pages/login/login_page.dart';
+import 'package:hyper_tools/pages/login/login_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPageMobile extends LoginPage {
   LoginPageMobile({super.key});

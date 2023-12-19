@@ -1,19 +1,18 @@
-import "package:flutter/material.dart";
-
-import "../../global/navigation.dart";
-import "../../pages/login/login_page.dart";
-import "../../pages/register/register_page.dart";
+import 'package:flutter/material.dart';
+import 'package:hyper_tools/global/navigation.dart';
+import 'package:hyper_tools/pages/login/login_page.dart';
+import 'package:hyper_tools/pages/register/register_page.dart';
 
 mixin AuthenticationLayoutKit {
   @protected
   Widget get registerButton => ElevatedButton(
-        onPressed: () => Navigation.push(RegisterPage()),
-        child: const Text("Inscription"),
+        onPressed: () async => Navigation.push(RegisterPage()),
+        child: const Text('Inscription'),
       );
 
   @protected
   Widget get connectionButton => TextButton(
-        onPressed: () => Navigation.push(LoginPage()),
-        child: const Text("Connexion"),
+        onPressed: () async => Navigation.push(LoginPage()),
+        child: const Text('Connexion'),
       );
 }
