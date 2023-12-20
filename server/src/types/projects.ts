@@ -13,6 +13,7 @@ type Projects = {
     name: string;
     membersCount: number;
     role: string;
+    progress: number | null;
 }
 
 type ProjectById = {
@@ -25,7 +26,7 @@ type ProjectById = {
         name: string;
         startDate: Date;
         endDate: Date;
-        progress: number;
+        progress: number | null;
     }>;
 }
 

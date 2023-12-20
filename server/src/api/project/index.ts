@@ -39,7 +39,7 @@ async function getProject(req: Request, res: Response) {
                     if (user) {
                         const totalSubtasks = task.subtasks.length;
                         const completedSubtasks = task.subtasks.filter(subtask => subtask.isDone).length;
-                        const progress = totalSubtasks > 0 ? Math.ceil((completedSubtasks / totalSubtasks) * 100) : 0;
+                        const progress = totalSubtasks > 0 ? Math.ceil((completedSubtasks / totalSubtasks) * 100) : null;
 
                         return {
                             id: task.id,
@@ -47,7 +47,7 @@ async function getProject(req: Request, res: Response) {
                             name: task.name,
                             startDate: task.startDate,
                             endDate: task.endDate,
-                            progress: progress
+                            progress: progress || null
                         };
                     } else {
                         throw new Error(`User not found for task with ID: ${task.id}`);
@@ -73,6 +73,24 @@ async function getProject(req: Request, res: Response) {
     }
 }
 
+function calculateProgress(tasks: any[]) {
+    let tasksWithSubtasks = tasks.filter(task => task.subtasks.length > 0);
+    let totalSubtasks = 0;
+    let completedSubtasks = 0;
+
+    tasksWithSubtasks.forEach(task => {
+        task.subtasks.forEach((subtask: { isDone: boolean }) => {
+            totalSubtasks++;
+            if (subtask.isDone) {
+                completedSubtasks++;
+            }
+        });
+    });
+
+    const progress = totalSubtasks > 0 ? Math.ceil((completedSubtasks / totalSubtasks) * 100) : null;
+    return progress;
+}
+
 async function getProjects(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
@@ -87,14 +105,18 @@ async function getProjects(req: Request, res: Response) {
 
 
         const response: Projects[] = projects.map(project => {
+            const progress = calculateProgress(project.tasks);
+            // const progressNumber = project.tasks.length > 0 ? Math.ceil((project.tasks[0].subtasks.filter(subtask => subtask.isDone).length / project.tasks[0].subtasks.length) * 100) : 0;
             const userInProject = project.members.find(member => String(member.userId) === userId.userId);
             return {
                 id: project._id,
                 name: project.name,
                 membersCount: project.members.length,
-                role: userInProject ? userInProject.role : ''
+                role: userInProject ? userInProject.role : '',
+                progress: progress
             };
         });
+
 
         return res.status(200).send({ success: true, message: "Projects found", data: { projects: response } });
     }
