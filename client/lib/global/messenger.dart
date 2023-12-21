@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class Messenger {
   static late GlobalKey<ScaffoldMessengerState> _messengerKey;
 
-  static GlobalKey<ScaffoldMessengerState> setMessengerKey(GlobalKey<ScaffoldMessengerState> key) =>
+  static GlobalKey<ScaffoldMessengerState> setMessengerKey(
+    GlobalKey<ScaffoldMessengerState> key,
+  ) =>
       _messengerKey = key;
 
   static void showSnackBarError(String content) {

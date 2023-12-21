@@ -1,15 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:hyper_tools/components/provider_base.dart';
 
-class RegisterProvider with ChangeNotifier {
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-  set isLoading(bool value) {
-    _isLoading = value;
-    notifyListeners();
-  }
+class RegisterProvider extends ProviderBase {
+  bool _shouldStayLoggedIn = true;
 
-  bool _shouldStayLoggedIn = false;
   bool get shouldStayLoggedIn => _shouldStayLoggedIn;
+
   set shouldStayLoggedIn(bool value) {
     _shouldStayLoggedIn = value;
     notifyListeners();

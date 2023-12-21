@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
 
 class ThemeGenerator {
   static const double kBorderRadius = 32;
 
+  static const MaterialColor _monochromaticColor =
+      MaterialColor(0xFF007ea7, <int, Color>{
+    300: Color(0xFF80ced7),
+    500: Color(0xFF007ea7),
+    700: Color(0xFF003249),
+  });
+
+  static final Color _borderColor = Colors.grey.shade300;
+
+  static final Color _hintColor = Colors.grey.shade500;
+
+  static final Color _labelColor = Colors.grey.shade600;
+
   static CheckboxThemeData get _checkBoxTheme => CheckboxThemeData(
+        side: BorderSide(color: _borderColor),
         fillColor: MaterialStateProperty.resolveWith(
           (Set<MaterialState> states) {
             if (states.contains(MaterialState.selected)) {
@@ -15,16 +30,17 @@ class ThemeGenerator {
         ),
       );
 
-  static TextTheme get _textTheme => GoogleFonts.openSansTextTheme();
+  static TextTheme get _textTheme => GoogleFonts.poppinsTextTheme();
 
-  static ColorScheme get _colorScheme => const ColorScheme(
-        background: Color(0xFFF2F1F7),
+  static ColorScheme get _colorScheme => ColorScheme(
+        background: const Color(0xFFF8F8F8),
+        // background: Colors.white,
         onBackground: Colors.black,
-        primary: Color(0xFFFF7F11),
+        primary: _monochromaticColor.shade500,
         onPrimary: Colors.white,
-        secondary: Color(0xFF1191FF),
+        secondary: _monochromaticColor.shade300,
         onSecondary: Colors.white,
-        tertiary: Color(0xFFFF973C),
+        tertiary: _monochromaticColor.shade700,
         onTertiary: Colors.white,
         surface: Colors.white,
         onSurface: Colors.black,
@@ -36,9 +52,11 @@ class ThemeGenerator {
   static InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        hintStyle: TextStyle(color: Colors.grey.shade600),
+        contentPadding: 16.a,
+        hintStyle: TextStyle(color: _hintColor),
+        labelStyle: TextStyle(color: _labelColor, letterSpacing: 0),
+        prefixIconColor: _hintColor,
+        suffixIconColor: _hintColor,
         floatingLabelStyle:
             MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.error)) {
@@ -47,28 +65,27 @@ class ThemeGenerator {
           if (states.contains(MaterialState.focused)) {
             return TextStyle(color: _colorScheme.primary);
           }
-          return TextStyle(color: Colors.grey.shade600);
+          return TextStyle(color: _labelColor);
         }),
-        labelStyle: TextStyle(color: Colors.grey.shade500, letterSpacing: 0),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
+          borderSide: BorderSide(color: _borderColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: BorderSide(color: _colorScheme.primary, width: 0.5),
+          borderSide: BorderSide(color: _colorScheme.primary),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: const BorderSide(color: Colors.grey, width: 0.5),
+          borderSide: BorderSide(color: _borderColor),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: const BorderSide(color: Colors.red, width: 0.5),
+          borderSide: const BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: const BorderSide(color: Colors.red, width: 0.5),
+          borderSide: const BorderSide(color: Colors.red),
         ),
       );
 
@@ -111,9 +128,10 @@ class ThemeGenerator {
   static AppBarTheme get _appBarTheme => AppBarTheme(
         surfaceTintColor: Colors.transparent,
         color: _colorScheme.surface,
-        shape:
-            Border(bottom: BorderSide(width: .5, color: _dividerTheme.color!)),
-        shadowColor: Colors.transparent,
+        foregroundColor: _colorScheme.onSurface,
+        elevation: 0,
+        titleTextStyle: const TextStyle(fontSize: 20),
+        shape: Border(bottom: BorderSide(color: _dividerTheme.color!)),
       );
 
   static ElevatedButtonThemeData get _elevatedButtonTheme =>
@@ -162,10 +180,24 @@ class ThemeGenerator {
       );
 
   static DividerThemeData get _dividerTheme =>
-      DividerThemeData(color: Colors.grey.shade500);
+      DividerThemeData(color: _borderColor);
+
+  static CardTheme get _cardTheme => CardTheme(
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        color: _colorScheme.surface,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: _borderColor),
+          borderRadius: BorderRadius.circular(kBorderRadius / 2),
+        ),
+      );
 
   static ThemeData generate() => ThemeData(
+        cardTheme: _cardTheme,
+        hintColor: _hintColor,
         dividerTheme: _dividerTheme,
+        dividerColor: _borderColor,
         colorScheme: _colorScheme,
         textTheme: _textTheme,
         checkboxTheme: _checkBoxTheme,

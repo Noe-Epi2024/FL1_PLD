@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/layouts/authentication_layout_mobile.dart';
+import 'package:hyper_tools/components/layouts/authentication/authentication_layout_mobile.dart';
 import 'package:hyper_tools/pages/login/login_page.dart';
 import 'package:hyper_tools/pages/login/login_provider.dart';
 import 'package:provider/provider.dart';

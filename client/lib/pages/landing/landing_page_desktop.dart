@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/layouts/authentication_layout_desktop.dart';
+import 'package:hyper_tools/components/layouts/authentication/authentication_layout_desktop.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/pages/landing/landing_page.dart';
 

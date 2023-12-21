@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/layouts/authentication_layout.dart';
-import 'package:hyper_tools/components/layouts/authentication_layout_mobile.dart';
+import 'package:hyper_tools/components/layouts/authentication/authentication_layout.dart';
+import 'package:hyper_tools/components/layouts/authentication/authentication_layout_mobile.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/pages/landing/landing_page.dart';
 
@@ -16,7 +16,7 @@ class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
             children: <Widget>[
               textTitle(context, style: Theme.of(context).textTheme.titleLarge),
               64.ph,
-              SizedBox(height: 48, child: registerButton),
+              SizedBox(height: 56, child: registerButton),
               8.ph,
               connectionButton,
             ],

@@ -11,6 +11,7 @@ class Resources {
 
   static Image illustration({double? width, double? height}) => Image.asset(
         'assets/images/illustration.png',
+        fit: BoxFit.cover,
         width: width,
         height: height,
       );

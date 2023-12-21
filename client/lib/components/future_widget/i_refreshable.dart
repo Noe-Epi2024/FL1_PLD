@@ -1,0 +1,3 @@
+class IRefreshable {
+  void refresh() {}
+}

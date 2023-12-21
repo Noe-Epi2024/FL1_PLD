@@ -1,3 +1,5 @@
+import 'package:hyper_tools/models/project_preview_model.dart';
+
 class ProjectsModel {
   ProjectsModel({required this.projects});
 
@@ -7,25 +9,4 @@ class ProjectsModel {
             .toList(),
       );
   final List<ProjectPreviewModel> projects;
-}
-
-class ProjectPreviewModel {
-  ProjectPreviewModel({
-    required this.id,
-    required this.name,
-    required this.membersCount,
-    required this.role,
-  });
-
-  factory ProjectPreviewModel.fromJson(Map<String, dynamic> json) =>
-      ProjectPreviewModel(
-        id: json['id'],
-        name: json['name'],
-        membersCount: json['membersCount'],
-        role: json['role'],
-      );
-  final String id;
-  final String name;
-  final int membersCount;
-  final String role;
 }

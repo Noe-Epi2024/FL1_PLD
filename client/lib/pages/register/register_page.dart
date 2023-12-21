@@ -4,6 +4,7 @@ import 'package:hyper_tools/components/fields/password_field.dart';
 import 'package:hyper_tools/components/texts/headline_text.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/consts/consts.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/helpers/validator_helpers.dart';
@@ -58,56 +59,42 @@ class RegisterPage extends StatelessWidget {
   }
 
   @protected
-  Widget get emailField => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: TextFormField(
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          controller: _emailController,
-          decoration: const InputDecoration(
-            label: Text('Entrez votre adresse email'),
-            prefixIcon: Icon(Icons.person),
-          ),
-          validator: (String? value) => ValidatorHelper.isNullOrEmptyValidator(
-            value,
-            'Veuillez entrer votre adresse email',
-          ),
+  Widget get emailField => TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        controller: _emailController,
+        decoration: const InputDecoration(
+          label: Text('Entrez votre adresse email'),
+          prefixIcon: Icon(Icons.person),
+        ),
+        validator: (String? value) => ValidatorHelper.isNullOrEmptyValidator(
+          value,
+          'Veuillez entrer votre adresse email',
         ),
       );
 
   @protected
-  Widget get passwordField => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: PasswordField(
-          controller: _passwordController,
-        ),
+  Widget get passwordField => PasswordField(controller: _passwordController);
+
+  @protected
+  Widget get confirmPasswordField => PasswordField(
+        controller: _confirmPasswordController,
+        label: 'Confirmez votre mot de passe',
+        validator: (String? value) =>
+            ValidatorHelper.isNullOrEmptyValidator(
+              value,
+              'Veuillez confirmer votre mot de passe',
+            ) ??
+            ValidatorHelper.matchValidator(
+              value,
+              _passwordController.text,
+              'Le mot de passe ne correspond pas',
+            ),
       );
 
   @protected
-  Widget get confirmPasswordField => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: PasswordField(
-          controller: _confirmPasswordController,
-          label: 'Confirmez votre mot de passe',
-          validator: (String? value) =>
-              ValidatorHelper.isNullOrEmptyValidator(
-                value,
-                'Veuillez confirmer votre mot de passe',
-              ) ??
-              ValidatorHelper.matchValidator(
-                value,
-                _passwordController.text,
-                'Le mot de passe ne correspond pas',
-              ),
-        ),
-      );
-
-  @protected
-  Widget registerButton(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        child: ElevatedButton(
-          onPressed: () async => _onClickSubmit(context),
-          child: const Text('Inscription'),
-        ),
+  Widget registerButton(BuildContext context) => ElevatedButton(
+        onPressed: () async => _onClickSubmit(context),
+        child: const Text('Inscription'),
       );
 
   @protected
@@ -136,30 +123,22 @@ class RegisterPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const HeadlineText(
-              'Inscription à HyperTools',
-              textAlign: TextAlign.center,
-              padding: EdgeInsets.only(bottom: 16),
-            ),
-            const TitleText(
-              "Nom d'utilisateur",
-              padding: EdgeInsets.symmetric(vertical: 8),
-            ),
+            const HeadlineText('Inscription à HyperTools'),
+            32.ph,
+            const TitleText('Adresse email'),
+            8.ph,
             emailField,
-            const TitleText(
-              'Mot de passe',
-              padding: EdgeInsets.symmetric(vertical: 8),
-            ),
+            16.ph,
+            const TitleText('Mot de passe'),
+            8.ph,
             passwordField,
+            8.ph,
             confirmPasswordField,
             stayLoggedIn(context),
-            SizedBox(height: 64, child: registerButton(context)),
-            Center(
-              child: Text(
-                'ou',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ),
+            8.ph,
+            SizedBox(height: 56, child: registerButton(context)),
+            8.ph,
+            const Center(child: Text('ou')),
             connect,
           ],
         ),

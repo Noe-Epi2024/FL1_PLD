@@ -9,4 +9,6 @@ class LocalStorage {
       _storage.write(key: key, value: value);
 
   static Future<String?> read(String key) async => _storage.read(key: key);
+
+  static Future<void> clear(String key) async => _storage.delete(key: key);
 }

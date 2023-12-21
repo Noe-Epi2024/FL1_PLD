@@ -60,6 +60,8 @@ class LoginPage extends StatelessWidget {
   Widget get emailField => TextFormField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: _emailController,
+        keyboardType: TextInputType.emailAddress,
+        textInputAction: TextInputAction.next,
         decoration: const InputDecoration(
           label: Text('Entrez votre adresse email'),
           prefixIcon: Icon(Icons.person),
@@ -106,10 +108,7 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const HeadlineText(
-              'Connexion à HyperTools',
-              textAlign: TextAlign.center,
-            ),
+            const HeadlineText('Connexion à HyperTools'),
             32.ph,
             const TitleText('Adresse email'),
             8.ph,
@@ -120,7 +119,7 @@ class LoginPage extends StatelessWidget {
             passwordField,
             stayLoggedInCheckbox(context),
             8.ph,
-            SizedBox(height: 64, child: loginButton(context)),
+            SizedBox(height: 56, child: loginButton(context)),
             8.ph,
             const Center(child: Text('ou')),
             createAccountButton,

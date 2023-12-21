@@ -4,7 +4,7 @@ class HeadlineText extends StatelessWidget {
   const HeadlineText(
     this.text, {
     super.key,
-    this.textAlign = TextAlign.start,
+    this.textAlign = TextAlign.center,
     this.padding,
   });
   final String text;

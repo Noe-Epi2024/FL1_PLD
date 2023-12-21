@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/layouts/authentication_layout_mobile.dart';
+import 'package:hyper_tools/components/layouts/authentication/authentication_layout_mobile.dart';
 import 'package:hyper_tools/pages/register/register_page.dart';
 
 class RegisterPageMobile extends RegisterPage {

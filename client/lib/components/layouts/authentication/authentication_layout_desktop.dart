@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/evenly_spaced_children.dart';
 import 'package:hyper_tools/components/generators/decoration_generator.dart';
-import 'package:hyper_tools/components/layouts/authentication_layout.dart';
+import 'package:hyper_tools/components/layouts/authentication/authentication_layout.dart';
 import 'package:hyper_tools/resources/resources.dart';
 
 class AuthenticationLayoutDesktop extends StatelessWidget
