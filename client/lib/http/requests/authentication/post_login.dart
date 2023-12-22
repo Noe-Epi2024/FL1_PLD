@@ -1,6 +1,6 @@
 import 'package:hyper_tools/helpers/route_helper.dart';
 import 'package:hyper_tools/http/requests/post_request.dart';
-import 'package:hyper_tools/models/authentication_model.dart';
+import 'package:hyper_tools/models/authentication/authentication_model.dart';
 
 class PostLogin extends PostRequest<AuthenticationModel> {
   PostLogin({required this.email, required this.password});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
-import 'package:hyper_tools/models/project_preview_model.dart';
-import 'package:hyper_tools/models/project_role.dart';
+import 'package:hyper_tools/models/project/project_preview_model.dart';
+import 'package:hyper_tools/models/project/project_role.dart';
 import 'package:hyper_tools/theme/theme.dart';
 
 class ProjectPreview extends StatelessWidget {

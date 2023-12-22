@@ -11,5 +11,5 @@ abstract class DeleteRequest<T> extends HttpRequest<T> {
   T builder(Map<String, dynamic> json);
 
   @protected
-  Map<String, dynamic> get body;
+  Map<String, dynamic>? get body;
 }

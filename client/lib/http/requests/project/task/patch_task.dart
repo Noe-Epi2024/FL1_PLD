@@ -35,7 +35,7 @@ class PostTask extends PostRequest<String> {
       SuccessModel.fromJson(json).data['id'];
 
   @override
-  bool get private => throw UnimplementedError();
+  bool get private => true;
 
   @override
   Uri get uri => RouteHelper.buildUri('project/$projectId/task/$taskId');

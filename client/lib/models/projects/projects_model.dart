@@ -1,4 +1,4 @@
-import 'package:hyper_tools/models/project_preview_model.dart';
+import 'package:hyper_tools/models/project/project_preview_model.dart';
 
 class ProjectsModel {
   ProjectsModel({required this.projects});

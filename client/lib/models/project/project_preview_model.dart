@@ -1,4 +1,4 @@
-import 'package:hyper_tools/models/project_role.dart';
+import 'package:hyper_tools/models/project/project_role.dart';
 
 class ProjectPreviewModel {
   ProjectPreviewModel({

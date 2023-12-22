@@ -3,8 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
-import 'package:hyper_tools/models/project_preview_model.dart';
-import 'package:hyper_tools/models/project_role.dart';
+import 'package:hyper_tools/models/project/project_preview_model.dart';
+import 'package:hyper_tools/models/project/project_role.dart';
 import 'package:hyper_tools/pages/home/home_page_provider.dart';
 import 'package:provider/provider.dart';
 

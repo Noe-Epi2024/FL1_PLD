@@ -1,5 +1,5 @@
-import 'package:hyper_tools/models/project_role.dart';
-import 'package:hyper_tools/models/task_preview_model.dart';
+import 'package:hyper_tools/models/project/project_role.dart';
+import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 
 class ProjectModel {
   ProjectModel({

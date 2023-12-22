@@ -1,5 +1,6 @@
 import 'package:hyper_tools/helpers/route_helper.dart';
 import 'package:hyper_tools/http/requests/post_request.dart';
+import 'package:hyper_tools/models/success_model.dart';
 
 class PostTask extends PostRequest<String> {
   PostTask({
@@ -28,12 +29,11 @@ class PostTask extends PostRequest<String> {
       };
 
   @override
-  String builder(Map<String, dynamic> json) {
-    throw UnimplementedError();
-  }
+  String builder(Map<String, dynamic> json) =>
+      SuccessModel.fromJson(json).data['id'];
 
   @override
-  bool get private => throw UnimplementedError();
+  bool get private => true;
 
   @override
   Uri get uri => RouteHelper.buildUri('project/$projectId/task');
