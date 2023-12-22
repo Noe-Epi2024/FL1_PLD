@@ -5,7 +5,7 @@ class TaskPreviewModel {
     required this.ownerName,
     required this.startDate,
     required this.endDate,
-    required this.progress,
+    this.progress,
   });
 
   factory TaskPreviewModel.fromJson(Map<String, dynamic> json) =>
@@ -23,5 +23,5 @@ class TaskPreviewModel {
   final String ownerName;
   final DateTime startDate;
   final DateTime endDate;
-  final int progress;
+  final int? progress;
 }

@@ -19,7 +19,7 @@ class ProviderResolver<T extends ProviderBase> extends StatefulWidget {
   });
 
   final Widget Function(BuildContext) builder;
-  final Future<dynamic> Function(BuildContext)? future;
+  final Future<dynamic> Function()? future;
   final Widget? loader;
 
   @override
@@ -30,7 +30,7 @@ class _ProviderResolverState<T extends ProviderBase>
     extends State<ProviderResolver<T>> {
   @override
   void initState() {
-    if (widget.future != null) unawaited(widget.future!(context));
+    if (widget.future != null) unawaited(widget.future!());
     super.initState();
   }
 

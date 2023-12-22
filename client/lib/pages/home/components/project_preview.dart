@@ -3,6 +3,7 @@ import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
+import 'package:hyper_tools/pages/project/project_page.dart';
 import 'package:hyper_tools/theme/theme.dart';
 
 class ProjectPreview extends StatelessWidget {
@@ -10,20 +11,28 @@ class ProjectPreview extends StatelessWidget {
 
   final ProjectPreviewModel projectPreviewModel;
 
+  Future<void> _onTapPreview(BuildContext context) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<ProjectPage>(
+        builder: (BuildContext context) => ProjectPage(projectPreviewModel.id),
+      ),
+    );
+  }
+
   Widget _roleIcon(BuildContext context) => switch (projectPreviewModel.role) {
         ProjectRole.owner => Icon(
             Boxicons.bx_crown,
-            size: 20,
+            size: 16,
             color: Theme.of(context).hintColor,
           ),
         ProjectRole.writer => Icon(
             Boxicons.bx_edit,
-            size: 20,
+            size: 16,
             color: Theme.of(context).hintColor,
           ),
         ProjectRole.reader => Icon(
             Icons.remove_red_eye_outlined,
-            size: 20,
+            size: 16,
             color: Theme.of(context).hintColor,
           )
       };
@@ -70,7 +79,7 @@ class ProjectPreview extends StatelessWidget {
               value: projectPreviewModel.progress!.toDouble() / 100,
             ),
           ),
-          16.pw,
+          16.width,
           Text(
             '${projectPreviewModel.progress}%',
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -82,38 +91,41 @@ class ProjectPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        child: Padding(
-          padding: 16.a,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _picture(context),
-                    16.pw,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          _name(),
-                          _members(context),
-                          8.ph,
-                          if (projectPreviewModel.progress != null)
-                            _progressBar(context)
-                          else
-                            _noTaskYet(),
-                        ],
+        margin: 4.vertical,
+        child: InkWell(
+          onTap: () async => _onTapPreview(context),
+          child: Padding(
+            padding: 16.all,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _picture(context),
+                      16.width,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            _name(),
+                            _members(context),
+                            8.height,
+                            if (projectPreviewModel.progress != null)
+                              _progressBar(context)
+                            else
+                              _noTaskYet(),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              16.pw,
-              _roleIcon(context),
-            ],
+                16.width,
+                _roleIcon(context),
+              ],
+            ),
           ),
         ),
       );

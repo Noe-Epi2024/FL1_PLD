@@ -30,7 +30,7 @@ class ThemeGenerator {
         ),
       );
 
-  static TextTheme get _textTheme => GoogleFonts.poppinsTextTheme();
+  static TextTheme get _textTheme => GoogleFonts.latoTextTheme();
 
   static ColorScheme get _colorScheme => ColorScheme(
         background: const Color(0xFFF8F8F8),
@@ -52,7 +52,7 @@ class ThemeGenerator {
   static InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        contentPadding: 16.a,
+        contentPadding: 16.all,
         hintStyle: TextStyle(color: _hintColor),
         labelStyle: TextStyle(color: _labelColor, letterSpacing: 0),
         prefixIconColor: _hintColor,
