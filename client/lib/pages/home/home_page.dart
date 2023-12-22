@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
 class _HomePageBuilder extends HookWidget {
   const _HomePageBuilder();
 
-  Future<ProjectsModel> _getProjects(BuildContext context) async {
+  Future<void> _loadProjects(BuildContext context) async {
     final HomePageProvider provider = context.read<HomePageProvider>();
 
     try {
@@ -40,14 +40,10 @@ class _HomePageBuilder extends HookWidget {
       provider
         ..projects = projects
         ..isLoading = false;
-
-      return projects;
     } on ErrorModel catch (e) {
       provider
         ..error = e
         ..isLoading = false;
-
-      return Future<ProjectsModel>.error(e);
     }
   }
 
@@ -82,9 +78,9 @@ class _HomePageBuilder extends HookWidget {
   List<Widget> _getPreviews(BuildContext context) {
     final HomePageProvider provider = context.watch<HomePageProvider>();
     final String filter = provider.filter;
-    final ProjectsModel? projects = provider.projects;
+    final ProjectsModel projects = provider.projects!;
 
-    if (projects == null || projects.projects.isEmpty) {
+    if (projects.projects.isEmpty) {
       return <Widget>[];
     }
 
@@ -154,9 +150,9 @@ class _HomePageBuilder extends HookWidget {
             const EdgeInsets.only(top: 32, bottom: 100, left: 16, right: 16),
         children: <Widget>[
           _welcomeText(context),
-          32.ph,
+          32.height,
           _searchBar(context, controller),
-          8.ph,
+          8.height,
           ..._getPreviews(context),
         ],
       );
@@ -171,7 +167,7 @@ class _HomePageBuilder extends HookWidget {
       appBar: _appBar(context),
       floatingActionButton: _floatingActionButton(context),
       body: ProviderResolver<HomePageProvider>.future(
-        future: _getProjects,
+        future: () async => _loadProjects(context),
         builder: (BuildContext builderContext) =>
             _builder(builderContext, controller),
       ),

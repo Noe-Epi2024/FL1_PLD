@@ -14,9 +14,9 @@ class LandingPageDesktop extends LandingPage {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               textTitle(context),
-              64.ph,
+              64.height,
               textBody(context),
-              64.ph,
+              64.height,
               SizedBox(width: 256, height: 56, child: letsGoButton),
             ],
           ),

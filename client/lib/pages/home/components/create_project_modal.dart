@@ -61,17 +61,17 @@ class CreateProjectModal extends HookWidget {
 
     return Dialog(
       child: Padding(
-        padding: 32.a,
+        padding: 32.all,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             _title,
-            16.ph,
+            16.height,
             _description,
-            32.ph,
+            32.height,
             _nameField(controller),
-            16.ph,
+            16.height,
             EvenlySizedChildren(
               children: <Widget>[
                 _cancelButton(context),
