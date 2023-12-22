@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/consts/consts.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
-import 'package:hyper_tools/http/requests/projects/projects_requests.dart';
+import 'package:hyper_tools/http/requests/projects/get_projects.dart';
 import 'package:hyper_tools/local_storage/local_storage.dart';
 import 'package:hyper_tools/models/error_model.dart';
-import 'package:hyper_tools/models/project_preview_model.dart';
-import 'package:hyper_tools/models/projects_model.dart';
+import 'package:hyper_tools/models/project/project_preview_model.dart';
+import 'package:hyper_tools/models/projects/projects_model.dart';
+import 'package:hyper_tools/pages/home/components/create_project_modal.dart';
 import 'package:hyper_tools/pages/home/components/project_preview.dart';
 import 'package:hyper_tools/pages/home/home_page_provider.dart';
-import 'package:hyper_tools/pages/home/provider_resolver.dart';
 import 'package:hyper_tools/pages/landing/landing_page.dart';
 import 'package:hyper_tools/resources/resources.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       ChangeNotifierProvider<HomePageProvider>(
-        create: (BuildContext _) => HomePageProvider(),
+        create: (_) => HomePageProvider(),
         child: const _HomePageBuilder(),
       );
 }
@@ -68,6 +69,31 @@ class _HomePageBuilder extends HookWidget {
     return () => controller.removeListener(listener);
   }
 
+  Future<void> _onClickCreateProject(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (_) => ChangeNotifierProvider<HomePageProvider>.value(
+        value: context.read<HomePageProvider>(),
+        builder: (__, ___) => const CreateProjectModal(),
+      ),
+    );
+  }
+
+  List<Widget> _getPreviews(BuildContext context) {
+    final HomePageProvider provider = context.watch<HomePageProvider>();
+    final String filter = provider.filter;
+    final ProjectsModel? projects = provider.projects;
+
+    if (projects == null || projects.projects.isEmpty) {
+      return <Widget>[];
+    }
+
+    return projects.projects
+        .where((ProjectPreviewModel preview) => preview.name.contains(filter))
+        .map(ProjectPreview.new)
+        .toList();
+  }
+
   AppBar _appBar(BuildContext context) => AppBar(
         actions: <Widget>[
           IconButton(
@@ -87,7 +113,7 @@ class _HomePageBuilder extends HookWidget {
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async => _onClickCreateProject(context),
         child: const Icon(Boxicons.bx_plus),
       );
 
@@ -122,29 +148,18 @@ class _HomePageBuilder extends HookWidget {
     );
   }
 
-  Widget _builder(BuildContext context, TextEditingController controller) {
-    final String filter = context.select<HomePageProvider, String>(
-      (HomePageProvider provider) => provider.filter,
-    );
-
-    return ListView(
-      padding: const EdgeInsets.only(top: 32, bottom: 100, left: 16, right: 16),
-      children: <Widget>[
-        _welcomeText(context),
-        32.ph,
-        _searchBar(context, controller),
-        8.ph,
-        ...context
-            .read<HomePageProvider>()
-            .projects!
-            .projects
-            .where(
-              (ProjectPreviewModel element) => element.name.contains(filter),
-            )
-            .map(ProjectPreview.new),
-      ],
-    );
-  }
+  Widget _builder(BuildContext context, TextEditingController controller) =>
+      ListView(
+        padding:
+            const EdgeInsets.only(top: 32, bottom: 100, left: 16, right: 16),
+        children: <Widget>[
+          _welcomeText(context),
+          32.ph,
+          _searchBar(context, controller),
+          8.ph,
+          ..._getPreviews(context),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) {

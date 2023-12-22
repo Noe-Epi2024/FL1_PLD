@@ -193,11 +193,18 @@ class ThemeGenerator {
         ),
       );
 
+  static DialogTheme get _dialogTheme => DialogTheme(
+        backgroundColor: _colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+      );
+
   static ThemeData generate() => ThemeData(
         cardTheme: _cardTheme,
         hintColor: _hintColor,
         dividerTheme: _dividerTheme,
         dividerColor: _borderColor,
+        dialogBackgroundColor: _colorScheme.surface,
+        dialogTheme: _dialogTheme,
         colorScheme: _colorScheme,
         textTheme: _textTheme,
         checkboxTheme: _checkBoxTheme,

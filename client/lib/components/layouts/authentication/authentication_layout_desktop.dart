@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/evenly_spaced_children.dart';
+import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/generators/decoration_generator.dart';
 import 'package:hyper_tools/components/layouts/authentication/authentication_layout.dart';
 import 'package:hyper_tools/resources/resources.dart';
@@ -68,7 +68,7 @@ class AuthenticationLayoutDesktop extends StatelessWidget
               minHeight: MediaQuery.of(context).size.height - kHeaderHeight,
             ),
             child: IntrinsicHeight(
-              child: EvenlySpacedChildren(
+              child: EvenlySizedChildren(
                 children: <Widget>[
                   _bodyLeft,
                   Resources.illustration(),

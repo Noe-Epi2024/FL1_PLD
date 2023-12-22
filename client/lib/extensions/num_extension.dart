@@ -7,9 +7,9 @@ extension EmptyPadding on num {
 }
 
 extension EdgeInsetsExtension on num {
-  EdgeInsetsGeometry get h => EdgeInsets.symmetric(horizontal: toDouble());
-  EdgeInsetsGeometry get v => EdgeInsets.symmetric(vertical: toDouble());
-  EdgeInsetsGeometry get a => EdgeInsets.all(toDouble());
+  EdgeInsets get h => EdgeInsets.symmetric(horizontal: toDouble());
+  EdgeInsets get v => EdgeInsets.symmetric(vertical: toDouble());
+  EdgeInsets get a => EdgeInsets.all(toDouble());
 }
 
 extension WidgetProvider on Widget {
