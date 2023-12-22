@@ -5,6 +5,12 @@ import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
 import { Member } from "../../types/members";
 
+enum eMemberRole {
+    owner = "owner",
+    reader = "reader",
+    writer = "writer"
+}
+
 async function getMembers(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
@@ -69,8 +75,12 @@ async function postMember(req: Request, res: Response) {
             return res.status(400).send({ success: false, message: "No access token or projectId provided" });
         }
 
-        if (!memberId || !memberRole) {
-            return res.status(400).send({ success: false, message: "No userId or role provided" });
+        if (!memberId) {
+            return res.status(400).send({ success: false, message: "No userId provided" });
+        }
+
+        if (memberRole && !Object.values(eMemberRole).includes(memberRole as eMemberRole)) {
+            return res.status(400).send({ success: false, message: "Role must be owner, reader or writer" });
         }
 
         const userId = decodeAccessToken(token) as Token;
@@ -105,7 +115,7 @@ async function postMember(req: Request, res: Response) {
 
         const newMember = {
             userId: memberId,
-            role: memberRole
+            role: memberRole as "owner" | "reader" | "writer"
         };
 
         const newMembers = await ProjectModel.updateOne({ _id: projectId }, { $push: { members: newMember } });
@@ -164,6 +174,10 @@ async function patchMember(req: Request, res: Response) {
 
         if (!newMemberAlreadyInProject) {
             return res.status(409).send({ success: false, message: "Member not in project" });
+        }
+
+        if (!Object.values(eMemberRole).includes(memberRole as eMemberRole)) {
+            return res.status(400).send({ success: false, message: "Role must be owner, reader or writer" });
         }
 
         const memberData = await ProjectModel.updateOne({ _id: projectId, "members.userId": memberId }, { $set: { "members.$.role": memberRole } });
