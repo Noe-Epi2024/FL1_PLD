@@ -106,7 +106,6 @@ async function getProjects(req: Request, res: Response) {
 
         const response: Projects[] = projects.map(project => {
             const progress = calculateProgress(project.tasks);
-            // const progressNumber = project.tasks.length > 0 ? Math.ceil((project.tasks[0].subtasks.filter(subtask => subtask.isDone).length / project.tasks[0].subtasks.length) * 100) : 0;
             const userInProject = project.members.find(member => String(member.userId) === userId.userId);
             return {
                 id: project._id,
@@ -150,7 +149,9 @@ async function postProject(req: Request, res: Response) {
             tasks: []
         });
 
-        return res.status(200).send({ success: true, message: `Project '${name}' created` });
+        console.log(projects._id);
+
+        return res.status(200).send({ success: true, message: `Project '${name}' created`, data: { id: projects._id } });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
