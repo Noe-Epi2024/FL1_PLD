@@ -3,6 +3,7 @@ import { UserModel } from "../../database/schema/users";
 import { Token } from "../../types/token";
 import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
+import { ObjectId } from "mongodb";
 
 async function getTask(req: Request, res: Response) {
     try {
@@ -99,13 +100,15 @@ async function postTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not owner of the project" });
         }
 
+        task._id = new ObjectId();
+
         const newTask = await ProjectModel.updateOne({ _id: projectId }, { $push: { tasks: task } });
 
         if (!newTask || !newTask.modifiedCount) {
             return res.status(400).send({ success: false, message: "Can't add task to the project" });
         }
 
-        return res.status(200).send({ success: true, message: "Task successfully created" });
+        return res.status(200).send({ success: true, message: "Task successfully created", data: { id: task._id } });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
@@ -178,12 +181,14 @@ async function patchTask(req: Request, res: Response) {
         }
 
         if (!data || Object.keys(data).length === 0) {
-            return res.status(409).send({ success: false, message: "No data sent" });
+            return res.status(204).send({ success: true, message: "No content changed" });
         }
 
         if (data.ownerId) {
             try {
-                const newOwner = await UserModel.findOne({ _id: data.ownerId });
+                if (new ObjectId(data.ownerId)) {
+                    const newOwner = await UserModel.findOne({ _id: data.ownerId });
+                }
             } catch (error) {
                 return res.status(409).send({ success: false, message: "User selected for being owner of the task does not exist" });
             }
@@ -259,7 +264,7 @@ async function patchTask(req: Request, res: Response) {
         }
 
         if (taskData.modifiedCount === 0 && taskData.matchedCount !== 0) {
-            return res.status(409).send({ success: false, message: "Task data already up to date" });
+            return res.status(204).send({ success: true, message: "No Content changed" });
         }
 
         return res.status(200).send({ success: true, message: "Task successfully modified" });

@@ -98,7 +98,7 @@ async function getUsers(req: Request, res: Response) {
             users = await UserModel.find({ $and: [{ _id: { $nin: userList } }, { name: { $regex: filter as string, $options: 'i' } }] });
         }
 
-        return res.status(200).send({ success: true, message: "Users successfully retrieved", data: users });
+        return res.status(200).send({ success: true, message: "Users successfully retrieved", data: {users: users} });
     } catch (err) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
