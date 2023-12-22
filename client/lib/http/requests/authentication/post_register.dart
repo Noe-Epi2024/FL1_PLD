@@ -1,5 +1,5 @@
 import 'package:hyper_tools/http/requests/post_request.dart';
-import 'package:hyper_tools/http/routes.dart';
+import 'package:hyper_tools/helpers/route_helper.dart';
 import 'package:hyper_tools/models/authentication_model.dart';
 
 class PostRegister extends PostRequest<AuthenticationModel> {
@@ -16,7 +16,7 @@ class PostRegister extends PostRequest<AuthenticationModel> {
       AuthenticationModel.fromJson(json);
 
   @override
-  Uri get uri => Routes.register;
+  Uri get uri => RouteHelper.buildUri('register');
 
   @override
   bool get private => false;

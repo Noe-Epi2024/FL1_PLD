@@ -1,4 +1,4 @@
-import 'package:hyper_tools/components/provider_base.dart';
+import 'package:hyper_tools/components/future_widget/provider_base.dart';
 
 class RegisterProvider extends ProviderBase {
   bool _shouldStayLoggedIn = true;

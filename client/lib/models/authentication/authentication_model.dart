@@ -3,5 +3,6 @@ class AuthenticationModel {
 
   factory AuthenticationModel.fromJson(Map<String, dynamic> json) =>
       AuthenticationModel(accessToken: json['accessToken']);
+
   final String accessToken;
 }

@@ -8,6 +8,7 @@ class SuccessModel {
         data: json['data'],
         message: json['message'],
       );
+
   final dynamic data;
   final String message;
 }

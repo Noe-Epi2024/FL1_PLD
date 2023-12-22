@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-class EvenlySpacedChildren extends StatelessWidget {
-  const EvenlySpacedChildren({
-    required this.children, super.key,
+class EvenlySizedChildren extends StatelessWidget {
+  const EvenlySizedChildren({
+    required this.children,
+    super.key,
     this.axis = Axis.horizontal,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.crossAxisAlignment = CrossAxisAlignment.center,

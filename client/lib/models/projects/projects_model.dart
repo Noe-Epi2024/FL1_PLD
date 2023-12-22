@@ -8,5 +8,6 @@ class ProjectsModel {
             .map(ProjectPreviewModel.fromJson)
             .toList(),
       );
+
   final List<ProjectPreviewModel> projects;
 }

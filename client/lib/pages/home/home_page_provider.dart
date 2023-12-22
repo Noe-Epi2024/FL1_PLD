@@ -1,4 +1,4 @@
-import 'package:hyper_tools/components/provider_base.dart';
+import 'package:hyper_tools/components/future_widget/provider_base.dart';
 import 'package:hyper_tools/models/projects_model.dart';
 
 class HomePageProvider extends ProviderBase {
@@ -17,8 +17,8 @@ class HomePageProvider extends ProviderBase {
 
   String get filter => _filter;
 
-  set filter(String filter) {
-    _filter = filter;
+  set filter(String value) {
+    _filter = value;
     notifyListeners();
   }
 }

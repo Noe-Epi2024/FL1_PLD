@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/models/project_preview_model.dart';
+import 'package:hyper_tools/models/project_role.dart';
 import 'package:hyper_tools/theme/theme.dart';
 
 class ProjectPreview extends StatelessWidget {
@@ -9,21 +10,25 @@ class ProjectPreview extends StatelessWidget {
 
   final ProjectPreviewModel projectPreviewModel;
 
-  Widget? _icon(BuildContext context, String role) => switch (role) {
-        'owner' => Icon(
+  Widget _roleIcon(BuildContext context) => switch (projectPreviewModel.role) {
+        ProjectRole.owner => Icon(
             Boxicons.bx_crown,
             size: 20,
             color: Theme.of(context).hintColor,
           ),
-        'writer' => Icon(
+        ProjectRole.writer => Icon(
             Boxicons.bx_edit,
             size: 20,
             color: Theme.of(context).hintColor,
           ),
-        _ => null,
+        ProjectRole.reader => Icon(
+            Icons.remove_red_eye_outlined,
+            size: 20,
+            color: Theme.of(context).hintColor,
+          )
       };
 
-  Widget _picture(BuildContext context, String name) => Container(
+  Widget _picture(BuildContext context) => Container(
         height: 40,
         width: 40,
         decoration: BoxDecoration(
@@ -32,7 +37,7 @@ class ProjectPreview extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            name[0],
+            projectPreviewModel.name[0],
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSecondary,
               fontSize: 16,
@@ -73,47 +78,43 @@ class ProjectPreview extends StatelessWidget {
         ],
       );
 
-  Widget _noTaskYet() => const Text('No task yet');
+  Widget _noTaskYet() => const Text('Pas encore de tâche');
 
   @override
-  Widget build(BuildContext context) {
-    final Widget? icon = _icon(context, projectPreviewModel.role);
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Padding(
-        padding: 16.a,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  _picture(context, projectPreviewModel.name),
-                  16.pw,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _name(),
-                        _members(context),
-                        8.ph,
-                        if (projectPreviewModel.progress != null) ...<Widget>[
-                          _progressBar(context),
-                        ] else
-                          _noTaskYet(),
-                      ],
+  Widget build(BuildContext context) => Card(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        child: Padding(
+          padding: 16.a,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _picture(context),
+                    16.pw,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _name(),
+                          _members(context),
+                          8.ph,
+                          if (projectPreviewModel.progress != null)
+                            _progressBar(context)
+                          else
+                            _noTaskYet(),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            16.pw,
-            if (icon != null) icon,
-          ],
+              16.pw,
+              _roleIcon(context),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -1,3 +1,5 @@
+import 'package:hyper_tools/models/project_role.dart';
+
 class ProjectPreviewModel {
   ProjectPreviewModel({
     required this.id,
@@ -12,13 +14,13 @@ class ProjectPreviewModel {
         id: json['id'],
         name: json['name'],
         membersCount: json['membersCount'],
-        role: json['role'],
+        role: ProjectRole.parse(json['role']),
         progress: json['progress'],
       );
 
   final String id;
   final String name;
   final int membersCount;
-  final String role;
+  final ProjectRole role;
   final int? progress;
 }

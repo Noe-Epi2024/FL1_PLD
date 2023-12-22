@@ -1,5 +1,5 @@
+import 'package:hyper_tools/helpers/route_helper.dart';
 import 'package:hyper_tools/http/requests/post_request.dart';
-import 'package:hyper_tools/http/routes.dart';
 import 'package:hyper_tools/models/authentication_model.dart';
 
 class PostLogin extends PostRequest<AuthenticationModel> {
@@ -16,7 +16,7 @@ class PostLogin extends PostRequest<AuthenticationModel> {
       AuthenticationModel.fromJson(json);
 
   @override
-  Uri get uri => Routes.login;
+  Uri get uri => RouteHelper.buildUri('login');
 
   @override
   bool get private => false;

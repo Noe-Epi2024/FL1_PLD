@@ -70,12 +70,42 @@ class Http {
 
   static Future<T> post<T>(
     Uri uri,
-    Map<String, dynamic> body,
+    Map<String, dynamic>? body,
     T Function(Map<String, dynamic> data) onSuccess, {
     bool private = true,
   }) =>
       _request(
         query: () => http.post(
+          uri,
+          headers: _header(private: private),
+          body: jsonEncode(body),
+        ),
+        onSuccess: onSuccess,
+      );
+
+  static Future<T> patch<T>(
+    Uri uri,
+    Map<String, dynamic>? body,
+    T Function(Map<String, dynamic> data) onSuccess, {
+    bool private = true,
+  }) =>
+      _request(
+        query: () => http.patch(
+          uri,
+          headers: _header(private: private),
+          body: jsonEncode(body),
+        ),
+        onSuccess: onSuccess,
+      );
+
+  static Future<T> delete<T>(
+    Uri uri,
+    Map<String, dynamic>? body,
+    T Function(Map<String, dynamic> data) onSuccess, {
+    bool private = true,
+  }) =>
+      _request(
+        query: () => http.delete(
           uri,
           headers: _header(private: private),
           body: jsonEncode(body),

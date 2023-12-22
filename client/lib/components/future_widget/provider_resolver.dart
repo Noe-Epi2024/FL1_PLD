@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/provider_base.dart';
+import 'package:hyper_tools/components/future_widget/provider_base.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:provider/provider.dart';
 
