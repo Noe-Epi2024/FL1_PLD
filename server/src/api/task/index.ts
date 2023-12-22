@@ -209,6 +209,16 @@ async function patchTask(req: Request, res: Response) {
             try {
                 if (new ObjectId(data.ownerId)) {
                     const newOwner = await UserModel.findOne({ _id: data.ownerId });
+
+                    if (!newOwner) {
+                        return res.status(409).send({ success: false, message: "User selected for being owner of the task does not exist" });
+                    }
+
+                    const ownerOfTaskInProject = projects.members.find(member => String(member.userId) === String(data.ownerId));
+
+                    if (!ownerOfTaskInProject) {
+                        return res.status(409).send({ success: false, message: "User not found in project" });
+                    }
                 } else {
                     return res.status(409).send({ success: false, message: "Invalid id format" });
                 }
@@ -295,8 +305,8 @@ async function patchTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
-        if (userInProject.role !== "owner") {
-            return res.status(409).send({ success: false, message: "User not owner of the project" });
+        if (userInProject.role !== "owner" && userInProject.role !== "writer") {
+            return res.status(409).send({ success: false, message: "User not owner or writer in the project" });
         }
 
         const taskData = await ProjectModel.updateOne({ _id: projectId, "tasks._id": taskId }, { $set: updateFields });
