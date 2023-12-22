@@ -133,7 +133,7 @@ async function patchMember(req: Request, res: Response) {
         }
 
         if (!memberId || !memberRole) {
-            return res.status(400).send({ success: false, message: "No userId or role provided" });
+            return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
         const userId = decodeAccessToken(token) as Token;
@@ -169,7 +169,7 @@ async function patchMember(req: Request, res: Response) {
         const memberData = await ProjectModel.updateOne({ _id: projectId, "members.userId": memberId }, { $set: { "members.$.role": memberRole } });
 
         if (!memberData || !memberData.modifiedCount) {
-            return res.status(400).send({ success: false, message: "Can't update member role" });
+            return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
         return res.status(200).send({ success: true, message: "member role has be changed" });

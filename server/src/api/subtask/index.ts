@@ -153,7 +153,7 @@ async function patchSubTask(req: Request, res: Response) {
         }
 
         if (!data || Object.keys(data).length === 0) {
-            return res.status(409).send({ success: false, message: "No data sent" });
+            return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
         if (!data.name && !data.isDone) {
@@ -216,7 +216,7 @@ async function patchSubTask(req: Request, res: Response) {
         }
 
         if (taskData.modifiedCount === 0 && taskData.matchedCount !== 0) {
-            return res.status(409).send({ success: false, message: "SubTask data already up to date" });
+            return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
         return res.status(200).send({ success: true, message: "SubTask successfully modified" });
