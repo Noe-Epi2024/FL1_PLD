@@ -40,9 +40,14 @@ async function getMe(req: Request, res: Response) {
 async function patchMe(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
+        const body = req.body;
 
         if (!token) {
             return res.status(400).send({ success: false, message: "No access token sent" });
+        }
+
+        if (!body) {
+            return res.status(200).send({ success: true, message: "No content changed" });
         }
 
         const accessToken = decodeAccessToken(token) as Token;
@@ -51,19 +56,18 @@ async function patchMe(req: Request, res: Response) {
             return res.status(400).send({ success: false, message: "Invalid access token" });
         }
 
-        const filter = accessToken.userId;
-        const update = req.body;
+        const userId = accessToken.userId;
 
-        const user = await UserModel.findOne({ _id: filter });
+        const user = await UserModel.findOne({ _id: userId });
 
         if (!user) {
             return res.status(409).send({ success: false, message: "User not found" });
         }
 
-        const response = await UserModel.updateOne({ _id: filter }, update);
+        const response = await UserModel.updateOne({ _id: userId }, body);
 
         if (!response || !response.acknowledged) {
-            return res.status(400).send({ success: false, message: "Can't update user, data invalid" });
+            return res.status(200).send({ success: true, message: "No content changed" });
         }
 
         res.status(200).send({ success: true, message: "Value successfully modified" });
@@ -98,7 +102,7 @@ async function getUsers(req: Request, res: Response) {
             users = await UserModel.find({ $and: [{ _id: { $nin: userList } }, { name: { $regex: filter as string, $options: 'i' } }] });
         }
 
-        return res.status(200).send({ success: true, message: "Users successfully retrieved", data: users });
+        return res.status(200).send({ success: true, message: "Users successfully retrieved", data: { users: users } });
     } catch (err) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }

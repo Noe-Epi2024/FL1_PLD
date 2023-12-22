@@ -6,7 +6,7 @@ import { TasksSchema } from "./tasks";
 
 const memberSchema = new Schema<Member>({
     userId: { type: Schema.Types.ObjectId, required: true },
-    role: { type: String, required: true },
+    role: { type: String, required: false, default: "reader" },
 });
 
 type ProjectSchema = Model<Project>;

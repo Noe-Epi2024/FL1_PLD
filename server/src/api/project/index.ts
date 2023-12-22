@@ -164,8 +164,12 @@ async function patchProject(req: Request, res: Response) {
         var id = req.params.id;
         var name = req.body.name;
 
-        if (!token || !id || !name) {
-            return res.status(400).send({ success: false, message: "No Access Token or no Id or no Name provided" });
+        if (!token) {
+            return res.status(400).send({ success: false, message: "No access token sent" });
+        }
+
+        if (!id || !name) {
+            return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
         const userId = decodeAccessToken(token) as Token;
@@ -182,7 +186,7 @@ async function patchProject(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
-        if (userInProject.role === 'reader') {
+        if (userInProject.role !== 'owner') {
             return res.status(409).send({ success: false, message: "User not allowed to modify project" });
         }
 

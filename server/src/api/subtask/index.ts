@@ -3,6 +3,7 @@ import { UserModel } from "../../database/schema/users";
 import { Token } from "../../types/token";
 import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
+import { ObjectId } from "mongodb";
 
 async function postSubTask(req: Request, res: Response) {
     try {
@@ -53,11 +54,18 @@ async function postSubTask(req: Request, res: Response) {
             return res.status(404).send({ success: false, message: "Task not found in the project" });
         }
 
-        task.subtasks.push({ name: subTaskName, isDone: false });
+        const subTaskId = new ObjectId();
 
-        await projects.save();
+        const newSubTask = await ProjectModel.updateOne(
+            { _id: projectId, "tasks._id": taskId }, // Match the project and the specific task within it
+            { $push: { "tasks.$.subtasks": { name: subTaskName, isDone: false, _id: subTaskId } } } // Push the subtask into the specific task's subtasks array
+        );
 
-        return res.status(200).send({ success: true, message: "Task successfully created" });
+        if (!newSubTask || !newSubTask.modifiedCount) {
+            return res.status(400).send({ success: false, message: "Can't add subTask to the project" });
+        }
+
+        return res.status(200).send({ success: true, message: "Task successfully created", data: { id: subTaskId } });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
@@ -145,7 +153,7 @@ async function patchSubTask(req: Request, res: Response) {
         }
 
         if (!data || Object.keys(data).length === 0) {
-            return res.status(409).send({ success: false, message: "No data sent" });
+            return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
         if (!data.name && !data.isDone) {
@@ -208,7 +216,7 @@ async function patchSubTask(req: Request, res: Response) {
         }
 
         if (taskData.modifiedCount === 0 && taskData.matchedCount !== 0) {
-            return res.status(409).send({ success: false, message: "SubTask data already up to date" });
+            return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
         return res.status(200).send({ success: true, message: "SubTask successfully modified" });
