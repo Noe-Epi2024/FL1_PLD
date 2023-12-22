@@ -5,6 +5,24 @@ import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
 import { Projects, ProjectById } from "../../types/projects";
 
+function calculateProgress(tasks: any[]) {
+    let tasksWithSubtasks = tasks.filter(task => task.subtasks.length > 0);
+    let totalSubtasks = 0;
+    let completedSubtasks = 0;
+
+    tasksWithSubtasks.forEach(task => {
+        task.subtasks.forEach((subtask: { isDone: boolean }) => {
+            totalSubtasks++;
+            if (subtask.isDone) {
+                completedSubtasks++;
+            }
+        });
+    });
+
+    const progress = totalSubtasks > 0 ? Math.ceil((completedSubtasks / totalSubtasks) * 100) : null;
+    return progress;
+}
+
 async function getProject(req: Request, res: Response) {
     try {
         const token = req.headers.authorization;
@@ -34,12 +52,10 @@ async function getProject(req: Request, res: Response) {
             name: projects.name,
             role: userInProject.role,
             tasks: await Promise.all(projects.tasks.map(async task => {
+                const progress = calculateProgress([task]);
                 try {
                     const user = await UserModel.findById(task.ownerId);
                     if (user) {
-                        const totalSubtasks = task.subtasks.length;
-                        const completedSubtasks = task.subtasks.filter(subtask => subtask.isDone).length;
-                        const progress = totalSubtasks > 0 ? Math.ceil((completedSubtasks / totalSubtasks) * 100) : null;
 
                         return {
                             id: task.id,
@@ -47,7 +63,7 @@ async function getProject(req: Request, res: Response) {
                             name: task.name,
                             startDate: task.startDate,
                             endDate: task.endDate,
-                            progress: progress || null
+                            progress: progress
                         };
                     } else {
                         throw new Error(`User not found for task with ID: ${task.id}`);
@@ -71,24 +87,6 @@ async function getProject(req: Request, res: Response) {
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
     }
-}
-
-function calculateProgress(tasks: any[]) {
-    let tasksWithSubtasks = tasks.filter(task => task.subtasks.length > 0);
-    let totalSubtasks = 0;
-    let completedSubtasks = 0;
-
-    tasksWithSubtasks.forEach(task => {
-        task.subtasks.forEach((subtask: { isDone: boolean }) => {
-            totalSubtasks++;
-            if (subtask.isDone) {
-                completedSubtasks++;
-            }
-        });
-    });
-
-    const progress = totalSubtasks > 0 ? Math.ceil((completedSubtasks / totalSubtasks) * 100) : null;
-    return progress;
 }
 
 async function getProjects(req: Request, res: Response) {
