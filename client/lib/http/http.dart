@@ -33,7 +33,7 @@ class Http {
       // request sent success
       if (statusCode >= 200 && statusCode < 300) {
         final SuccessModel success = SuccessModel.fromJson(body);
-        return onSuccess(success.data ?? <void, void>{});
+        return onSuccess(success.data ?? <String, dynamic>{});
       }
 
       // request sent error
