@@ -45,6 +45,14 @@ async function getTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "Project not found in project" });
         }
 
+        const ownerName = await UserModel.findById(task.ownerId);
+
+        if (!ownerName) {
+            return res.status(409).send({ success: false, message: "Owner not found" });
+        }
+
+        task.ownerName = ownerName.name;
+
         return res.status(200).send({ success: true, message: "Task successfully found", data: task });
     }
     catch (error) {
