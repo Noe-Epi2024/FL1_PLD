@@ -8,6 +8,7 @@ type TaskSchema = Model<Task>;
 const TasksSchema = new Schema<Task, TaskSchema>({
     name: { type: String, required: true },
     ownerId: { type: Schema.Types.ObjectId, required: true },
+    ownerName: { type: String, required: false },
     description: { type: String, required: false, default: "" },
     startDate: { type: Date, required: false, default: new Date() },
     endDate: { type: Date, required: false },
