@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hyper_tools/extensions/num_extension.dart';
 
 class ThemeGenerator {
   static const double kBorderRadius = 32;
@@ -52,7 +51,7 @@ class ThemeGenerator {
   static InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        contentPadding: 16.all,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         hintStyle: TextStyle(color: _hintColor),
         labelStyle: TextStyle(color: _labelColor, letterSpacing: 0),
         prefixIconColor: _hintColor,
@@ -203,6 +202,7 @@ class ThemeGenerator {
         hintColor: _hintColor,
         dividerTheme: _dividerTheme,
         dividerColor: _borderColor,
+        splashColor: Colors.transparent,
         dialogBackgroundColor: _colorScheme.surface,
         dialogTheme: _dialogTheme,
         colorScheme: _colorScheme,
@@ -210,7 +210,6 @@ class ThemeGenerator {
         checkboxTheme: _checkBoxTheme,
         textButtonTheme: _textButtonTheme,
         elevatedButtonTheme: _elevatedButtonTheme,
-        dropdownMenuTheme: const DropdownMenuThemeData(),
         appBarTheme: _appBarTheme,
         switchTheme: _switchTheme,
         floatingActionButtonTheme: _floatingActionButtonTheme,

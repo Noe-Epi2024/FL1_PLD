@@ -2,6 +2,7 @@ import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 
 class TaskModel {
   TaskModel({
+    required this.ownerName,
     required this.id,
     required this.name,
     required this.description,
@@ -21,12 +22,14 @@ class TaskModel {
         substasks: List<Map<String, dynamic>>.from(json['subtasks'])
             .map(SubtaskModel.fromJson)
             .toList(),
+        ownerName: json['ownerName'],
       );
 
   final String id;
   final String name;
   final String description;
   final String ownerId;
+  final String ownerName;
   final DateTime startDate;
   final DateTime endDate;
   final List<SubtaskModel> substasks;

@@ -1,38 +1,36 @@
 import 'package:hyper_tools/helpers/route_helper.dart';
-import 'package:hyper_tools/http/requests/post_request.dart';
-import 'package:hyper_tools/models/success_model.dart';
+import 'package:hyper_tools/http/requests/patch_request.dart';
 
-class PostTask extends PostRequest<String> {
-  PostTask({
+class PatchTask extends PatchRequest<void> {
+  PatchTask({
     required this.projectId,
     required this.taskId,
-    required this.name,
-    required this.description,
-    required this.ownerId,
-    required this.startDate,
-    required this.endDate,
+    this.name,
+    this.description,
+    this.ownerId,
+    this.startDate,
+    this.endDate,
   });
 
   final String projectId;
   final String taskId;
-  final String name;
-  final String description;
-  final String ownerId;
-  final DateTime startDate;
-  final DateTime endDate;
+  final String? name;
+  final String? description;
+  final String? ownerId;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
   @override
   Map<String, dynamic>? get body => <String, dynamic>{
-        'ownerId': ownerId,
-        'description': description,
-        'name': name,
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate.toIso8601String(),
+        if (ownerId != null) 'ownerId': ownerId,
+        if (description != null) 'description': description,
+        if (name != null) 'name': name,
+        if (startDate != null) 'startDate': startDate!.toIso8601String(),
+        if (endDate != null) 'endDate': endDate!.toIso8601String(),
       };
 
   @override
-  String builder(Map<String, dynamic> json) =>
-      SuccessModel.fromJson(json).data['id'];
+  void builder(Map<String, dynamic> json) {}
 
   @override
   bool get private => true;

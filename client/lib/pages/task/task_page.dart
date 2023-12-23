@@ -129,9 +129,11 @@ class _TaskPageBuilder extends StatelessWidget {
                 'Assigné à',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
+              32.width,
               Expanded(
                 child: ProjectMembersDropdown(
                   projectId: projectId,
+                  taskId: taskId,
                 ),
               ),
             ],

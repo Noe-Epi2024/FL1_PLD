@@ -45,12 +45,36 @@ class Messenger {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(Icons.error, color: Colors.white),
+              child: Icon(Icons.check_circle, color: Colors.white),
             ),
             Text(content, style: const TextStyle(color: Colors.white)),
           ],
         ),
         backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  static void showSnackBarQuickInfo(String content, BuildContext context) {
+    assert(
+      _messengerKey.currentState != null,
+      'Navigator key must be initialized.',
+    );
+
+    _messengerKey.currentState!.showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 1),
+        content: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Icon(Icons.check_circle, color: Colors.white),
+            ),
+            Text(content, style: const TextStyle(color: Colors.white)),
+          ],
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }

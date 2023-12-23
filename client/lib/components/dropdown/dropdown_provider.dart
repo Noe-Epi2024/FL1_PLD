@@ -2,21 +2,23 @@ import 'package:hyper_tools/components/dropdown/dropdown_entry.dart';
 import 'package:hyper_tools/components/future_widget/provider_base.dart';
 
 class DropdownProvider<T> extends ProviderBase {
-  DropdownProvider({required List<DropdownEntry<T>> entries, T? initialValue})
-      : _entries = entries,
+  DropdownProvider({
+    required List<DropdownEntry<T>> entries,
+    DropdownEntry<T>? initialValue,
+  })  : _entries = entries,
         _isInitialized = true,
         _selectedValue = initialValue;
 
-  DropdownProvider.lazy({T? initialValue})
+  DropdownProvider.lazy({DropdownEntry<T>? initialValue})
       : _entries = null,
         _isInitialized = false,
         _selectedValue = initialValue;
 
-  T? _selectedValue;
+  DropdownEntry<T>? _selectedValue;
 
-  T? get selectedValue => _selectedValue;
+  DropdownEntry<T>? get selectedValue => _selectedValue;
 
-  set selectedValue(T? value) {
+  set selectedValue(DropdownEntry<T>? value) {
     _selectedValue = value;
     notifyListeners();
   }
@@ -45,6 +47,15 @@ class DropdownProvider<T> extends ProviderBase {
 
   set filter(String value) {
     _filter = value;
+    notifyListeners();
+  }
+
+  bool _isOpen = false;
+
+  bool get isOpen => _isOpen;
+
+  set isOpen(bool value) {
+    _isOpen = value;
     notifyListeners();
   }
 }

@@ -3,47 +3,86 @@ part of 'dropdown.dart';
 class _DropdownList<T> extends HookWidget {
   const _DropdownList({required this.onSelect, super.key});
 
-  final void Function(T)? onSelect;
+  final FutureOr<bool> Function(T)? onSelect;
 
-  ListView _choices(BuildContext context) => ListView(
-        shrinkWrap: true,
-        children: context
-            .select<DropdownProvider<T>, List<DropdownEntry<T>>>(
-              (DropdownProvider<T> provider) => provider.entries!,
-            )
-            .where(
-              (DropdownEntry<T> entry) => entry.key
-                  .contains(context.read<DropdownProvider<T>>().filter),
-            )
-            .map(
-              (DropdownEntry<T> entry) => _DropdownItem<T>(
-                entry: entry,
-                onSelect: onSelect,
-              ),
-            )
-            .toList(),
-      );
+  void _onSearchChanged(
+    BuildContext context,
+    TextEditingController controller,
+  ) {
+    context.read<DropdownProvider<T>>().filter = controller.text;
+  }
 
-  Widget _searchBar() => TextField(
-        decoration: InputDecoration(
-            hintText: 'Filtrer', prefixIcon: Icon(Icons.search)),
-      );
+  void Function() _initializeController(
+    BuildContext context,
+    TextEditingController controller,
+  ) {
+    void listener() => _onSearchChanged(context, controller);
 
-  @override
-  Widget build(BuildContext context) => Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: ProviderResolver<DropdownProvider<T>>(
-            builder: (BuildContext resolverContext) => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                _searchBar(),
-                Expanded(child: _choices(resolverContext)),
-              ],
-            ),
+    controller.addListener(listener);
+
+    return () => controller.removeListener(listener);
+  }
+
+  Widget _choices(BuildContext context) {
+    final List<DropdownEntry<T>> entries =
+        context.select<DropdownProvider<T>, List<DropdownEntry<T>>>(
+      (DropdownProvider<T> provider) => provider.entries!,
+    );
+
+    final String? filter = context.select<DropdownProvider<T>, String?>(
+      (DropdownProvider<T> p) => p.filter,
+    );
+
+    final List<_DropdownItem<T>> items = (filter == null
+            ? entries
+            : entries
+                .where((DropdownEntry<T> entry) => entry.key.contains(filter)))
+        .map(
+          (DropdownEntry<T> entry) => _DropdownItem<T>(
+            entry: entry,
+            onSelect: onSelect,
+          ),
+        )
+        .toList();
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
+      ),
+      child:
+          ListView(padding: EdgeInsets.zero, shrinkWrap: true, children: items),
+    );
+  }
+
+  Widget _searchBar(TextEditingController controller) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Filtrer',
+            prefixIcon: Icon(Icons.search),
           ),
         ),
       );
+
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController controller = useTextEditingController();
+
+    useEffect(() => _initializeController(context, controller));
+
+    return Card(
+      child: ProviderResolver<DropdownProvider<T>>(
+        builder: (BuildContext resolverContext) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _searchBar(controller),
+            Expanded(child: _choices(resolverContext)),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _DropdownItem<T> extends StatelessWidget {
@@ -53,10 +92,29 @@ class _DropdownItem<T> extends StatelessWidget {
     super.key,
   });
 
-  final void Function(T)? onSelect;
+  final FutureOr<bool> Function(T)? onSelect;
   final DropdownEntry<T> entry;
 
+  Future<void> _onTap(BuildContext context) async {
+    if (onSelect != null && await onSelect!(entry.value)) {
+      context.read<DropdownProvider<T>>().selectedValue = entry;
+    }
+    Navigator.of(context).pop();
+  }
+
   @override
-  Widget build(BuildContext context) =>
-      InkWell(onTap: () => onSelect?.call(entry.value), child: Text(entry.key));
+  Widget build(BuildContext context) => InkWell(
+        onTap: () => _onTap(context),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Theme.of(context).dividerColor),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(entry.key),
+          ),
+        ),
+      );
 }

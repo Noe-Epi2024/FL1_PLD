@@ -45,7 +45,7 @@ class _ProviderResolverState<T extends ProviderBase>
       return widget.loader ?? const Center(child: CircularProgressIndicator());
     }
     if (error != null) {
-      return const Center(child: Text('Error'));
+      return Center(child: Text(error.errorMessage));
     }
     return widget.builder(context);
   }

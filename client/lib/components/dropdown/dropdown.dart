@@ -32,20 +32,29 @@ class Dropdown<T> extends StatelessWidget {
   final List<DropdownEntry<T>>? entries;
   final DropdownEntry<T>? initialValue;
   final String? labelText;
-  final void Function(T)? onSelect;
+  final FutureOr<bool> Function(T)? onSelect;
   final Future<List<DropdownEntry<T>>> Function()? fetch;
   final bool isLazy;
+
+  Future<void> _openList(BuildContext context) async {
+    final DropdownProvider<T> provider = context.read<DropdownProvider<T>>()
+      ..isOpen = true;
+
+    await _pushList(context);
+
+    provider.isOpen = false;
+  }
 
   Future<void> _onClick(BuildContext context) async {
     final DropdownProvider<T> provider = context.read<DropdownProvider<T>>();
 
     if (provider.isInitialized) {
-      unawaited(_pushList(context));
+      unawaited(_openList(context));
     } else {
       try {
         provider.isLoading = true;
 
-        unawaited(_pushList(context));
+        unawaited(_openList(context));
 
         final List<DropdownEntry<T>> fetchedEntries = await fetch!();
 
@@ -74,19 +83,39 @@ class Dropdown<T> extends StatelessWidget {
         ),
       );
 
-  ElevatedButton _button(BuildContext context) => ElevatedButton(
-        onPressed: () async => _onClick(context),
-        child: Text(context.read<DropdownProvider<T>>().isLoading.toString()),
-      );
+  Widget _button(BuildContext context) {
+    final String? selectedValue = context.select<DropdownProvider<T>, String?>(
+      (DropdownProvider<T> provider) => provider.selectedValue?.key,
+    );
+
+    final bool isOpen = context.select<DropdownProvider<T>, bool>(
+      (DropdownProvider<T> provider) => provider.isOpen,
+    );
+
+    return InkWell(
+      onTap: () async => _onClick(context),
+      child: InputDecorator(
+        isEmpty: selectedValue == null,
+        decoration: InputDecoration(
+          hintText: 'Membre',
+          prefixIcon: const Icon(Icons.person),
+          suffixIcon: isOpen
+              ? const Icon(Icons.arrow_drop_up_rounded)
+              : const Icon(Icons.arrow_drop_down_rounded),
+        ),
+        child: selectedValue != null ? Text(selectedValue) : null,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) =>
       ChangeNotifierProvider<DropdownProvider<T>>(
         create: (_) => isLazy
-            ? DropdownProvider<T>.lazy(initialValue: initialValue?.value)
+            ? DropdownProvider<T>.lazy(initialValue: initialValue)
             : DropdownProvider<T>(
                 entries: entries!,
-                initialValue: initialValue?.value,
+                initialValue: initialValue,
               ),
         builder: (BuildContext providerContext, _) => _button(providerContext),
       );

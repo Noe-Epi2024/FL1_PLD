@@ -35,7 +35,7 @@ class _DropdownRoute<T> extends PopupRoute<T> {
           children: <Widget>[
             InkWell(onTap: Navigator.of(context).pop),
             Positioned(
-              top: parentOffset.dy + parentSize.height,
+              top: parentOffset.dy + parentSize.height + 8,
               left: parentOffset.dx,
               child: ConstrainedBox(
                 constraints: BoxConstraints(

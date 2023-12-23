@@ -1,3 +1,5 @@
+import 'package:hyper_tools/models/project/project_role.dart';
+
 class ProjectMemberModel {
   ProjectMemberModel({
     required this.userId,
@@ -8,11 +10,11 @@ class ProjectMemberModel {
   factory ProjectMemberModel.fromJson(Map<String, dynamic> json) =>
       ProjectMemberModel(
         userId: json['userId'],
-        role: json['role'],
+        role: ProjectRole.parse(json['role']),
         name: json['name'],
       );
 
   final String userId;
-  final String role;
+  final ProjectRole role;
   final String name;
 }
