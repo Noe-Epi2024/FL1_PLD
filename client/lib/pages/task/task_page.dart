@@ -6,8 +6,9 @@ import 'package:hyper_tools/http/requests/project/task/get_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
-import 'package:hyper_tools/pages/project/components/subtask.dart';
-import 'package:hyper_tools/pages/project/components/task_provider.dart';
+import 'package:hyper_tools/pages/task/components/members_dropdown.dart';
+import 'package:hyper_tools/pages/task/components/subtask.dart';
+import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:hyper_tools/theme/theme.dart';
 import 'package:provider/provider.dart';
 
@@ -120,12 +121,19 @@ class _TaskPageBuilder extends StatelessWidget {
 
   Widget _assignedTo(BuildContext context) => Card(
         margin: 16.horizontal,
-        child: const Padding(
-          padding: EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Row(
             children: <Widget>[
-              Text('Assigné à', style: TextStyle(fontWeight: FontWeight.bold)),
-              Expanded(child: TextField()),
+              const Text(
+                'Assigné à',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Expanded(
+                child: ProjectMembersDropdown(
+                  projectId: projectId,
+                ),
+              ),
             ],
           ),
         ),

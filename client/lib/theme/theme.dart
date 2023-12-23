@@ -210,6 +210,7 @@ class ThemeGenerator {
         checkboxTheme: _checkBoxTheme,
         textButtonTheme: _textButtonTheme,
         elevatedButtonTheme: _elevatedButtonTheme,
+        dropdownMenuTheme: const DropdownMenuThemeData(),
         appBarTheme: _appBarTheme,
         switchTheme: _switchTheme,
         floatingActionButtonTheme: _floatingActionButtonTheme,

@@ -3,8 +3,8 @@ import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/helpers/date_helper.dart';
 import 'package:hyper_tools/models/project/task/task_preview_model.dart';
-import 'package:hyper_tools/pages/project/components/task_page.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
+import 'package:hyper_tools/pages/task/task_page.dart';
 import 'package:hyper_tools/theme/theme.dart';
 import 'package:provider/provider.dart';
 
