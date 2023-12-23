@@ -197,6 +197,11 @@ class ThemeGenerator {
         surfaceTintColor: Colors.transparent,
       );
 
+  static DatePickerThemeData get _datePickerTheme => DatePickerThemeData(
+        backgroundColor: _colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+      );
+
   static ThemeData generate() => ThemeData(
         cardTheme: _cardTheme,
         hintColor: _hintColor,
@@ -216,5 +221,6 @@ class ThemeGenerator {
         tabBarTheme: _tabBarTheme,
         snackBarTheme: _snackBarTheme,
         inputDecorationTheme: _inputDecorationTheme,
+        datePickerTheme: _datePickerTheme,
       );
 }

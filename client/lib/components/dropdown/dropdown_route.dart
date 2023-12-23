@@ -31,22 +31,24 @@ class _DropdownRoute<T> extends PopupRoute<T> {
   ) =>
       Scaffold(
         backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            InkWell(onTap: Navigator.of(context).pop),
-            Positioned(
-              top: parentOffset.dy + parentSize.height + 8,
-              left: parentOffset.dx,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: parentSize.width,
-                  minWidth: parentSize.width,
-                  maxHeight: 300,
+        body: SafeArea(
+          child: Stack(
+            children: <Widget>[
+              InkWell(onTap: Navigator.of(context).pop),
+              Positioned(
+                top: parentOffset.dy + parentSize.height + 8,
+                left: parentOffset.dx,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: parentSize.width,
+                    minWidth: parentSize.width,
+                    maxHeight: 300,
+                  ),
+                  child: child,
                 ),
-                child: child,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 

@@ -95,9 +95,13 @@ class Dropdown<T> extends StatelessWidget {
     return InkWell(
       onTap: () async => _onClick(context),
       child: InputDecorator(
+        isFocused: isOpen,
         isEmpty: selectedValue == null,
         decoration: InputDecoration(
-          hintText: 'Membre',
+          enabledBorder: InputBorder.none,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          labelText: labelText,
           prefixIcon: const Icon(Icons.person),
           suffixIcon: isOpen
               ? const Icon(Icons.arrow_drop_up_rounded)

@@ -62,6 +62,7 @@ class ProjectMembersDropdown extends StatelessWidget {
     final TaskProvider provider = context.read<TaskProvider>();
 
     return Dropdown<ProjectMemberModel>.lazy(
+      labelText: 'Membre',
       initialValue: DropdownEntry<ProjectMemberModel>(
         key: provider.task!.ownerName,
         value: ProjectMemberModel(

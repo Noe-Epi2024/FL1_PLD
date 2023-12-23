@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hyper_tools/components/date_picker/date_picker.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/http/requests/project/task/get_task.dart';
+import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
@@ -48,29 +51,35 @@ class _TaskPageBuilder extends StatelessWidget {
     }
   }
 
-  // Widget _name() => Text(
-  //       taskPreviewModel.name,
-  //       style: const TextStyle(fontWeight: FontWeight.bold),
-  //       maxLines: 1,
-  //       overflow: TextOverflow.ellipsis,
-  //     );
+  Future<bool> _onSelectedStartDate(BuildContext context, DateTime date) async {
+    try {
+      await PatchTask(projectId: projectId, taskId: taskId, startDate: date)
+          .patch();
 
-  // Widget _dates(BuildContext context) => Row(
-  //       children: <Widget>[
-  //         Icon(
-  //           Boxicons.bx_calendar,
-  //           size: 16,
-  //           color: Theme.of(context).hintColor,
-  //         ),
-  //         8.width,
-  //         Text(
-  //           '${DateHelper.formatDateToFrench(taskPreviewModel.startDate)} - ${DateHelper.formatDateToFrench(taskPreviewModel.endDate)}',
-  //           style: TextStyle(color: Theme.of(context).hintColor),
-  //         ),
-  //       ],
-  //     );
+      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
 
-  // Text _assignedTo() => Text('Assigné à ${taskPreviewModel.ownerName}');
+      return true;
+    } on ErrorModel catch (e) {
+      Messenger.showSnackBarError(e.errorMessage);
+
+      return false;
+    }
+  }
+
+  Future<bool> _onSelectedEndDate(BuildContext context, DateTime date) async {
+    try {
+      await PatchTask(projectId: projectId, taskId: taskId, endDate: date)
+          .patch();
+
+      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+
+      return true;
+    } on ErrorModel catch (e) {
+      Messenger.showSnackBarError(e.errorMessage);
+
+      return false;
+    }
+  }
 
   Widget _progressBar(BuildContext context) {
     final List<SubtaskModel> subtasks =
@@ -86,32 +95,22 @@ class _TaskPageBuilder extends StatelessWidget {
       margin: 16.horizontal,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: <Widget>[
-            const Text(
-              'Progression',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Expanded(
+              child: LinearProgressIndicator(
+                backgroundColor: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius:
+                    BorderRadius.circular(ThemeGenerator.kBorderRadius),
+                minHeight: 15,
+                value: progress,
+              ),
             ),
-            8.height,
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius:
-                        BorderRadius.circular(ThemeGenerator.kBorderRadius),
-                    minHeight: 15,
-                    value: progress,
-                  ),
-                ),
-                16.width,
-                Text(
-                  '${(progress * 100).ceil()}%',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
+            16.width,
+            Text(
+              '${(progress * 100).ceil()}%',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -123,42 +122,58 @@ class _TaskPageBuilder extends StatelessWidget {
         margin: 16.horizontal,
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               const Text(
                 'Assigné à',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              32.width,
-              Expanded(
-                child: ProjectMembersDropdown(
-                  projectId: projectId,
-                  taskId: taskId,
-                ),
+              // 32.width,
+              ProjectMembersDropdown(
+                projectId: projectId,
+                taskId: taskId,
               ),
             ],
           ),
         ),
       );
 
-  Widget _dates(BuildContext context) => Card(
-        margin: 16.horizontal,
-        child: const Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('Dates', style: TextStyle(fontWeight: FontWeight.bold)),
-              EvenlySizedChildren(
-                children: <Widget>[
-                  TextField(decoration: InputDecoration(labelText: 'Début')),
-                  TextField(decoration: InputDecoration(labelText: 'Fin')),
-                ],
-              ),
-            ],
-          ),
+  Widget _dates(BuildContext context) {
+    final TaskProvider provider = context.read<TaskProvider>();
+
+    return Card(
+      margin: 16.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const Text(
+              'Dates',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            EvenlySizedChildren(
+              children: <Widget>[
+                DatePicker(
+                  label: 'Début',
+                  initialDate: provider.task!.startDate,
+                  onSelected: (DateTime date) async =>
+                      _onSelectedStartDate(context, date),
+                ),
+                DatePicker(
+                  label: 'Fin',
+                  initialDate: provider.task!.endDate,
+                  onSelected: (DateTime date) async =>
+                      _onSelectedEndDate(context, date),
+                ),
+              ],
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget _subtasks(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
@@ -187,25 +202,43 @@ class _TaskPageBuilder extends StatelessWidget {
         ),
         builder: (BuildContext builderContext) => Scaffold(
           appBar: _appBar(builderContext),
-          body: ListView(
-            padding: const EdgeInsets.only(top: 32, bottom: 100),
-            children: <Widget>[
-              _assignedTo(builderContext),
-              8.height,
-              _dates(builderContext),
-              8.height,
-              _progressBar(builderContext),
-              16.height,
-              Padding(
-                padding: 16.horizontal,
-                child: const Text(
-                  'Sous-tâches',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+          body: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.only(top: 32, bottom: 100),
+              children: <Widget>[
+                Padding(
+                  padding: 16.horizontal,
+                  child: const Text(
+                    'Progression',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              8.height,
-              _subtasks(builderContext),
-            ],
+                8.height,
+                _progressBar(builderContext),
+                16.height,
+                Padding(
+                  padding: 16.horizontal,
+                  child: const Text(
+                    'Informations',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                8.height,
+                _dates(builderContext),
+                8.height,
+                _assignedTo(builderContext),
+                16.height,
+                Padding(
+                  padding: 16.horizontal,
+                  child: const Text(
+                    'Sous-tâches',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                8.height,
+                _subtasks(builderContext),
+              ],
+            ),
           ),
         ),
       );
