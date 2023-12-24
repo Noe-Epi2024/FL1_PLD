@@ -96,15 +96,18 @@ class _DropdownItem<T> extends StatelessWidget {
   final DropdownEntry<T> entry;
 
   Future<void> _onTap(BuildContext context) async {
-    if (onSelect != null && await onSelect!(entry.value)) {
-      context.read<DropdownProvider<T>>().selectedValue = entry;
-    }
+    final DropdownProvider<T> provider = context.read<DropdownProvider<T>>();
+
     Navigator.of(context).pop();
+
+    if (onSelect != null && await onSelect!(entry.value)) {
+      provider.selectedValue = entry;
+    }
   }
 
   @override
   Widget build(BuildContext context) => InkWell(
-        onTap: () => _onTap(context),
+        onTap: () async => _onTap(context),
         child: DecoratedBox(
           decoration: BoxDecoration(
             border: Border(

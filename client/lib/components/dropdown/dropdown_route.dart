@@ -24,6 +24,9 @@ class _DropdownRoute<T> extends PopupRoute<T> {
   String? get barrierLabel => 'Dropdown barrier';
 
   @override
+  Duration get transitionDuration => Duration.zero;
+
+  @override
   Widget buildPage(
     BuildContext context,
     Animation<double> animation,
@@ -32,26 +35,39 @@ class _DropdownRoute<T> extends PopupRoute<T> {
       Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(
-          child: Stack(
-            children: <Widget>[
-              InkWell(onTap: Navigator.of(context).pop),
-              Positioned(
-                top: parentOffset.dy + parentSize.height + 8,
-                left: parentOffset.dx,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: parentSize.width,
-                    minWidth: parentSize.width,
-                    maxHeight: 300,
+          child: LayoutBuilder(
+            builder: (BuildContext _, BoxConstraints constraints) {
+              final double height = min(300, constraints.maxHeight);
+              final double width = min(parentSize.width, constraints.maxWidth);
+
+              final double x =
+                  min(parentOffset.dx, constraints.maxWidth - width);
+              final double y = min(
+                parentOffset.dy + parentSize.height / 2,
+                constraints.maxHeight - height,
+              );
+
+              return Stack(
+                fit: StackFit.passthrough,
+                children: <Widget>[
+                  InkWell(
+                    onTap: Navigator.of(context).pop,
+                    overlayColor: const MaterialStatePropertyAll<Color>(
+                      Colors.transparent,
+                    ),
                   ),
-                  child: child,
-                ),
-              ),
-            ],
+                  Positioned(
+                    left: x,
+                    top: y,
+                    child: SizedBox(width: width, height: height, child: child),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       );
 
-  @override
-  Duration get transitionDuration => Duration.zero;
+  double normalize(double value, double minValue, double maxValue) =>
+      (value - minValue) / (maxValue - minValue) * 2.0 - 1.0;
 }

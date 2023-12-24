@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/date_picker/date_picker.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/http/requests/project/task/get_task.dart';
@@ -118,78 +119,106 @@ class _TaskPageBuilder extends StatelessWidget {
     );
   }
 
-  Widget _assignedTo(BuildContext context) => Card(
-        margin: 16.horizontal,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Text(
-                'Assigné à',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              // 32.width,
-              ProjectMembersDropdown(
-                projectId: projectId,
-                taskId: taskId,
-              ),
-            ],
+  Widget _assignedTo(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Text(
+            'Assigné à',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
+          ProjectMembersDropdown(
+            projectId: projectId,
+            taskId: taskId,
+          ),
+        ],
       );
 
   Widget _dates(BuildContext context) {
     final TaskProvider provider = context.read<TaskProvider>();
 
-    return Card(
-      margin: 16.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Text(
+          'Dates',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        EvenlySizedChildren(
           children: <Widget>[
-            const Text(
-              'Dates',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            DatePicker(
+              label: 'Début',
+              initialDate: provider.task!.startDate,
+              onSelected: (DateTime date) async =>
+                  _onSelectedStartDate(context, date),
             ),
-            EvenlySizedChildren(
-              children: <Widget>[
-                DatePicker(
-                  label: 'Début',
-                  initialDate: provider.task!.startDate,
-                  onSelected: (DateTime date) async =>
-                      _onSelectedStartDate(context, date),
-                ),
-                DatePicker(
-                  label: 'Fin',
-                  initialDate: provider.task!.endDate,
-                  onSelected: (DateTime date) async =>
-                      _onSelectedEndDate(context, date),
-                ),
-              ],
+            DatePicker(
+              label: 'Fin',
+              initialDate: provider.task!.endDate,
+              onSelected: (DateTime date) async =>
+                  _onSelectedEndDate(context, date),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 
-  Widget _subtasks(BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          border: Border(
-            top: BorderSide(color: Theme.of(context).dividerColor),
-            bottom: BorderSide(color: Theme.of(context).dividerColor),
+  Widget _subtasks(BuildContext context) => ExpansionTile(
+        initiallyExpanded: true,
+        title: const TitleText('À faire'),
+        children: <Widget>[
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              border: Border(
+                top: BorderSide(color: Theme.of(context).dividerColor),
+                bottom: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+            ),
+            child: Column(
+              children: context
+                  .select<TaskProvider, List<SubtaskModel>>(
+                    (TaskProvider provider) => provider.task!.substasks,
+                  )
+                  .map(Subtask.new)
+                  .toList(),
+            ),
           ),
-        ),
-        child: Column(
-          children: context
-              .select<TaskProvider, List<SubtaskModel>>(
-                (TaskProvider provider) => provider.task!.substasks,
-              )
-              .map(Subtask.new)
-              .toList(),
+        ],
+      );
+
+  Widget _progress(BuildContext builderContext) => ExpansionTile(
+        initiallyExpanded: true,
+        title: const TitleText('Progression'),
+        children: <Widget>[
+          _progressBar(builderContext),
+        ],
+      );
+
+  Widget _informations(BuildContext builderContext) => ExpansionTile(
+        initiallyExpanded: true,
+        title: const TitleText('Informations'),
+        children: <Widget>[
+          Card(
+            margin: 16.horizontal,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: <Widget>[
+                  _dates(builderContext),
+                  8.height,
+                  _assignedTo(builderContext),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+
+  AppBar _appBar(BuildContext context) => AppBar(
+        title: Text(
+          context.read<TaskProvider>().task!.name,
+          style: const TextStyle(color: Colors.black),
         ),
       );
 
@@ -204,49 +233,14 @@ class _TaskPageBuilder extends StatelessWidget {
           appBar: _appBar(builderContext),
           body: SafeArea(
             child: ListView(
-              padding: const EdgeInsets.only(top: 32, bottom: 100),
+              padding: const EdgeInsets.only(top: 16, bottom: 100),
               children: <Widget>[
-                Padding(
-                  padding: 16.horizontal,
-                  child: const Text(
-                    'Progression',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                8.height,
-                _progressBar(builderContext),
-                16.height,
-                Padding(
-                  padding: 16.horizontal,
-                  child: const Text(
-                    'Informations',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                8.height,
-                _dates(builderContext),
-                8.height,
-                _assignedTo(builderContext),
-                16.height,
-                Padding(
-                  padding: 16.horizontal,
-                  child: const Text(
-                    'Sous-tâches',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                8.height,
+                _progress(builderContext),
+                _informations(builderContext),
                 _subtasks(builderContext),
               ],
             ),
           ),
-        ),
-      );
-
-  AppBar _appBar(BuildContext context) => AppBar(
-        title: Text(
-          context.read<TaskProvider>().task!.name,
-          style: const TextStyle(color: Colors.black),
         ),
       );
 }

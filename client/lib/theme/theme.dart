@@ -200,12 +200,20 @@ class ThemeGenerator {
   static DatePickerThemeData get _datePickerTheme => DatePickerThemeData(
         backgroundColor: _colorScheme.surface,
         surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: _dividerTheme.color!),
+          borderRadius: BorderRadius.circular(16),
+        ),
       );
+
+  static ExpansionTileThemeData get _expansionTileTheme =>
+      const ExpansionTileThemeData(shape: Border());
 
   static ThemeData generate() => ThemeData(
         cardTheme: _cardTheme,
         hintColor: _hintColor,
         dividerTheme: _dividerTheme,
+        expansionTileTheme: _expansionTileTheme,
         dividerColor: _borderColor,
         splashColor: Colors.transparent,
         dialogBackgroundColor: _colorScheme.surface,

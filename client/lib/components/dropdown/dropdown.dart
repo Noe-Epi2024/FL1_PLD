@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/dropdown/dropdown_entry.dart';
@@ -92,22 +93,24 @@ class Dropdown<T> extends StatelessWidget {
       (DropdownProvider<T> provider) => provider.isOpen,
     );
 
-    return InkWell(
-      onTap: () async => _onClick(context),
-      child: InputDecorator(
-        isFocused: isOpen,
-        isEmpty: selectedValue == null,
-        decoration: InputDecoration(
-          enabledBorder: InputBorder.none,
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          labelText: labelText,
-          prefixIcon: const Icon(Icons.person),
-          suffixIcon: isOpen
-              ? const Icon(Icons.arrow_drop_up_rounded)
-              : const Icon(Icons.arrow_drop_down_rounded),
+    return Builder(
+      builder: (BuildContext builderContext) => InkWell(
+        onTap: () async => _onClick(builderContext),
+        child: InputDecorator(
+          isFocused: isOpen,
+          isEmpty: selectedValue == null,
+          decoration: InputDecoration(
+            enabledBorder: InputBorder.none,
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            labelText: labelText,
+            prefixIcon: const Icon(Icons.person),
+            suffixIcon: isOpen
+                ? const Icon(Icons.arrow_drop_up_rounded)
+                : const Icon(Icons.arrow_drop_down_rounded),
+          ),
+          child: selectedValue != null ? Text(selectedValue) : null,
         ),
-        child: selectedValue != null ? Text(selectedValue) : null,
       ),
     );
   }
