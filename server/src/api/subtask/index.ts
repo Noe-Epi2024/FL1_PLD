@@ -142,8 +142,6 @@ async function patchSubTask(req: Request, res: Response) {
         var subtaskId = req.params.subtaskId;
         var data = req.body;
 
-        console.log(taskId, subtaskId, data.isDone);
-
         if (!token) {
             return res.status(400).send({ success: false, message: "No access token provided" });
         }
@@ -156,7 +154,7 @@ async function patchSubTask(req: Request, res: Response) {
             return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
-        if (!data.name || !data.isDone) {
+        if (data.name as string === undefined && data.isDone as Boolean === undefined) {
             return res.status(409).send({ success: false, message: "Missing or wrong data to change" });
         }
 
