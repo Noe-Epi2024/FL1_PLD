@@ -15,10 +15,12 @@ class LoginPageDesktop extends LoginPage {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: AuthenticationLayoutDesktop(
-          child: context.watch<LoginProvider>().isLoading
-              ? _loading
-              : form(context),
+        body: SafeArea(
+          child: AuthenticationLayoutDesktop(
+            child: context.watch<LoginProvider>().isLoading
+                ? _loading
+                : form(context),
+          ),
         ),
       );
 }

@@ -180,17 +180,27 @@ class _TaskPageBuilder extends StatelessWidget {
                   .select<TaskProvider, List<SubtaskModel>>(
                     (TaskProvider provider) => provider.task!.substasks,
                   )
-                  .map(Subtask.new)
+                  .map(
+                    (SubtaskModel subtask) => Subtask(
+                      projectId: projectId,
+                      subtaskModel: subtask,
+                      taksId: taskId,
+                    ),
+                  )
                   .toList(),
             ),
           ),
         ],
       );
 
-  Widget _progress(BuildContext builderContext) => ExpansionTile(
-        initiallyExpanded: true,
-        title: const TitleText('Progression'),
+  Widget _progress(BuildContext builderContext) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          TitleText(
+            'Progression',
+            padding: 16.horizontal,
+          ),
+          16.height,
           _progressBar(builderContext),
         ],
       );
@@ -227,7 +237,8 @@ class _TaskPageBuilder extends StatelessWidget {
         future: () async => _getTask(context),
         loader: Scaffold(
           appBar: AppBar(),
-          body: const Center(child: CircularProgressIndicator()),
+          body:
+              const SafeArea(child: Center(child: CircularProgressIndicator())),
         ),
         builder: (BuildContext builderContext) => Scaffold(
           appBar: _appBar(builderContext),

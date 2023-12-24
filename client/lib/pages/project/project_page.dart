@@ -57,13 +57,15 @@ class _ProjectPageBuilder extends StatelessWidget {
 
     return Scaffold(
       appBar: _appBar(context),
-      body: ListView(
-        padding:
-            const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 100),
-        children: <Widget>[
-          const TitleText('Tâches'),
-          ...provider.project!.taskPreviews.map(TaskPreview.new),
-        ],
+      body: SafeArea(
+        child: ListView(
+          padding:
+              const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 100),
+          children: <Widget>[
+            const TitleText('Tâches'),
+            ...provider.project!.taskPreviews.map(TaskPreview.new),
+          ],
+        ),
       ),
     );
   }

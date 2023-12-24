@@ -8,6 +8,7 @@ class RegisterPageDekstop extends RegisterPage {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: AuthenticationLayoutDesktop(child: form(context)),
+        body:
+            SafeArea(child: AuthenticationLayoutDesktop(child: form(context))),
       );
 }

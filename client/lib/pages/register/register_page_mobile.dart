@@ -8,6 +8,6 @@ class RegisterPageMobile extends RegisterPage {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: AuthenticationLayoutMobile(child: form(context)),
+        body: SafeArea(child: AuthenticationLayoutMobile(child: form(context))),
       );
 }

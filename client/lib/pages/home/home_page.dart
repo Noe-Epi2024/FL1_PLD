@@ -166,10 +166,12 @@ class _HomePageBuilder extends HookWidget {
     return Scaffold(
       appBar: _appBar(context),
       floatingActionButton: _floatingActionButton(context),
-      body: ProviderResolver<HomePageProvider>.future(
-        future: () async => _loadProjects(context),
-        builder: (BuildContext builderContext) =>
-            _builder(builderContext, controller),
+      body: SafeArea(
+        child: ProviderResolver<HomePageProvider>.future(
+          future: () async => _loadProjects(context),
+          builder: (BuildContext builderContext) =>
+              _builder(builderContext, controller),
+        ),
       ),
     );
   }

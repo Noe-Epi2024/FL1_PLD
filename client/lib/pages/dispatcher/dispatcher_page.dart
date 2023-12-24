@@ -35,8 +35,10 @@ class _DispatcherPageState extends State<DispatcherPage> {
 
   @override
   Widget build(BuildContext context) => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+        body: SafeArea(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
       );
 }

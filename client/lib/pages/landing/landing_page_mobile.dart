@@ -10,16 +10,21 @@ class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: AuthenticationLayoutMobile(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              textTitle(context, style: Theme.of(context).textTheme.titleLarge),
-              64.height,
-              SizedBox(height: 56, child: registerButton),
-              8.height,
-              connectionButton,
-            ],
+        body: SafeArea(
+          child: AuthenticationLayoutMobile(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                textTitle(
+                  context,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                64.height,
+                SizedBox(height: 56, child: registerButton),
+                8.height,
+                connectionButton,
+              ],
+            ),
           ),
         ),
       );
