@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/helpers/date_helper.dart';
 import 'package:hyper_tools/models/project/task/task_preview_model.dart';
+import 'package:hyper_tools/pages/home/home_page_provider.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/task_page.dart';
 import 'package:hyper_tools/theme/theme.dart';
+import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 
 class TaskPreview extends StatelessWidget {
@@ -14,14 +17,16 @@ class TaskPreview extends StatelessWidget {
   final TaskPreviewModel taskPreviewModel;
 
   Future<void> _onTapPreview(BuildContext context) async {
-    final ProjectProvider provider = context.read<ProjectProvider>();
+    final HomeProvider homeProvider = context.read<HomeProvider>();
+    final ProjectProvider projectProvider = context.read<ProjectProvider>();
 
-    await Navigator.of(context).push(
-      MaterialPageRoute<TaskPage>(
-        builder: (_) => TaskPage(
-          provider.project!.id,
-          taskPreviewModel.id,
-        ),
+    await Navigation.push(
+      MultiProvider(
+        providers: <SingleChildWidget>[
+          ChangeNotifierProvider<HomeProvider>.value(value: homeProvider),
+          ChangeNotifierProvider<ProjectProvider>.value(value: projectProvider),
+        ],
+        child: TaskPage(projectProvider.project!.id, taskPreviewModel.id),
       ),
     );
   }

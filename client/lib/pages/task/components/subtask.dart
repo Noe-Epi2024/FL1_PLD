@@ -5,16 +5,18 @@ import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/http/requests/project/task/subtask/delete_subtask.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
+import 'package:hyper_tools/pages/task/task_provider.dart';
+import 'package:provider/provider.dart';
 
 class Subtask extends HookWidget {
   const Subtask({
-    required this.subtaskModel,
+    required this.subtask,
     required this.projectId,
     required this.taksId,
     super.key,
   });
 
-  final SubtaskModel subtaskModel;
+  final SubtaskModel subtask;
   final String projectId;
   final String taksId;
 
@@ -23,10 +25,14 @@ class Subtask extends HookWidget {
       await DeleteSubtask(
         projectId: projectId,
         taskId: taksId,
-        subtaskId: subtaskModel.id,
+        subtaskId: subtask.id,
       ).delete();
 
       Messenger.showSnackBarQuickInfo('Supprimé', context);
+
+      context.read<TaskProvider>()
+        ..task!.substasks.remove(subtask)
+        ..notifyListeners();
     } on ErrorModel catch (e) {
       Messenger.showSnackBarError(e.errorMessage);
     }
@@ -52,7 +58,7 @@ class Subtask extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller =
-        useTextEditingController(text: subtaskModel.name);
+        useTextEditingController(text: subtask.name);
 
     return Slidable(
       endActionPane: ActionPane(
@@ -72,7 +78,7 @@ class Subtask extends HookWidget {
           Expanded(child: _nameField(context, controller)),
           if (true)
             TextButton(onPressed: () {}, child: const Text('Sauvegarder')),
-          Checkbox(value: subtaskModel.isDone, onChanged: (bool? v) {}),
+          Checkbox(value: subtask.isDone, onChanged: (bool? v) {}),
         ],
       ),
     );

@@ -10,8 +10,11 @@ import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
+import 'package:hyper_tools/models/project/task/task_preview_model.dart';
+import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/components/members_dropdown.dart';
 import 'package:hyper_tools/pages/task/components/subtask.dart';
+import 'package:hyper_tools/pages/task/components/task_page_loader.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:hyper_tools/theme/theme.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +60,12 @@ class _TaskPageBuilder extends StatelessWidget {
       await PatchTask(projectId: projectId, taskId: taskId, startDate: date)
           .patch();
 
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      context.read<ProjectProvider>()
+        ..project!
+            .taskPreviews
+            .firstWhere((TaskPreviewModel task) => task.id == taskId)
+            .startDate = date
+        ..notifyListeners();
 
       return true;
     } on ErrorModel catch (e) {
@@ -73,6 +81,13 @@ class _TaskPageBuilder extends StatelessWidget {
           .patch();
 
       Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+
+      context.read<ProjectProvider>()
+        ..project!
+            .taskPreviews
+            .firstWhere((TaskPreviewModel task) => task.id == taskId)
+            .endDate = date
+        ..notifyListeners();
 
       return true;
     } on ErrorModel catch (e) {
@@ -183,7 +198,7 @@ class _TaskPageBuilder extends StatelessWidget {
                   .map(
                     (SubtaskModel subtask) => Subtask(
                       projectId: projectId,
-                      subtaskModel: subtask,
+                      subtask: subtask,
                       taksId: taskId,
                     ),
                   )
@@ -235,11 +250,7 @@ class _TaskPageBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ProviderResolver<TaskProvider>.future(
         future: () async => _getTask(context),
-        loader: Scaffold(
-          appBar: AppBar(),
-          body:
-              const SafeArea(child: Center(child: CircularProgressIndicator())),
-        ),
+        loader: const TaskPageLoader(),
         builder: (BuildContext builderContext) => Scaffold(
           appBar: _appBar(builderContext),
           body: SafeArea(

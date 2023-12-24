@@ -19,9 +19,9 @@ class TaskPreviewModel {
       );
 
   final String id;
-  final String name;
-  final String ownerName;
-  final DateTime startDate;
-  final DateTime endDate;
-  final int? progress;
+  String name;
+  String ownerName;
+  DateTime startDate;
+  DateTime endDate;
+  int? progress;
 }

@@ -15,6 +15,6 @@ class ProjectMemberModel {
       );
 
   final String userId;
-  final ProjectRole role;
   final String name;
+  ProjectRole role;
 }

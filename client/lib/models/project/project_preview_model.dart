@@ -19,8 +19,8 @@ class ProjectPreviewModel {
       );
 
   final String id;
-  final String name;
-  final int membersCount;
-  final ProjectRole role;
-  final int? progress;
+  String name;
+  int membersCount;
+  ProjectRole role;
+  int? progress;
 }

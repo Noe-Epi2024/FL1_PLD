@@ -22,7 +22,7 @@ class CreateProjectModal extends HookWidget {
       role: ProjectRole.owner,
     );
 
-    final HomePageProvider provider = context.read<HomePageProvider>();
+    final HomeProvider provider = context.read<HomeProvider>();
 
     provider.projects!.projects.add(preview);
     provider.notifyListeners();

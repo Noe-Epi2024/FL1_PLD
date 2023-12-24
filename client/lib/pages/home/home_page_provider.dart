@@ -1,8 +1,8 @@
 import 'package:hyper_tools/components/future_widget/provider_base.dart';
 import 'package:hyper_tools/models/projects/projects_model.dart';
 
-class HomePageProvider extends ProviderBase {
-  HomePageProvider() : super(isInitiallyLoading: true);
+class HomeProvider extends ProviderBase {
+  HomeProvider() : super(isInitiallyLoading: true);
 
   ProjectsModel? _projects;
 

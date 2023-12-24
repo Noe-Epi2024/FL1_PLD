@@ -21,9 +21,8 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-      ChangeNotifierProvider<HomePageProvider>(
-        create: (_) => HomePageProvider(),
+  Widget build(BuildContext context) => ChangeNotifierProvider<HomeProvider>(
+        create: (_) => HomeProvider(),
         child: const _HomePageBuilder(),
       );
 }
@@ -32,7 +31,7 @@ class _HomePageBuilder extends HookWidget {
   const _HomePageBuilder();
 
   Future<void> _loadProjects(BuildContext context) async {
-    final HomePageProvider provider = context.read<HomePageProvider>();
+    final HomeProvider provider = context.read<HomeProvider>();
 
     try {
       final ProjectsModel projects = await GetProjects().get();
@@ -51,7 +50,7 @@ class _HomePageBuilder extends HookWidget {
     BuildContext context,
     TextEditingController controller,
   ) {
-    context.read<HomePageProvider>().filter = controller.text;
+    context.read<HomeProvider>().filter = controller.text;
   }
 
   void Function() _initializeController(
@@ -68,23 +67,29 @@ class _HomePageBuilder extends HookWidget {
   Future<void> _onClickCreateProject(BuildContext context) async {
     await showDialog(
       context: context,
-      builder: (_) => ChangeNotifierProvider<HomePageProvider>.value(
-        value: context.read<HomePageProvider>(),
+      builder: (_) => ChangeNotifierProvider<HomeProvider>.value(
+        value: context.read<HomeProvider>(),
         builder: (__, ___) => const CreateProjectModal(),
       ),
     );
   }
 
   List<Widget> _getPreviews(BuildContext context) {
-    final HomePageProvider provider = context.watch<HomePageProvider>();
-    final String filter = provider.filter;
-    final ProjectsModel projects = provider.projects!;
+    final String filter = context.select<HomeProvider, String>(
+      (HomeProvider provider) => provider.filter,
+    );
 
-    if (projects.projects.isEmpty) {
+    final List<ProjectPreviewModel> projectsPreviews =
+        context.select<HomeProvider, List<ProjectPreviewModel>>(
+      (HomeProvider provider) =>
+          provider.projects?.projects ?? <ProjectPreviewModel>[],
+    );
+
+    if (projectsPreviews.isEmpty) {
       return <Widget>[];
     }
 
-    return projects.projects
+    return projectsPreviews
         .where((ProjectPreviewModel preview) => preview.name.contains(filter))
         .map(ProjectPreview.new)
         .toList();
@@ -122,8 +127,8 @@ class _HomePageBuilder extends HookWidget {
       );
 
   TextField _searchBar(BuildContext context, TextEditingController controller) {
-    final String filter = context.select<HomePageProvider, String>(
-      (HomePageProvider provider) => provider.filter,
+    final String filter = context.select<HomeProvider, String>(
+      (HomeProvider provider) => provider.filter,
     );
 
     return TextField(
@@ -167,7 +172,7 @@ class _HomePageBuilder extends HookWidget {
       appBar: _appBar(context),
       floatingActionButton: _floatingActionButton(context),
       body: SafeArea(
-        child: ProviderResolver<HomePageProvider>.future(
+        child: ProviderResolver<HomeProvider>.future(
           future: () async => _loadProjects(context),
           builder: (BuildContext builderContext) =>
               _builder(builderContext, controller),

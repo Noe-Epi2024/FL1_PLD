@@ -10,5 +10,5 @@ class ProjectMembersModel {
             .toList(),
       );
 
-  final List<ProjectMemberModel> members;
+  List<ProjectMemberModel> members;
 }

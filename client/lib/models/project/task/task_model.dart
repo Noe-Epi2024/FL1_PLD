@@ -26,11 +26,11 @@ class TaskModel {
       );
 
   final String id;
-  final String name;
-  final String description;
-  final String ownerId;
-  final String ownerName;
-  final DateTime startDate;
-  final DateTime endDate;
-  final List<SubtaskModel> substasks;
+  String name;
+  String description;
+  String ownerId;
+  String ownerName;
+  DateTime startDate;
+  DateTime endDate;
+  List<SubtaskModel> substasks;
 }

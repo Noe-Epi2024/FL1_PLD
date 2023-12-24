@@ -5,6 +5,6 @@ class SubtaskModel {
       SubtaskModel(id: json['_id'], name: json['name'], isDone: json['isDone']);
 
   final String id;
-  final String name;
-  final bool isDone;
+  String name;
+  bool isDone;
 }

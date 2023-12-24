@@ -21,8 +21,8 @@ class ProjectModel {
       );
 
   final String id;
-  final String name;
-  final ProjectRole role;
-  final List<TaskPreviewModel> taskPreviews;
-  final int? progress;
+  String name;
+  ProjectRole role;
+  List<TaskPreviewModel> taskPreviews;
+  int? progress;
 }
