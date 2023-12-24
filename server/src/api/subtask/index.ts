@@ -156,8 +156,7 @@ async function patchSubTask(req: Request, res: Response) {
             return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
-        if (!data.name && !data.isDone) {
-            console.log(data.name, data.isDone);
+        if (!data.name || !data.isDone) {
             return res.status(409).send({ success: false, message: "Missing or wrong data to change" });
         }
 
