@@ -2,36 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
+import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
-import 'package:hyper_tools/models/project/project_preview_model.dart';
-import 'package:hyper_tools/models/project/project_role.dart';
-import 'package:hyper_tools/pages/home/home_provider.dart';
+import 'package:hyper_tools/http/requests/project/task/subtask/post_subtask.dart';
+import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
+import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
-class CreateProjectModal extends HookWidget {
-  const CreateProjectModal({super.key});
+class CreateSubtaskModal extends HookWidget {
+  const CreateSubtaskModal({
+    required this.projectId,
+    required this.taskId,
+    super.key,
+  });
+
+  final String projectId;
+  final String taskId;
 
   Future<void> _onClickCreate(
     BuildContext context,
     TextEditingController controller,
   ) async {
-    final ProjectPreviewModel projectPreview = ProjectPreviewModel(
-      id: '',
-      membersCount: 1,
-      name: controller.text,
-      role: ProjectRole.owner,
-    );
+    try {
+      final String subtaskId = await PostSubtask(
+        projectId: projectId,
+        taskId: taskId,
+        name: controller.text,
+      ).post();
 
-    context.read<HomeProvider>().addProject(projectPreview);
+      final SubtaskModel subtask =
+          SubtaskModel(id: subtaskId, name: controller.text);
 
-    Navigator.pop(context);
+      context.read<TaskProvider>().addSubtask(subtask);
+
+      Navigator.pop(context);
+    } on ErrorModel catch (e) {
+      e.show();
+    }
   }
 
-  Text get _description => const Text(
-        'En créant un projet vous en devenez propriétaire et avez la possibilité de gérer vos collaborateurs.',
-      );
-
-  TitleText get _title => const TitleText('Créer un nouveau projet');
+  TitleText get _title => const TitleText('Créer une sous-tâche');
 
   ElevatedButton _createButton(
     BuildContext context,
@@ -49,7 +60,7 @@ class CreateProjectModal extends HookWidget {
 
   TextField _nameField(TextEditingController controller) => TextField(
         textCapitalization: TextCapitalization.sentences,
-        decoration: const InputDecoration(hintText: 'Nom du projet'),
+        decoration: const InputDecoration(hintText: 'Nom de la sous-tâche'),
         controller: controller,
       );
 
@@ -66,8 +77,6 @@ class CreateProjectModal extends HookWidget {
           children: <Widget>[
             _title,
             16.height,
-            _description,
-            32.height,
             _nameField(controller),
             16.height,
             EvenlySizedChildren(

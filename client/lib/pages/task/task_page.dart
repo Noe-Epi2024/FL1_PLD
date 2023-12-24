@@ -9,7 +9,9 @@ import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
 import 'package:hyper_tools/pages/task/components/dates/task_end_date.dart';
 import 'package:hyper_tools/pages/task/components/dates/task_start_date.dart';
+import 'package:hyper_tools/pages/task/components/description/task_description.dart';
 import 'package:hyper_tools/pages/task/components/members/members_dropdown.dart';
+import 'package:hyper_tools/pages/task/components/subtask/create_subtask_modal.dart';
 import 'package:hyper_tools/pages/task/components/subtask/subtask.dart';
 import 'package:hyper_tools/pages/task/components/task_page_loader.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
@@ -50,6 +52,19 @@ class _TaskPageBuilder extends StatelessWidget {
     }
   }
 
+  Future<void> _onClickCreateSubtask(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (_) => ChangeNotifierProvider<TaskProvider>.value(
+        value: context.read<TaskProvider>(),
+        builder: (__, ___) => CreateSubtaskModal(
+          projectId: projectId,
+          taskId: taskId,
+        ),
+      ),
+    );
+  }
+
   List<Widget> _getSubtasks(BuildContext context) {
     final List<SubtaskModel> subtasks =
         context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
@@ -60,7 +75,7 @@ class _TaskPageBuilder extends StatelessWidget {
             key: Key(subtask.id),
             projectId: projectId,
             taskId: taskId,
-            subtask: subtask,
+            subtaskId: subtask.id,
           ),
         )
         .toList();
@@ -70,8 +85,9 @@ class _TaskPageBuilder extends StatelessWidget {
     final List<SubtaskModel> subtasks =
         context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
 
-    final double progress =
-        subtasks.where((SubtaskModel subtask) => subtask.isDone).length /
+    final double progress = subtasks.isEmpty
+        ? 0
+        : subtasks.where((SubtaskModel subtask) => subtask.isDone).length /
             subtasks.length;
 
     return Card(
@@ -135,16 +151,7 @@ class _TaskPageBuilder extends StatelessWidget {
         initiallyExpanded: true,
         title: const TitleText('À faire'),
         children: <Widget>[
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              border: Border(
-                top: BorderSide(color: Theme.of(context).dividerColor),
-                bottom: BorderSide(color: Theme.of(context).dividerColor),
-              ),
-            ),
-            child: Column(children: _getSubtasks(context)),
-          ),
+          Column(children: _getSubtasks(context)),
         ],
       );
 
@@ -170,6 +177,8 @@ class _TaskPageBuilder extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: <Widget>[
+                  TaskDescription(projectId: projectId, taskId: taskId),
+                  8.height,
                   _dates(context),
                   8.height,
                   _assignedTo(context),
@@ -193,6 +202,10 @@ class _TaskPageBuilder extends StatelessWidget {
         loader: const TaskPageLoader(),
         builder: (BuildContext builderContext) => Scaffold(
           appBar: _appBar(builderContext),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async => _onClickCreateSubtask(context),
+            child: const Icon(Icons.add),
+          ),
           body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.only(top: 16, bottom: 100),

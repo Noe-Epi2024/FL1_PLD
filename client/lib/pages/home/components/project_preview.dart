@@ -1,45 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
-import 'package:hyper_tools/models/project/project_role.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:hyper_tools/pages/project/project_page.dart';
 import 'package:hyper_tools/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class ProjectPreview extends StatelessWidget {
-  const ProjectPreview(this.projectPreviewModel, {super.key});
+  const ProjectPreview(this.projectPreview, {super.key});
 
-  final ProjectPreviewModel projectPreviewModel;
+  final ProjectPreviewModel projectPreview;
 
   Future<void> _onTapPreview(BuildContext context) async {
     await Navigation.push(
       ChangeNotifierProvider<HomeProvider>.value(
         value: context.read<HomeProvider>(),
-        child: ProjectPage(projectPreviewModel.id),
+        child: ProjectPage(projectId: projectPreview.id),
       ),
     );
   }
 
-  Widget _roleIcon(BuildContext context) => switch (projectPreviewModel.role) {
-        ProjectRole.owner => Icon(
-            Boxicons.bx_crown,
-            size: 16,
-            color: Theme.of(context).hintColor,
-          ),
-        ProjectRole.writer => Icon(
-            Boxicons.bx_edit,
-            size: 16,
-            color: Theme.of(context).hintColor,
-          ),
-        ProjectRole.reader => Icon(
-            Icons.remove_red_eye_outlined,
-            size: 16,
-            color: Theme.of(context).hintColor,
-          )
-      };
+  Widget _roleIcon(BuildContext context) => Icon(
+        projectPreview.role.icon,
+        size: 16,
+        color: Theme.of(context).hintColor,
+      );
 
   Widget _picture(BuildContext context) => Container(
         height: 40,
@@ -50,7 +36,7 @@ class ProjectPreview extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            projectPreviewModel.name[0],
+            projectPreview.name[0],
             style: TextStyle(
               color: Theme.of(context).colorScheme.onSecondary,
               fontSize: 16,
@@ -61,12 +47,12 @@ class ProjectPreview extends StatelessWidget {
       );
 
   Widget _members(BuildContext context) => Text(
-        '${projectPreviewModel.membersCount} membre${projectPreviewModel.membersCount > 1 ? "s" : ""}',
+        '${projectPreview.membersCount} membre${projectPreview.membersCount > 1 ? "s" : ""}',
         style: TextStyle(color: Theme.of(context).hintColor),
       );
 
   Widget _name() => Text(
-        projectPreviewModel.name,
+        projectPreview.name,
         style: const TextStyle(fontWeight: FontWeight.bold),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -80,12 +66,12 @@ class ProjectPreview extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(ThemeGenerator.kBorderRadius),
               minHeight: 10,
-              value: projectPreviewModel.progress!.toDouble() / 100,
+              value: projectPreview.progress!.toDouble() / 100,
             ),
           ),
           16.width,
           Text(
-            '${projectPreviewModel.progress}%',
+            '${projectPreview.progress}%',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
@@ -116,7 +102,7 @@ class ProjectPreview extends StatelessWidget {
                             _name(),
                             _members(context),
                             8.height,
-                            if (projectPreviewModel.progress != null)
+                            if (projectPreview.progress != null)
                               _progressBar(context)
                             else
                               _noTaskYet(),

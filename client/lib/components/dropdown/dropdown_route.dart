@@ -59,7 +59,11 @@ class _DropdownRoute<T> extends PopupRoute<T> {
                   Positioned(
                     left: x,
                     top: y,
-                    child: SizedBox(width: width, height: height, child: child),
+                    child: SizedBox(
+                      height: height,
+                      width: width,
+                      child: child,
+                    ),
                   ),
                 ],
               );
@@ -67,7 +71,4 @@ class _DropdownRoute<T> extends PopupRoute<T> {
           ),
         ),
       );
-
-  double normalize(double value, double minValue, double maxValue) =>
-      (value - minValue) / (maxValue - minValue) * 2.0 - 1.0;
 }

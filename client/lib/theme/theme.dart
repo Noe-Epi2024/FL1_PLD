@@ -18,6 +18,7 @@ class ThemeGenerator {
   static final Color _labelColor = Colors.grey.shade600;
 
   static CheckboxThemeData get _checkBoxTheme => CheckboxThemeData(
+        shape: const CircleBorder(),
         side: BorderSide(color: _borderColor),
         fillColor: MaterialStateProperty.resolveWith(
           (Set<MaterialState> states) {
@@ -29,7 +30,9 @@ class ThemeGenerator {
         ),
       );
 
-  static TextTheme get _textTheme => GoogleFonts.latoTextTheme();
+  static TextTheme get _textTheme => GoogleFonts.latoTextTheme().copyWith(
+        bodyLarge: GoogleFonts.lato(letterSpacing: 0),
+      );
 
   static ColorScheme get _colorScheme => ColorScheme(
         background: const Color(0xFFF8F8F8),
@@ -51,9 +54,10 @@ class ThemeGenerator {
   static InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        hintStyle: TextStyle(color: _hintColor),
-        labelStyle: TextStyle(color: _labelColor, letterSpacing: 0),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        hintStyle: _textTheme.bodyLarge!.copyWith(color: _hintColor),
+        labelStyle: _textTheme.bodyLarge!.copyWith(color: _labelColor),
         prefixIconColor: _hintColor,
         suffixIconColor: _hintColor,
         floatingLabelStyle:

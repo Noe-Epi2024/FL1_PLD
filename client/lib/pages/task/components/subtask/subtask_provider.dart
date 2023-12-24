@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SubtaskProvider with ChangeNotifier {
-  bool _hasNameChanged = false;
+  SubtaskProvider({required String initialName}) : _currentName = initialName;
 
-  bool get hasNameChanged => _hasNameChanged;
+  String _currentName;
 
-  set hasNameChanged(bool value) {
-    _hasNameChanged = value;
+  String get currentName => _currentName;
+
+  set currentName(String value) {
+    _currentName = value;
     notifyListeners();
   }
 }

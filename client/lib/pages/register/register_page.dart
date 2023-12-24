@@ -63,7 +63,7 @@ class RegisterPage extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: _emailController,
         decoration: const InputDecoration(
-          label: Text('Entrez votre adresse email'),
+          hintText: 'Entrez votre adresse email',
           prefixIcon: Icon(Icons.person),
         ),
         validator: (String? value) => ValidatorHelper.isNullOrEmptyValidator(
@@ -78,7 +78,7 @@ class RegisterPage extends StatelessWidget {
   @protected
   Widget get confirmPasswordField => PasswordField(
         controller: _confirmPasswordController,
-        label: 'Confirmez votre mot de passe',
+        hint: 'Confirmez votre mot de passe',
         validator: (String? value) =>
             ValidatorHelper.isNullOrEmptyValidator(
               value,

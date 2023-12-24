@@ -14,12 +14,21 @@ class TaskProvider extends ProviderBase {
     notifyListeners();
   }
 
+  SubtaskModel findSubtask(String id) =>
+      _task!.substasks.firstWhere((SubtaskModel subtask) => subtask.id == id);
+
   void setSubtaskIsDone({required String subtaskId, required bool value}) {
     if (task == null) return;
 
-    task!.substasks
-        .firstWhere((SubtaskModel subtask) => subtask.id == subtaskId)
-        .isDone = value;
+    findSubtask(subtaskId).isDone = value;
+
+    notifyListeners();
+  }
+
+  void setSubtaskName({required String subtaskId, required String value}) {
+    if (task == null) return;
+
+    findSubtask(subtaskId).name = value;
 
     notifyListeners();
   }
@@ -27,8 +36,24 @@ class TaskProvider extends ProviderBase {
   void deleteSubtask({required String subtaskId}) {
     if (task == null) return;
 
-    task!.substasks
+    _task!.substasks
         .removeWhere((SubtaskModel subtask) => subtask.id == subtaskId);
+
+    notifyListeners();
+  }
+
+  void addSubtask(SubtaskModel subtask) {
+    if (task == null) return;
+
+    _task!.substasks.add(subtask);
+
+    notifyListeners();
+  }
+
+  void setDescription(String description) {
+    if (task == null) return;
+
+    _task!.description = description;
 
     notifyListeners();
   }

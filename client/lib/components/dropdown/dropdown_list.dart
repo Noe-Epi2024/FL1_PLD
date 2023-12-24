@@ -47,10 +47,10 @@ class _DropdownList<T> extends HookWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
       ),
-      child:
-          ListView(padding: EdgeInsets.zero, shrinkWrap: true, children: items),
+      child: ListView(shrinkWrap: true, children: items),
     );
   }
 
@@ -72,12 +72,14 @@ class _DropdownList<T> extends HookWidget {
     useEffect(() => _initializeController(context, controller));
 
     return Card(
+      color: Theme.of(context).colorScheme.background,
+      elevation: 3,
       child: ProviderResolver<DropdownProvider<T>>(
         builder: (BuildContext resolverContext) => Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             _searchBar(controller),
-            Expanded(child: _choices(resolverContext)),
+            _choices(resolverContext),
           ],
         ),
       ),

@@ -1,6 +1,5 @@
 import 'package:hyper_tools/helpers/route_helper.dart';
 import 'package:hyper_tools/http/requests/post_request.dart';
-import 'package:hyper_tools/models/success_model.dart';
 
 class PostSubtask extends PostRequest<String> {
   PostSubtask({
@@ -17,8 +16,7 @@ class PostSubtask extends PostRequest<String> {
   Map<String, dynamic>? get body => <String, dynamic>{'name': name};
 
   @override
-  String builder(Map<String, dynamic> json) =>
-      SuccessModel.fromJson(json).data['id'];
+  String builder(Map<String, dynamic> json) => json['id'];
 
   @override
   bool get private => true;

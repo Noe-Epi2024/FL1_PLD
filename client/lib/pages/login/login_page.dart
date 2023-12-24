@@ -63,7 +63,7 @@ class LoginPage extends StatelessWidget {
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
         decoration: const InputDecoration(
-          label: Text('Entrez votre adresse email'),
+          hintText: 'Entrez votre adresse email',
           prefixIcon: Icon(Icons.person),
         ),
         validator: (String? value) => ValidatorHelper.isNullOrEmptyValidator(
