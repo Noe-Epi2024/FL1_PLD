@@ -8,7 +8,6 @@ import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/member/project_member_model.dart';
 import 'package:hyper_tools/models/project/member/project_members_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
-import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
@@ -50,12 +49,9 @@ class ProjectMembersDropdown extends StatelessWidget {
 
       Messenger.showSnackBarQuickInfo('Sauvegardé', context);
 
-      context.read<ProjectProvider>()
-        ..project!
-            .taskPreviews
-            .firstWhere((TaskPreviewModel task) => task.id == taskId)
-            .ownerName = member.name
-        ..notifyListeners();
+      context
+          .read<ProjectProvider>()
+          .setTaskOwner(taskId: taskId, name: member.name);
 
       return true;
     } on ErrorModel catch (e) {

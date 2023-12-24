@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/date_picker/date_picker.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
-import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/http/requests/project/task/get_task.dart';
-import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
-import 'package:hyper_tools/models/project/task/task_preview_model.dart';
-import 'package:hyper_tools/pages/project/project_provider.dart';
-import 'package:hyper_tools/pages/task/components/members_dropdown.dart';
-import 'package:hyper_tools/pages/task/components/subtask.dart';
+import 'package:hyper_tools/pages/task/components/dates/task_end_date.dart';
+import 'package:hyper_tools/pages/task/components/dates/task_start_date.dart';
+import 'package:hyper_tools/pages/task/components/members/members_dropdown.dart';
+import 'package:hyper_tools/pages/task/components/subtask/subtask.dart';
 import 'package:hyper_tools/pages/task/components/task_page_loader.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:hyper_tools/theme/theme.dart';
@@ -38,7 +35,7 @@ class _TaskPageBuilder extends StatelessWidget {
   final String projectId;
   final String taskId;
 
-  Future<void> _getTask(BuildContext context) async {
+  Future<void> _loadTask(BuildContext context) async {
     final TaskProvider provider = context.read<TaskProvider>();
 
     try {
@@ -49,59 +46,29 @@ class _TaskPageBuilder extends StatelessWidget {
         ..task = task
         ..isLoading = false;
     } on ErrorModel catch (e) {
-      provider
-        ..error = e
-        ..isLoading = false;
+      provider.setErrorState(e);
     }
   }
 
-  Future<bool> _onSelectedStartDate(BuildContext context, DateTime date) async {
-    try {
-      await PatchTask(projectId: projectId, taskId: taskId, startDate: date)
-          .patch();
+  List<Widget> _getSubtasks(BuildContext context) {
+    final List<SubtaskModel> subtasks =
+        context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
 
-      context.read<ProjectProvider>()
-        ..project!
-            .taskPreviews
-            .firstWhere((TaskPreviewModel task) => task.id == taskId)
-            .startDate = date
-        ..notifyListeners();
-
-      return true;
-    } on ErrorModel catch (e) {
-      Messenger.showSnackBarError(e.errorMessage);
-
-      return false;
-    }
-  }
-
-  Future<bool> _onSelectedEndDate(BuildContext context, DateTime date) async {
-    try {
-      await PatchTask(projectId: projectId, taskId: taskId, endDate: date)
-          .patch();
-
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
-
-      context.read<ProjectProvider>()
-        ..project!
-            .taskPreviews
-            .firstWhere((TaskPreviewModel task) => task.id == taskId)
-            .endDate = date
-        ..notifyListeners();
-
-      return true;
-    } on ErrorModel catch (e) {
-      Messenger.showSnackBarError(e.errorMessage);
-
-      return false;
-    }
+    return subtasks
+        .map(
+          (SubtaskModel subtask) => Subtask(
+            key: Key(subtask.id),
+            projectId: projectId,
+            taskId: taskId,
+            subtask: subtask,
+          ),
+        )
+        .toList();
   }
 
   Widget _progressBar(BuildContext context) {
     final List<SubtaskModel> subtasks =
-        context.select<TaskProvider, List<SubtaskModel>>(
-      (TaskProvider provider) => provider.task!.substasks,
-    );
+        context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
 
     final double progress =
         subtasks.where((SubtaskModel subtask) => subtask.isDone).length /
@@ -148,35 +115,21 @@ class _TaskPageBuilder extends StatelessWidget {
         ],
       );
 
-  Widget _dates(BuildContext context) {
-    final TaskProvider provider = context.read<TaskProvider>();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text(
-          'Dates',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        EvenlySizedChildren(
-          children: <Widget>[
-            DatePicker(
-              label: 'Début',
-              initialDate: provider.task!.startDate,
-              onSelected: (DateTime date) async =>
-                  _onSelectedStartDate(context, date),
-            ),
-            DatePicker(
-              label: 'Fin',
-              initialDate: provider.task!.endDate,
-              onSelected: (DateTime date) async =>
-                  _onSelectedEndDate(context, date),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  Widget _dates(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Text(
+            'Dates',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          EvenlySizedChildren(
+            children: <Widget>[
+              TaskStartDate(projectId: projectId, taskId: taskId),
+              TaskEndDate(projectId: projectId, taskId: taskId),
+            ],
+          ),
+        ],
+      );
 
   Widget _subtasks(BuildContext context) => ExpansionTile(
         initiallyExpanded: true,
@@ -190,25 +143,12 @@ class _TaskPageBuilder extends StatelessWidget {
                 bottom: BorderSide(color: Theme.of(context).dividerColor),
               ),
             ),
-            child: Column(
-              children: context
-                  .select<TaskProvider, List<SubtaskModel>>(
-                    (TaskProvider provider) => provider.task!.substasks,
-                  )
-                  .map(
-                    (SubtaskModel subtask) => Subtask(
-                      projectId: projectId,
-                      subtask: subtask,
-                      taksId: taskId,
-                    ),
-                  )
-                  .toList(),
-            ),
+            child: Column(children: _getSubtasks(context)),
           ),
         ],
       );
 
-  Widget _progress(BuildContext builderContext) => Column(
+  Widget _progress(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TitleText(
@@ -216,11 +156,11 @@ class _TaskPageBuilder extends StatelessWidget {
             padding: 16.horizontal,
           ),
           16.height,
-          _progressBar(builderContext),
+          _progressBar(context),
         ],
       );
 
-  Widget _informations(BuildContext builderContext) => ExpansionTile(
+  Widget _informations(BuildContext context) => ExpansionTile(
         initiallyExpanded: true,
         title: const TitleText('Informations'),
         children: <Widget>[
@@ -230,9 +170,9 @@ class _TaskPageBuilder extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: <Widget>[
-                  _dates(builderContext),
+                  _dates(context),
                   8.height,
-                  _assignedTo(builderContext),
+                  _assignedTo(context),
                 ],
               ),
             ),
@@ -249,7 +189,7 @@ class _TaskPageBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ProviderResolver<TaskProvider>.future(
-        future: () async => _getTask(context),
+        future: () async => _loadTask(context),
         loader: const TaskPageLoader(),
         builder: (BuildContext builderContext) => Scaffold(
           appBar: _appBar(builderContext),

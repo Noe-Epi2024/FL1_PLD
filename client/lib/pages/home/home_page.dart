@@ -12,7 +12,7 @@ import 'package:hyper_tools/models/project/project_preview_model.dart';
 import 'package:hyper_tools/models/projects/projects_model.dart';
 import 'package:hyper_tools/pages/home/components/create_project_modal.dart';
 import 'package:hyper_tools/pages/home/components/project_preview.dart';
-import 'package:hyper_tools/pages/home/home_page_provider.dart';
+import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:hyper_tools/pages/landing/landing_page.dart';
 import 'package:hyper_tools/resources/resources.dart';
 import 'package:provider/provider.dart';
@@ -75,21 +75,16 @@ class _HomePageBuilder extends HookWidget {
   }
 
   List<Widget> _getPreviews(BuildContext context) {
-    final String filter = context.select<HomeProvider, String>(
-      (HomeProvider provider) => provider.filter,
-    );
+    final HomeProvider provider = context.watch<HomeProvider>();
+    final String filter = provider.filter;
+    final List<ProjectPreviewModel> projectPreviews =
+        provider.projects?.projects ?? <ProjectPreviewModel>[];
 
-    final List<ProjectPreviewModel> projectsPreviews =
-        context.select<HomeProvider, List<ProjectPreviewModel>>(
-      (HomeProvider provider) =>
-          provider.projects?.projects ?? <ProjectPreviewModel>[],
-    );
-
-    if (projectsPreviews.isEmpty) {
+    if (projectPreviews.isEmpty) {
       return <Widget>[];
     }
 
-    return projectsPreviews
+    return projectPreviews
         .where((ProjectPreviewModel preview) => preview.name.contains(filter))
         .map(ProjectPreview.new)
         .toList();

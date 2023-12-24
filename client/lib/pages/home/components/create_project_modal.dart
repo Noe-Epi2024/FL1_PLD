@@ -5,7 +5,7 @@ import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
-import 'package:hyper_tools/pages/home/home_page_provider.dart';
+import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:provider/provider.dart';
 
 class CreateProjectModal extends HookWidget {
@@ -15,17 +15,14 @@ class CreateProjectModal extends HookWidget {
     BuildContext context,
     TextEditingController controller,
   ) async {
-    final ProjectPreviewModel preview = ProjectPreviewModel(
+    final ProjectPreviewModel projectPreview = ProjectPreviewModel(
       id: '',
       membersCount: 1,
       name: controller.text,
       role: ProjectRole.owner,
     );
 
-    final HomeProvider provider = context.read<HomeProvider>();
-
-    provider.projects!.projects.add(preview);
-    provider.notifyListeners();
+    context.read<HomeProvider>().addProject(projectPreview);
 
     Navigator.pop(context);
   }

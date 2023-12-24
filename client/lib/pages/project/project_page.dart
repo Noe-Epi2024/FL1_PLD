@@ -4,6 +4,7 @@ import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/http/requests/project/get_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/project_model.dart';
+import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 import 'package:hyper_tools/pages/project/components/project_page_loading.dart';
 import 'package:hyper_tools/pages/project/components/task_preview.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
@@ -43,9 +44,7 @@ class _ProjectPageBuilder extends StatelessWidget {
   }
 
   AppBar _appBar(BuildContext context) {
-    final String name = context.select<ProjectProvider, String>(
-      (ProjectProvider provider) => provider.project!.name,
-    );
+    final String name = context.watch<ProjectProvider>().project!.name;
 
     return AppBar(
       title: Text(name, style: const TextStyle(color: Colors.black)),
@@ -53,7 +52,8 @@ class _ProjectPageBuilder extends StatelessWidget {
   }
 
   Widget _builder(BuildContext context) {
-    final ProjectProvider provider = context.watch<ProjectProvider>();
+    final List<TaskPreviewModel> taskPreviews =
+        context.watch<ProjectProvider>().project!.taskPreviews;
 
     return Scaffold(
       appBar: _appBar(context),
@@ -63,7 +63,7 @@ class _ProjectPageBuilder extends StatelessWidget {
               const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 100),
           children: <Widget>[
             const TitleText('Tâches'),
-            ...provider.project!.taskPreviews.map(TaskPreview.new),
+            ...taskPreviews.map(TaskPreview.new),
           ],
         ),
       ),

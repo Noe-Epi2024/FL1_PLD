@@ -4,7 +4,7 @@ import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
-import 'package:hyper_tools/pages/home/home_page_provider.dart';
+import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:hyper_tools/pages/project/project_page.dart';
 import 'package:hyper_tools/theme/theme.dart';
 import 'package:provider/provider.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/models/error_model.dart';
 
-class ProviderBase with ChangeNotifier {
+abstract class ProviderBase with ChangeNotifier {
   ProviderBase({bool isInitiallyLoading = false})
       : _isLoading = isInitiallyLoading {
     _isLoading = isInitiallyLoading;
@@ -22,6 +22,12 @@ class ProviderBase with ChangeNotifier {
 
   set error(ErrorModel? value) {
     _error = value;
+    notifyListeners();
+  }
+
+  void setErrorState(ErrorModel error) {
+    _isLoading = false;
+    _error = error;
     notifyListeners();
   }
 }
