@@ -25,6 +25,8 @@ class TaskStartDate extends StatelessWidget {
 
       Messenger.showSnackBarQuickInfo('Sauvegardé', context);
 
+      context.read<TaskProvider>().setStartDate(date);
+
       context
           .read<ProjectProvider>()
           .setTaskStartDate(taskId: taskId, date: date);

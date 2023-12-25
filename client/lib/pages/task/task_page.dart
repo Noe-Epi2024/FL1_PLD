@@ -121,6 +121,18 @@ class _TaskPageBuilder extends StatelessWidget {
         ],
       );
 
+  Widget _remainingTime(BuildContext context) {
+    final TaskProvider provider = context.watch<TaskProvider>();
+    final DateTime? startDate = provider.task!.startDate;
+    final DateTime? endDate = provider.task!.endDate;
+
+    if (startDate == null || endDate == null) return const SizedBox.shrink();
+
+    return Text(
+      'Durée estimée : ${endDate.difference(startDate).inDays} jours',
+    );
+  }
+
   Widget _dates(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -134,6 +146,7 @@ class _TaskPageBuilder extends StatelessWidget {
               TaskEndDate(projectId: projectId, taskId: taskId),
             ],
           ),
+          Builder(builder: _remainingTime),
         ],
       );
 

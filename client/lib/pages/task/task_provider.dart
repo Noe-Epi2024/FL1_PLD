@@ -66,6 +66,22 @@ class TaskProvider extends ProviderBase {
     notifyListeners();
   }
 
+  void setStartDate(DateTime? startDate) {
+    if (task == null) return;
+
+    _task?.startDate = startDate;
+
+    notifyListeners();
+  }
+
+  void setEndDate(DateTime? endDate) {
+    if (task == null) return;
+
+    _task?.endDate = endDate;
+
+    notifyListeners();
+  }
+
   double? get progress {
     if ((task?.substasks ?? <SubtaskModel>[]).isEmpty) return null;
 
