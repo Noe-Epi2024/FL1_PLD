@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
-import 'package:hyper_tools/consts/consts.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/http/requests/projects/get_projects.dart';
-import 'package:hyper_tools/local_storage/local_storage.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
 import 'package:hyper_tools/models/projects/projects_model.dart';
 import 'package:hyper_tools/pages/home/components/create_project_modal.dart';
 import 'package:hyper_tools/pages/home/components/project_preview.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
-import 'package:hyper_tools/pages/landing/landing_page.dart';
+import 'package:hyper_tools/pages/profile/profile_page.dart';
 import 'package:hyper_tools/resources/resources.dart';
 import 'package:provider/provider.dart';
 
@@ -40,9 +38,7 @@ class _HomePageBuilder extends HookWidget {
         ..projects = projects
         ..isLoading = false;
     } on ErrorModel catch (e) {
-      provider
-        ..error = e
-        ..isLoading = false;
+      provider.setErrorState(e);
     }
   }
 
@@ -94,8 +90,7 @@ class _HomePageBuilder extends HookWidget {
         actions: <Widget>[
           IconButton(
             onPressed: () async {
-              await LocalStorage.clear(Consts.accessTokenKey);
-              await Navigation.push(const LandingPage(), replaceAll: true);
+              await Navigation.push(const ProfilePage());
             },
             icon: const Icon(Boxicons.bx_user),
           ),
@@ -114,7 +109,7 @@ class _HomePageBuilder extends HookWidget {
       );
 
   Text _welcomeText(BuildContext context) => Text(
-        'Bonjour, Henry',
+        'Bonjour, ${context.watch<HomeProvider>().projects?.name}',
         style: Theme.of(context)
             .textTheme
             .titleLarge!

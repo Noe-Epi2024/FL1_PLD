@@ -112,4 +112,26 @@ class Http {
         ),
         onSuccess: onSuccess,
       );
+
+  static Future<T> multipart<T>(
+    String method,
+    Uri uri,
+    String filePath,
+    T Function(Map<String, dynamic> data) onSuccess, {
+    bool private = true,
+  }) async =>
+      _request(
+        query: () async {
+          final http.MultipartRequest request =
+              http.MultipartRequest(method, uri);
+
+          request.files
+              .add(await http.MultipartFile.fromPath('file', filePath));
+          request.headers.addAll(_header(private: private));
+
+          final http.StreamedResponse response = await request.send();
+          return http.Response.fromStream(response);
+        },
+        onSuccess: onSuccess,
+      );
 }

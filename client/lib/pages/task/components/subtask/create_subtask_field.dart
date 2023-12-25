@@ -89,6 +89,7 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
         textCapitalization: TextCapitalization.sentences,
         decoration: const InputDecoration(
           // prefixIcon: Icon(Icons.add),
+          filled: false,
           hintText: 'Ajouter une sous-tâche',
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,

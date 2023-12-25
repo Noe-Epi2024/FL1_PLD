@@ -6,4 +6,7 @@ abstract class HttpRequest<T> {
 
   @protected
   bool get private;
+
+  @protected
+  T builder(Map<String, dynamic> json);
 }

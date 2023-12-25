@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/shimmer_placeholder.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/http/requests/user/get_users.dart';
@@ -36,8 +37,6 @@ class _AddProjectMemberModalBuilder extends HookWidget {
         context.read<AddProjectMemberModalProvider>();
 
     try {
-      provider.isLoading = true;
-
       final UsersModel users =
           await GetUsers(excludeProjectId: projectId, filter: provider.filter)
               .get();
@@ -54,6 +53,7 @@ class _AddProjectMemberModalBuilder extends HookWidget {
     IsMounted isMounted,
   ) {
     context.read<AddProjectMemberModalProvider>().filter = controller.text;
+
     if (controller.text.isNotEmpty) {
       unawaited(_loadEntries(context, isMounted));
     } else {
@@ -100,6 +100,18 @@ class _AddProjectMemberModalBuilder extends HookWidget {
     );
   }
 
+  Widget _loader() => ListView.builder(
+        shrinkWrap: true,
+        itemCount: 5,
+        itemBuilder: (_, __) => Padding(
+          padding: 8.vertical,
+          child: const ShimmerPlaceholder(
+            width: 50,
+            height: 20,
+          ),
+        ),
+      );
+
   Widget _entries(BuildContext context) {
     final UsersModel? users =
         context.watch<AddProjectMemberModalProvider>().users;
@@ -108,18 +120,16 @@ class _AddProjectMemberModalBuilder extends HookWidget {
       return const Text('Pas de résultat');
     }
 
-    return Expanded(
-      child: ListView(
-        shrinkWrap: true,
-        children: users.users
-            .map(
-              (UserModel user) => AddProjectMemberModalEntry(
-                projectId: projectId,
-                userId: user.id,
-              ),
-            )
-            .toList(),
-      ),
+    return ListView(
+      shrinkWrap: true,
+      children: users.users
+          .map(
+            (UserModel user) => AddProjectMemberModalEntry(
+              projectId: projectId,
+              userId: user.id,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -141,9 +151,7 @@ class _AddProjectMemberModalBuilder extends HookWidget {
             16.height,
             _searchBar(context, controller),
             16.height,
-            ProviderResolver<AddProjectMemberModalProvider>(
-              builder: _entries,
-            ),
+            ProviderResolver<AddProjectMemberModalProvider>(builder: _entries),
           ],
         ),
       ),

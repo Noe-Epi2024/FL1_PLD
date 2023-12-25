@@ -7,11 +7,11 @@ import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/member/delete_project_member.dart';
 import 'package:hyper_tools/http/requests/project/member/patch_project_member.dart';
 import 'package:hyper_tools/models/error_model.dart';
-import 'package:hyper_tools/models/project/member/project_member_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/components/members/members_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProjectMember extends StatelessWidget {
   const ProjectMember({
@@ -75,16 +75,28 @@ class ProjectMember extends StatelessWidget {
   Widget _icons(BuildContext context) {
     final ProjectRole userRole = context.read<ProjectProvider>().project!.role;
 
-    final ProjectMemberModel member =
-        context.read<ProjectMembersProvider>().findMember(memberId);
+    final ProjectRole memberRole =
+        context.read<ProjectMembersProvider>().findMember(memberId).role;
 
-    final ProjectRole role = member.role;
-
-    if (userRole != ProjectRole.owner) {
+    if (memberRole == ProjectRole.owner) {
       return Padding(
-        padding: 16.all,
+        padding: 12.all,
+        child: Shimmer.fromColors(
+          baseColor: const Color.fromARGB(255, 255, 204, 0),
+          highlightColor: const Color.fromARGB(255, 255, 248, 151),
+          child: Icon(
+            memberRole.icon,
+            size: 24,
+          ),
+        ),
+      );
+    }
+
+    if (!RoleHelper.canManageMembers(userRole)) {
+      return Padding(
+        padding: 12.all,
         child: Icon(
-          role.icon,
+          memberRole.icon,
           color: Theme.of(context).hintColor,
           size: 24,
         ),
@@ -95,18 +107,18 @@ class ProjectMember extends StatelessWidget {
       children: <Widget>[
         _roleIcon(
           context,
-          ProjectRole.owner,
-          role == ProjectRole.owner,
+          ProjectRole.admin,
+          memberRole == ProjectRole.admin,
         ),
         _roleIcon(
           context,
           ProjectRole.writer,
-          role == ProjectRole.writer,
+          memberRole == ProjectRole.writer,
         ),
         _roleIcon(
           context,
           ProjectRole.reader,
-          role == ProjectRole.reader,
+          memberRole == ProjectRole.reader,
         ),
       ],
     );
@@ -117,10 +129,14 @@ class ProjectMember extends StatelessWidget {
     final String name =
         context.read<ProjectMembersProvider>().findMember(memberId).name;
 
-    final ProjectRole role = context.read<ProjectProvider>().project!.role;
+    final ProjectRole userRole = context.read<ProjectProvider>().project!.role;
+
+    final ProjectRole memberRole =
+        context.read<ProjectMembersProvider>().findMember(memberId).role;
 
     return Slidable(
-      endActionPane: RoleHelper.canManageMembers(role)
+      endActionPane: RoleHelper.canManageMembers(userRole) &&
+              memberRole != ProjectRole.owner
           ? ActionPane(
               motion: const ScrollMotion(),
               children: <Widget>[_deleteButton(context)],

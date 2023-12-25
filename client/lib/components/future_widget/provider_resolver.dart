@@ -42,9 +42,7 @@ class _ProviderResolverState<T extends ProviderBase>
         context.select<T, ErrorModel?>((T provider) => provider.error);
 
     if (isLoading) {
-      return Scaffold(
-        body: widget.loader ?? const Center(child: CircularProgressIndicator()),
-      );
+      return widget.loader ?? const Center(child: CircularProgressIndicator());
     }
     if (error != null) {
       return Center(child: Text(error.errorMessage));

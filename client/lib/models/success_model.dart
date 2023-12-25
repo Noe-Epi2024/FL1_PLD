@@ -1,7 +1,7 @@
 class SuccessModel {
   SuccessModel({
-    required this.data,
-    required this.message,
+    this.data,
+    this.message,
   });
 
   factory SuccessModel.fromJson(Map<String, dynamic> json) => SuccessModel(
@@ -10,5 +10,5 @@ class SuccessModel {
       );
 
   final dynamic data;
-  final String message;
+  final String? message;
 }

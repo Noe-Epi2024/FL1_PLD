@@ -112,7 +112,7 @@ class TaskPreview extends StatelessWidget {
     final int? progress =
         context.watch<ProjectProvider>().findTaskPreview(taskId)?.progress;
 
-    if (progress == null) return _noSubtaskYet();
+    if (progress == null) return const Text('Pas encore de sous-tâche');
 
     return Row(
       children: <Widget>[
@@ -141,8 +141,6 @@ class TaskPreview extends StatelessWidget {
         label: 'Supprimer',
         borderRadius: BorderRadius.circular(16),
       );
-
-  Widget _noSubtaskYet() => const Text('Pas encore de sous-tâche');
 
   @override
   Widget build(BuildContext context) {

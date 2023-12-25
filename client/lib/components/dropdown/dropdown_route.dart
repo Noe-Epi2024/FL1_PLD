@@ -50,9 +50,9 @@ class _DropdownRoute<T> extends PopupRoute<T> {
               return Stack(
                 fit: StackFit.passthrough,
                 children: <Widget>[
-                  InkWell(
-                    onTap: Navigator.of(context).pop,
-                    overlayColor: const MaterialStatePropertyAll<Color>(
+                  const InkWell(
+                    onTap: Navigation.pop,
+                    overlayColor: MaterialStatePropertyAll<Color>(
                       Colors.transparent,
                     ),
                   ),

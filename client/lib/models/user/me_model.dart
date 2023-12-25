@@ -1,17 +1,9 @@
 class MeModel {
-  MeModel({
-    required this.email,
-    required this.name,
-    required this.photo,
-  });
+  MeModel({required this.email, required this.name});
 
-  factory MeModel.fromJson(Map<String, dynamic> json) => MeModel(
-        email: json['email'],
-        name: json['name'],
-        photo: json['photo'],
-      );
+  factory MeModel.fromJson(Map<String, dynamic> json) =>
+      MeModel(email: json['email'], name: json['name']);
 
-  final String email;
-  final String name;
-  final String photo;
+  String email;
+  String name;
 }

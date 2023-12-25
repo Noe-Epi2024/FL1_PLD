@@ -8,8 +8,5 @@ abstract class PatchRequest<T> extends HttpRequest<T> {
   Future<T> patch() => Http.patch(uri, body, builder, private: private);
 
   @protected
-  T builder(Map<String, dynamic> json);
-
-  @protected
   Map<String, dynamic>? get body;
 }

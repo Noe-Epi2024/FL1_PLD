@@ -1,8 +1,7 @@
 import 'package:hyper_tools/helpers/route_helper.dart';
 import 'package:hyper_tools/http/requests/patch_request.dart';
-import 'package:hyper_tools/models/user/me_model.dart';
 
-class PatchMe extends PatchRequest<MeModel> {
+class PatchMe extends PatchRequest<void> {
   PatchMe({this.email, this.name, this.picture});
 
   final String? email;
@@ -10,7 +9,7 @@ class PatchMe extends PatchRequest<MeModel> {
   final String? picture;
 
   @override
-  MeModel builder(Map<String, dynamic> json) => MeModel.fromJson(json);
+  void builder(Map<String, dynamic> json) {}
 
   @override
   Map<String, dynamic>? get body => <String, dynamic>{

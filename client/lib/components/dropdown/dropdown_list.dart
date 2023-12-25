@@ -100,7 +100,7 @@ class _DropdownItem<T> extends StatelessWidget {
   Future<void> _onTap(BuildContext context) async {
     final DropdownProvider<T> provider = context.read<DropdownProvider<T>>();
 
-    Navigator.of(context).pop();
+    Navigation.pop();
 
     if (onSelect != null && await onSelect!(entry.value)) {
       provider.selectedValue = entry;

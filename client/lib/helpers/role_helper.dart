@@ -5,7 +5,8 @@ class RoleHelper {
 
   static bool canEditTask(ProjectRole role) => role != ProjectRole.reader;
 
-  static bool canEditProject(ProjectRole role) => role == ProjectRole.reader;
+  static bool canEditProject(ProjectRole role) => role == ProjectRole.owner;
 
-  static bool canManageMembers(ProjectRole role) => role == ProjectRole.owner;
+  static bool canManageMembers(ProjectRole role) =>
+      role == ProjectRole.owner || role == ProjectRole.admin;
 }
