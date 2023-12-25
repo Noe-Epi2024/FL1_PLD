@@ -42,16 +42,14 @@ async function getTask(req: Request, res: Response) {
         const task = projects.tasks.find(task => String(task.id) === taskId);
 
         if (!task) {
-            return res.status(409).send({ success: false, message: "Project not found in project" });
+            return res.status(409).send({ success: false, message: "Task not found in project" });
         }
 
         const ownerName = await UserModel.findById(task.ownerId);
 
-        if (!ownerName) {
-            return res.status(409).send({ success: false, message: "Owner not found" });
+        if (ownerName) {
+            task.ownerName = ownerName.name
         }
-
-        task.ownerName = ownerName.name;
 
         return res.status(200).send({ success: true, message: "Task successfully found", data: task });
     }
@@ -101,10 +99,6 @@ async function postTask(req: Request, res: Response) {
         // if no body or empty body create empty task
         if (!task.name || !task.description || !task.startDate || !task.endDate || !task.ownerId) {
             task._id = new ObjectId();
-
-            task.ownerId = userId.userId;
-            task.description = "";
-            task.name = "";
 
             const newTask = await ProjectModel.updateOne({ _id: projectId }, { $push: { tasks: task } });
 

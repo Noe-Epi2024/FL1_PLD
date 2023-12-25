@@ -22,10 +22,10 @@ type ProjectById = {
     role: string;
     tasks: Array<{
         id: Types.ObjectId;
-        ownerName: string;
-        name: string;
-        startDate: Date;
-        endDate: Date;
+        ownerName?: string;
+        name?: string;
+        startDate?: Date;
+        endDate?: Date;
         progress: number | null;
     }>;
 }

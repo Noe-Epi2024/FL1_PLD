@@ -6,11 +6,11 @@ import { SubtasksSchema } from "./subtaks";
 type TaskSchema = Model<Task>;
 
 const TasksSchema = new Schema<Task, TaskSchema>({
-    name: { type: String, required: true },
-    ownerId: { type: Schema.Types.ObjectId, required: true },
+    name: { type: String, required: false },
+    ownerId: { type: Schema.Types.ObjectId, required: false },
     ownerName: { type: String, required: false },
-    description: { type: String, required: false, default: "" },
-    startDate: { type: Date, required: false, default: new Date() },
+    description: { type: String, required: false },
+    startDate: { type: Date, required: false, default: Date.now() },
     endDate: { type: Date, required: false },
     subtasks: { type: [SubtasksSchema], required: false, default: [] },
 });

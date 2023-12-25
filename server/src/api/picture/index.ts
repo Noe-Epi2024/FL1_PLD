@@ -29,7 +29,7 @@ export async function getPicture(req: Request, res: Response) {
         }
 
         const url = await getSignedUrlFromS3(name);
-        res.status(200).send({ url, name });
+        res.status(200).send({ data: { url: url, name: name } });
     } catch (error) {
         console.error("Error getting picture:", error);
         res.status(500).send('Internal Server Error');

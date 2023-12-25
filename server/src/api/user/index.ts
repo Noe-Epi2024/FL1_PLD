@@ -1,5 +1,6 @@
 import { UserModel } from "../../database/schema/users";
 import { ProjectModel } from "../../database/schema/projects";
+import { CredentialModel } from "../../database/schema/credentials";
 import { Token } from "../../types/token";
 import { Request, Response } from 'express';
 import { decodeAccessToken } from "../../functions/token/decode";
@@ -65,6 +66,10 @@ async function patchMe(req: Request, res: Response) {
         }
 
         const response = await UserModel.updateOne({ _id: userId }, body);
+
+        if (body.email) {
+            const newEmail = await CredentialModel.updateOne({ userId: userId }, { email: body.email });
+        }
 
         if (!response || !response.acknowledged) {
             return res.status(200).send({ success: true, message: "No content changed" });

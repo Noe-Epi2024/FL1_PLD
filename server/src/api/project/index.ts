@@ -56,7 +56,6 @@ async function getProject(req: Request, res: Response) {
                 try {
                     const user = await UserModel.findById(task.ownerId);
                     if (user) {
-
                         return {
                             id: task.id,
                             ownerName: user.name,
@@ -66,7 +65,13 @@ async function getProject(req: Request, res: Response) {
                             progress: progress
                         };
                     } else {
-                        throw new Error(`User not found for task with ID: ${task.id}`);
+                        return {
+                            id: task.id,
+                            name: task.name,
+                            startDate: task.startDate,
+                            endDate: task.endDate,
+                            progress: progress
+                        };
                     }
                 } catch (error) {
                     console.error('Error fetching user details:', error);
