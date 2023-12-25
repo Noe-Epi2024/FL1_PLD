@@ -2,7 +2,7 @@ import express from 'express';
 import accessToken from '../middleware/accessToken';
 import isUserExist from '../middleware/isUserExist';
 
-import { getProject, getProjects, postProject, patchProject, deleteProject } from '../api/project';
+import { getProject, getProjects, postProject, patchProject, deleteProject, quitProject } from '../api/project';
 import { getMembers, postMember, deleteMember, patchMember } from '../api/member';
 import { postTask, getTask, patchTask, deleteTask } from '../api/task';
 import { postSubTask, deleteSubTask, patchSubTask } from '../api/subtask';
@@ -26,6 +26,10 @@ router.patch('/:id', accessToken, isUserExist, (req, res) => {
 
 router.delete('/:id', accessToken, isUserExist, (req, res) => {
     deleteProject(req, res)
+})
+
+router.delete('/:id/quit', accessToken, isUserExist, (req, res) => {
+    quitProject(req, res)
 })
 
 router.get('/:id/member', accessToken, isUserExist, (req, res) => {

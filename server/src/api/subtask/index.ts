@@ -44,8 +44,8 @@ async function postSubTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
-        if (userInProject.role !== "owner") {
-            return res.status(409).send({ success: false, message: "User not owner of the project" });
+        if (userInProject.role !== "owner" && userInProject.role !== "admin" && userInProject.role !== "writer") {
+            return res.status(409).send({ success: false, message: "User not owner/admin or writer in the project" });
         }
 
         const task = projects.tasks.find(task => String(task.id) === taskId);
@@ -111,8 +111,8 @@ async function deleteSubTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
-        if (userInProject.role !== "owner") {
-            return res.status(409).send({ success: false, message: "User not owner of the project" });
+        if (userInProject.role !== "owner" && userInProject.role !== "admin" && userInProject.role !== "writer") {
+            return res.status(409).send({ success: false, message: "User not owner/admin or writer in the project" });
         }
 
         const task = projects.tasks.find(task => String(task.id) === taskId);
@@ -186,6 +186,10 @@ async function patchSubTask(req: Request, res: Response) {
 
         if (!task) {
             return res.status(409).send({ success: false, message: "Task not found in project" });
+        }
+
+        if (userInProject.role !== "owner" && userInProject.role !== "admin" && userInProject.role !== "writer") {
+            return res.status(409).send({ success: false, message: "User not owner/admin or writer in the project" });
         }
 
         const taskData = await ProjectModel.updateOne(

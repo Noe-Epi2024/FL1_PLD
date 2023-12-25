@@ -246,10 +246,60 @@ async function deleteProject(req: Request, res: Response) {
     }
 }
 
+async function quitProject(req: Request, res: Response) {
+    try {
+        const token = req.headers.authorization;
+        var id = req.params.id;
+
+        if (!token) {
+            return res.status(400).send({ success: false, message: "No access token sent" });
+        }
+
+        const userId = decodeAccessToken(token) as Token;
+
+        const projects = await ProjectModel.findOne({ _id: id })
+
+        console.log(projects);
+
+        if (projects === null) {
+            return res.status(409).send({ success: false, message: "Project not found" });
+        }
+
+        const userInProject = projects.members.find(member => String(member.userId) === userId.userId);
+
+        if (!userInProject) {
+            return res.status(409).send({ success: false, message: "User not found in project" });
+        }
+
+        if (userInProject.role === 'owner') {
+            return res.status(409).send({ success: false, message: "Owner not allowed to quit a project" });
+        }
+
+        // Update ownerId to null for tasks associated with the user leaving the project
+        await ProjectModel.updateMany(
+            { _id: id, "tasks.ownerId": userInProject.userId },
+            { $set: { "tasks.$[elem].ownerId": null } },
+            { arrayFilters: [{ "elem.ownerId": userInProject.userId }] }
+        );
+
+        // Remove the user from the members array
+        await ProjectModel.updateOne(
+            { _id: id },
+            { $pull: { members: { userId: userInProject.userId } } }
+        );
+
+        return res.status(200).send({ success: true, message: "Project leaved successfully" })
+    }
+    catch (error) {
+        return res.status(409).send({ success: false, message: "Internal Server Error" });
+    }
+}
+
 export {
     getProject,
     getProjects,
     postProject,
     patchProject,
     deleteProject,
+    quitProject,
 }

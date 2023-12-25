@@ -92,8 +92,8 @@ async function postTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
-        if (userInProject.role !== "owner" && userInProject.role !== "writer") {
-            return res.status(409).send({ success: false, message: "User not owner or writer in the project" });
+        if (userInProject.role !== "owner" && userInProject.role !== "admin" && userInProject.role !== "writer") {
+            return res.status(409).send({ success: false, message: "User not owner/admin or writer in the project" });
         }
 
         // if no body or empty body create empty task
@@ -171,8 +171,8 @@ async function deleteTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
-        if (userInProject.role !== "owner") {
-            return res.status(409).send({ success: false, message: "User not owner of the project" });
+        if (userInProject.role !== "owner" && userInProject.role !== "admin" && userInProject.role !== "writer") {
+            return res.status(409).send({ success: false, message: "User not owner/admin or writer in the project" });
         }
 
         const response = await ProjectModel.updateOne({ _id: projectId }, { $pull: { tasks: { _id: taskId } } });
@@ -220,7 +220,6 @@ async function patchTask(req: Request, res: Response) {
         }
 
         // Check body value
-
         if (data.ownerId) {
             try {
                 if (new ObjectId(data.ownerId)) {
@@ -321,8 +320,8 @@ async function patchTask(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "User not found in project" });
         }
 
-        if (userInProject.role !== "owner" && userInProject.role !== "writer") {
-            return res.status(409).send({ success: false, message: "User not owner or writer in the project" });
+        if (userInProject.role !== "owner" && userInProject.role !== "admin" && userInProject.role !== "writer") {
+            return res.status(409).send({ success: false, message: "User not owner/admin or writer in the project" });
         }
 
         const taskData = await ProjectModel.updateOne({ _id: projectId, "tasks._id": taskId }, { $set: updateFields });

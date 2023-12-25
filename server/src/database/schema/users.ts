@@ -13,8 +13,7 @@ const schema = new Schema<User, UserSchema>({
     name: { type: String, required: true },
     photo: {
         type: String,
-        required: false,
-        default: "default",
+        required: false
     },
 });
 

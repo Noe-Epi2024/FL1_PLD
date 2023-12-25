@@ -6,7 +6,7 @@ import { decodeAccessToken } from "../../functions/token/decode";
 import { Member } from "../../types/members";
 
 enum eMemberRole {
-    owner = "owner",
+    admin = "admin",
     reader = "reader",
     writer = "writer"
 }
@@ -80,7 +80,7 @@ async function postMember(req: Request, res: Response) {
         }
 
         if (memberRole && !Object.values(eMemberRole).includes(memberRole as eMemberRole)) {
-            return res.status(400).send({ success: false, message: "Role must be owner, reader or writer" });
+            return res.status(400).send({ success: false, message: "Role must be admin, reader or writer" });
         }
 
         const userId = decodeAccessToken(token) as Token;
@@ -97,7 +97,7 @@ async function postMember(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "Member not found in project" });
         }
 
-        if (MemberInProject.role !== "owner") {
+        if (MemberInProject.role !== "owner" && MemberInProject.role !== "admin") {
             return res.status(409).send({ success: false, message: "Member not owner in project" });
         }
 
@@ -115,7 +115,7 @@ async function postMember(req: Request, res: Response) {
 
         const newMember = {
             userId: memberId,
-            role: memberRole as "owner" | "reader" | "writer"
+            role: memberRole as "admin" | "reader" | "writer"
         };
 
         const newMembers = await ProjectModel.updateOne({ _id: projectId }, { $push: { members: newMember } });
@@ -154,14 +154,18 @@ async function patchMember(req: Request, res: Response) {
             return res.status(409).send({ success: false, message: "Project not found" });
         }
 
-        const MemberInProject = projects.members.find(member => String(member.userId) === userId.userId);
+        const projectOwner = projects.members.find(member => String(member.userId) === userId.userId);
 
-        if (!MemberInProject) {
+        if (!projectOwner) {
             return res.status(409).send({ success: false, message: "Member not found in project" });
         }
 
-        if (MemberInProject.role !== "owner") {
-            return res.status(409).send({ success: false, message: "Member not owner in project" });
+        if (projectOwner.role !== "owner" && projectOwner.role !== "admin") {
+            return res.status(409).send({ success: false, message: "Member not owner or admin in project" });
+        }
+
+        if (projectOwner.role === "owner" && projectOwner.userId === memberId) {
+            return res.status(409).send({ success: false, message: "Owner can't changed his role in project" });
         }
 
         const userExists = await UserModel.findOne({ _id: memberId });
@@ -177,7 +181,7 @@ async function patchMember(req: Request, res: Response) {
         }
 
         if (!Object.values(eMemberRole).includes(memberRole as eMemberRole)) {
-            return res.status(400).send({ success: false, message: "Role must be owner, reader or writer" });
+            return res.status(400).send({ success: false, message: "Role must be admin, reader or writer" });
         }
 
         const memberData = await ProjectModel.updateOne({ _id: projectId, "members.userId": memberId }, { $set: { "members.$.role": memberRole } });
@@ -186,7 +190,7 @@ async function patchMember(req: Request, res: Response) {
             return res.status(200).send({ success: true, message: "No Content changed" });
         }
 
-        return res.status(200).send({ success: true, message: "member role has be changed" });
+        return res.status(200).send({ success: true, message: "member role has been changed" });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
@@ -236,8 +240,18 @@ async function deleteMember(req: Request, res: Response) {
         if (!memberAlreadyInProject) {
             return res.status(409).send({ success: false, message: "Member not in project" });
         }
+        // Update ownerId to null for tasks associated with the user leaving the project
+        await ProjectModel.updateMany(
+            { _id: projectId, "tasks.ownerId": memberId },
+            { $set: { "tasks.$[elem].ownerId": null } },
+            { arrayFilters: [{ "elem.ownerId": memberId }] }
+        );
 
-        const response = await ProjectModel.updateOne({ _id: projectId }, { $pull: { members: { userId: memberId } } });
+        // Remove the user from the members array
+        const response = await ProjectModel.updateOne(
+            { _id: projectId },
+            { $pull: { members: { userId: memberId } } }
+        );
 
         if (!response || !response.modifiedCount) {
             return res.status(400).send({ success: false, message: "Can't delete member" });
