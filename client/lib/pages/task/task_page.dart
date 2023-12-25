@@ -11,6 +11,7 @@ import 'package:hyper_tools/pages/task/components/dates/task_end_date.dart';
 import 'package:hyper_tools/pages/task/components/dates/task_start_date.dart';
 import 'package:hyper_tools/pages/task/components/description/task_description.dart';
 import 'package:hyper_tools/pages/task/components/members/members_dropdown.dart';
+import 'package:hyper_tools/pages/task/components/name/task_name.dart';
 import 'package:hyper_tools/pages/task/components/subtask/create_subtask_modal.dart';
 import 'package:hyper_tools/pages/task/components/subtask/subtask.dart';
 import 'package:hyper_tools/pages/task/components/task_page_loader.dart';
@@ -189,12 +190,8 @@ class _TaskPageBuilder extends StatelessWidget {
         ],
       );
 
-  AppBar _appBar(BuildContext context) => AppBar(
-        title: Text(
-          context.read<TaskProvider>().task!.name,
-          style: const TextStyle(color: Colors.black),
-        ),
-      );
+  AppBar _appBar(BuildContext context) =>
+      AppBar(title: TaskName(projectId: projectId, taskId: taskId));
 
   @override
   Widget build(BuildContext context) => ProviderResolver<TaskProvider>.future(

@@ -57,4 +57,12 @@ class TaskProvider extends ProviderBase {
 
     notifyListeners();
   }
+
+  void setName(String name) {
+    if (task == null) return;
+
+    _task!.name = name;
+
+    notifyListeners();
+  }
 }

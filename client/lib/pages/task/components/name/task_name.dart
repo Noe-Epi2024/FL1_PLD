@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
+import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/pages/task/components/name/task_name_provider.dart';
+import 'package:hyper_tools/pages/task/task_provider.dart';
+import 'package:provider/provider.dart';
+
+class TaskName extends StatelessWidget {
+  const TaskName({
+    required this.projectId,
+    required this.taskId,
+    super.key,
+  });
+
+  final String projectId;
+  final String taskId;
+
+  @override
+  Widget build(BuildContext context) =>
+      ChangeNotifierProvider<TaskNameProvider>(
+        create: (_) => TaskNameProvider(
+          initialName: context.read<TaskProvider>().task!.name,
+        ),
+        child: _TaskNameBuilder(
+          projectId: projectId,
+          taskId: taskId,
+        ),
+      );
+}
+
+class _TaskNameBuilder extends HookWidget {
+  const _TaskNameBuilder({
+    required this.projectId,
+    required this.taskId,
+  });
+
+  final String projectId;
+  final String taskId;
+
+  void _onNameChanged(
+    BuildContext context,
+    TextEditingController controller,
+  ) {
+    context.read<TaskNameProvider>().currentName = controller.text;
+  }
+
+  void Function() _initializeController(
+    BuildContext context,
+    TextEditingController controller,
+  ) {
+    void listener() => _onNameChanged(context, controller);
+
+    controller.addListener(listener);
+
+    return () => controller.removeListener(listener);
+  }
+
+  Future<void> _onClickSave(BuildContext context) async {
+    try {
+      final String name = context.read<TaskNameProvider>().currentName;
+
+      await PatchTask(
+        projectId: projectId,
+        taskId: taskId,
+        name: name,
+      ).patch();
+
+      context.read<TaskProvider>().setName(name);
+      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      FocusScope.of(context).unfocus();
+    } on ErrorModel catch (e) {
+      e.show();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController controller = useTextEditingController(
+      text: context.read<TaskProvider>().task!.name,
+    );
+
+    useEffect(() => _initializeController(context, controller));
+
+    final String oldName = context.watch<TaskProvider>().task!.name;
+
+    final String currentName = context.select<TaskNameProvider, String>(
+      (TaskNameProvider provider) => provider.currentName,
+    );
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Expanded(
+          child: TextField(
+            style: Theme.of(context).appBarTheme.titleTextStyle,
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
+            textCapitalization: TextCapitalization.sentences,
+            controller: controller,
+            decoration: const InputDecoration(
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+            ),
+          ),
+        ),
+        if (currentName != oldName)
+          TextButton(
+            onPressed: () async => _onClickSave(context),
+            child: const Text('Enregistrer'),
+          ),
+      ],
+    );
+  }
+}

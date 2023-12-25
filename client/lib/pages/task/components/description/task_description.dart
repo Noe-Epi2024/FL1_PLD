@@ -4,7 +4,7 @@ import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
-import 'package:hyper_tools/pages/task/components/description/description_provider.dart';
+import 'package:hyper_tools/pages/task/components/description/task_description_provider.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,8 +20,8 @@ class TaskDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      ChangeNotifierProvider<DescriptionProvider>(
-        create: (_) => DescriptionProvider(
+      ChangeNotifierProvider<TaskDescriptionProvider>(
+        create: (_) => TaskDescriptionProvider(
           initialDescription: context.read<TaskProvider>().task!.description,
         ),
         child: _TaskDescriptionBuilder(
@@ -44,7 +44,8 @@ class _TaskDescriptionBuilder extends HookWidget {
     BuildContext context,
     TextEditingController controller,
   ) {
-    context.read<DescriptionProvider>().currentDescription = controller.text;
+    context.read<TaskDescriptionProvider>().currentDescription =
+        controller.text;
   }
 
   void Function() _initializeController(
@@ -61,7 +62,7 @@ class _TaskDescriptionBuilder extends HookWidget {
   Future<void> _onClickSave(BuildContext context) async {
     try {
       final String description =
-          context.read<DescriptionProvider>().currentDescription;
+          context.read<TaskDescriptionProvider>().currentDescription;
 
       await PatchTask(
         projectId: projectId,
@@ -89,8 +90,8 @@ class _TaskDescriptionBuilder extends HookWidget {
         context.watch<TaskProvider>().task!.description;
 
     final String currentDescription =
-        context.select<DescriptionProvider, String>(
-      (DescriptionProvider provider) => provider.currentDescription,
+        context.select<TaskDescriptionProvider, String>(
+      (TaskDescriptionProvider provider) => provider.currentDescription,
     );
 
     return Column(

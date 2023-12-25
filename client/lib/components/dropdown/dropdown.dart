@@ -59,14 +59,9 @@ class Dropdown<T> extends StatelessWidget {
 
         final List<DropdownEntry<T>> fetchedEntries = await fetch!();
 
-        provider
-          ..entries = fetchedEntries
-          ..isLoading = false
-          ..isInitialized = true;
+        provider.setSuccessState(fetchedEntries);
       } on ErrorModel catch (e) {
-        provider
-          ..error = e
-          ..isLoading = false;
+        provider.setErrorState(e);
       }
     }
   }

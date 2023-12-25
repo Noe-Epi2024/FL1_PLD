@@ -58,4 +58,11 @@ class DropdownProvider<T> extends ProviderBase {
     _isOpen = value;
     notifyListeners();
   }
+
+  void setSuccessState(List<DropdownEntry<T>> entries) {
+    _entries = entries;
+    isLoading_ = false;
+    _isInitialized = true;
+    notifyListeners();
+  }
 }

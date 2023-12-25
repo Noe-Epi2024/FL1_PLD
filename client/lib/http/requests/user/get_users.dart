@@ -16,7 +16,7 @@ class GetUsers extends GetRequest<UsersModel> {
 
   @override
   Uri get uri => RouteHelper.buildUri(
-        'users/all',
+        'user/all',
         params: <String, String>{
           if (filter != null) 'filter': filter!,
           if (excludeProjectId != null) 'exclude': excludeProjectId!,

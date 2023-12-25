@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DescriptionProvider with ChangeNotifier {
-  DescriptionProvider({required String initialDescription})
+class TaskDescriptionProvider with ChangeNotifier {
+  TaskDescriptionProvider({required String initialDescription})
       : _currentDescription = initialDescription;
 
   String _currentDescription;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
@@ -10,6 +9,9 @@ import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/member/project_member_model.dart';
 import 'package:hyper_tools/models/project/member/project_members_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
+import 'package:hyper_tools/pages/project/components/members/add/add_project_member_modal.dart';
+import 'package:hyper_tools/pages/project/components/members/project_member.dart';
+import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/components/members/members_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +53,16 @@ class _ProjecMembersTabBuilder extends HookWidget {
     return () => controller.removeListener(listener);
   }
 
+  Future<void> _onClickAddMember(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (_) => ChangeNotifierProvider<ProjectMembersProvider>.value(
+        value: context.read<ProjectMembersProvider>(),
+        builder: (__, ___) => AddProjectMemberModal(projectId: projectId),
+      ),
+    );
+  }
+
   Future<void> _loadMembers(BuildContext context) async {
     try {
       final ProjectMembersModel members =
@@ -64,76 +76,6 @@ class _ProjecMembersTabBuilder extends HookWidget {
     }
   }
 
-  Widget _roleIcon(BuildContext context, ProjectRole role, bool isUserRole) =>
-      IconButton(
-        onPressed: () {},
-        icon: Icon(
-          role.icon,
-          color: isUserRole
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).hintColor,
-          size: 24,
-        ),
-      );
-
-  void _onClickDelete(BuildContext context) {}
-
-  SlidableAction _deleteButton() => SlidableAction(
-        onPressed: _onClickDelete,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.red,
-        label: 'Supprimer',
-        borderRadius: BorderRadius.circular(16),
-      );
-
-  Widget _member(BuildContext context, String memberId) {
-    final ProjectMemberModel member =
-        context.watch<ProjectMembersProvider>().findMember(memberId);
-
-    final ProjectRole role = member.role;
-
-    return Slidable(
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: <Widget>[_deleteButton()],
-      ),
-      child: Card(
-        margin: 4.vertical,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                member.name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Row(
-                children: <Widget>[
-                  _roleIcon(
-                    context,
-                    ProjectRole.owner,
-                    role == ProjectRole.owner,
-                  ),
-                  _roleIcon(
-                    context,
-                    ProjectRole.writer,
-                    role == ProjectRole.writer,
-                  ),
-                  _roleIcon(
-                    context,
-                    ProjectRole.reader,
-                    role == ProjectRole.reader,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   List<Widget> _membersList(BuildContext context) {
     final List<ProjectMemberModel> members =
         context.watch<ProjectMembersProvider>().members!.members;
@@ -144,7 +86,10 @@ class _ProjecMembersTabBuilder extends HookWidget {
 
     return members
         .where((ProjectMemberModel member) => member.name.contains(filter))
-        .map((ProjectMemberModel member) => _member(context, member.userId))
+        .map(
+          (ProjectMemberModel member) =>
+              ProjectMember(memberId: member.userId, projectId: projectId),
+        )
         .toList();
   }
 
@@ -156,7 +101,7 @@ class _ProjecMembersTabBuilder extends HookWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        hintText: 'Chercher un projet',
+        hintText: 'Chercher un membre',
         prefixIcon: const Icon(Boxicons.bx_search),
         suffixIcon: filter.isEmpty
             ? null
@@ -171,6 +116,11 @@ class _ProjecMembersTabBuilder extends HookWidget {
     );
   }
 
+  Widget _floatingActionButton(BuildContext context) => FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async => _onClickAddMember(context),
+      );
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController();
@@ -179,19 +129,26 @@ class _ProjecMembersTabBuilder extends HookWidget {
 
     return ProviderResolver<ProjectMembersProvider>.future(
       future: () async => _loadMembers(context),
-      builder: (BuildContext resolverContext) => ListView(
-        padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 30,
-          bottom: 100,
+      builder: (BuildContext resolverContext) => Scaffold(
+        floatingActionButton:
+            context.watch<ProjectProvider>().project!.role == ProjectRole.owner
+                ? _floatingActionButton(context)
+                : null,
+        body: ListView(
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 30,
+            bottom: 100,
+          ),
+          children: <Widget>[
+            const TitleText('Membres'),
+            8.height,
+            _searchBar(resolverContext, controller),
+            8.height,
+            ..._membersList(resolverContext),
+          ],
         ),
-        children: <Widget>[
-          const TitleText('Membres'),
-          _searchBar(resolverContext, controller),
-          8.height,
-          ..._membersList(resolverContext),
-        ],
       ),
     );
   }

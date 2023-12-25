@@ -3,31 +3,33 @@ import 'package:hyper_tools/models/error_model.dart';
 
 abstract class ProviderBase with ChangeNotifier {
   ProviderBase({bool isInitiallyLoading = false})
-      : _isLoading = isInitiallyLoading {
-    _isLoading = isInitiallyLoading;
+      : isLoading_ = isInitiallyLoading {
+    isLoading_ = isInitiallyLoading;
   }
 
-  bool _isLoading;
+  @protected
+  bool isLoading_;
 
-  bool get isLoading => _isLoading;
+  bool get isLoading => isLoading_;
 
   set isLoading(bool value) {
-    _isLoading = value;
+    isLoading_ = value;
     notifyListeners();
   }
 
-  ErrorModel? _error;
+  @protected
+  ErrorModel? error_;
 
-  ErrorModel? get error => _error;
+  ErrorModel? get error => error_;
 
   set error(ErrorModel? value) {
-    _error = value;
+    error_ = value;
     notifyListeners();
   }
 
   void setErrorState(ErrorModel error) {
-    _isLoading = false;
-    _error = error;
+    isLoading_ = false;
+    error_ = error;
     notifyListeners();
   }
 }

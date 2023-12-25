@@ -1,5 +1,6 @@
 import 'package:hyper_tools/helpers/route_helper.dart';
 import 'package:hyper_tools/http/requests/post_request.dart';
+import 'package:hyper_tools/models/project/project_role.dart';
 
 class PostProjectMember extends PostRequest<void> {
   PostProjectMember({
@@ -10,11 +11,11 @@ class PostProjectMember extends PostRequest<void> {
 
   final String projectId;
   final String userId;
-  final String userRole;
+  final ProjectRole userRole;
 
   @override
   Map<String, dynamic>? get body =>
-      <String, dynamic>{'userId': userId, 'role': userRole};
+      <String, dynamic>{'userId': userId, 'role': userRole.name};
 
   @override
   void builder(Map<String, dynamic> json) {}

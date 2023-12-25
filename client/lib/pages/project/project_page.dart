@@ -6,7 +6,7 @@ import 'package:hyper_tools/http/requests/project/get_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/project_model.dart';
 import 'package:hyper_tools/models/project/task/task_preview_model.dart';
-import 'package:hyper_tools/pages/project/components/project_members_tab.dart';
+import 'package:hyper_tools/pages/project/components/members/project_members_tab.dart';
 import 'package:hyper_tools/pages/project/components/project_page_loading.dart';
 import 'package:hyper_tools/pages/project/components/task_preview.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
