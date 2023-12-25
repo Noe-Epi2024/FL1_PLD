@@ -75,13 +75,19 @@ class _ProjectPageBuilder extends StatelessWidget {
         ),
       );
 
-  ListView _tasksTab(BuildContext context) => ListView(
-        padding:
-            const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 100),
-        children: <Widget>[
-          const TitleText('Tâches'),
-          ..._taskPreviews(context),
-        ],
+  Scaffold _tasksTab(BuildContext context) => Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add),
+        ),
+        body: ListView(
+          padding:
+              const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 100),
+          children: <Widget>[
+            const TitleText('Tâches'),
+            ..._taskPreviews(context),
+          ],
+        ),
       );
 
   Widget _builder(BuildContext context) => DefaultTabController(

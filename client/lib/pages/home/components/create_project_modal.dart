@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/http/requests/project/post_project.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
@@ -15,8 +16,10 @@ class CreateProjectModal extends HookWidget {
     BuildContext context,
     TextEditingController controller,
   ) async {
+    final String id = await PostProject(name: controller.text).post();
+
     final ProjectPreviewModel projectPreview = ProjectPreviewModel(
-      id: '',
+      id: id,
       membersCount: 1,
       name: controller.text,
       role: ProjectRole.owner,

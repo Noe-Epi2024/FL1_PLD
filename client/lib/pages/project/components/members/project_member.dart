@@ -61,7 +61,7 @@ class ProjectMember extends StatelessWidget {
 
   Widget _roleIcon(BuildContext context, ProjectRole role, bool isUserRole) =>
       IconButton(
-        onPressed: () async => _onClickRole(context, role),
+        onPressed: isUserRole ? null : () async => _onClickRole(context, role),
         icon: Icon(
           role.icon,
           color: isUserRole

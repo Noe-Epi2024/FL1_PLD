@@ -101,10 +101,9 @@ class ThemeGenerator {
       );
 
   static TabBarTheme get _tabBarTheme => TabBarTheme(
-        labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        unselectedLabelStyle: const TextStyle(fontSize: 12),
+        labelStyle:
+            _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
         labelColor: _colorScheme.primary,
-        unselectedLabelColor: Colors.black,
         indicator: const BoxDecoration(color: Colors.transparent),
       );
 
@@ -133,7 +132,7 @@ class ThemeGenerator {
         color: _colorScheme.surface,
         foregroundColor: _colorScheme.onSurface,
         elevation: 0,
-        titleTextStyle: const TextStyle(fontSize: 20),
+        // titleTextStyle: const TextStyle(fontSize: 20),
         shape: Border(bottom: BorderSide(color: _dividerTheme.color!)),
       );
 
