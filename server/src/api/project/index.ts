@@ -104,6 +104,12 @@ async function getProjects(req: Request, res: Response) {
 
         const userId = decodeAccessToken(token) as Token;
 
+        const user = await UserModel.findById(userId.userId);
+
+        if (!user) {
+            return res.status(409).send({ success: false, message: "User not found" });
+        }
+
         const projects = await ProjectModel.find({ "members.userId": userId.userId })
 
 
@@ -120,7 +126,7 @@ async function getProjects(req: Request, res: Response) {
         });
 
 
-        return res.status(200).send({ success: true, message: "Projects found", data: { projects: response } });
+        return res.status(200).send({ success: true, message: "Projects found", data: { name: user.name, projects: response } });
     }
     catch (error) {
         return res.status(409).send({ success: false, message: "Internal Server Error" });
