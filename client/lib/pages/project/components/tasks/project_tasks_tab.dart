@@ -48,7 +48,12 @@ class ProjectTasksTab extends StatelessWidget {
     final List<TaskPreviewModel> taskPreviews =
         context.watch<ProjectProvider>().project!.taskPreviews;
 
-    return taskPreviews.map(TaskPreview.new).toList();
+    return taskPreviews
+        .map(
+          (TaskPreviewModel taskPreview) =>
+              TaskPreview(projectId: projectId, taskId: taskPreview.id),
+        )
+        .toList();
   }
 
   FloatingActionButton _createTaskButton(BuildContext context) =>

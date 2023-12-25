@@ -14,12 +14,13 @@ class ProjectProvider extends ProviderBase {
     notifyListeners();
   }
 
+  TaskPreviewModel? findTaskPreview(String taskId) => project?.taskPreviews
+      .firstWhere((TaskPreviewModel taskPreview) => taskPreview.id == taskId);
+
   void setTaskStartDate({required String taskId, required DateTime date}) {
     if (_project == null) return;
 
-    _project!.taskPreviews
-        .firstWhere((TaskPreviewModel taskPreview) => taskPreview.id == taskId)
-        .startDate = date;
+    findTaskPreview(taskId)?.startDate = date;
 
     notifyListeners();
   }
@@ -27,9 +28,15 @@ class ProjectProvider extends ProviderBase {
   void setTaskEndDate({required String taskId, required DateTime date}) {
     if (_project == null) return;
 
-    _project!.taskPreviews
-        .firstWhere((TaskPreviewModel taskPreview) => taskPreview.id == taskId)
-        .endDate = date;
+    findTaskPreview(taskId)?.endDate = date;
+
+    notifyListeners();
+  }
+
+  void setTaskName({required String taskId, required String name}) {
+    if (_project == null) return;
+
+    findTaskPreview(taskId)?.name = name;
 
     notifyListeners();
   }
@@ -37,9 +44,15 @@ class ProjectProvider extends ProviderBase {
   void setTaskOwner({required String taskId, required String name}) {
     if (project == null) return;
 
-    project!.taskPreviews
-        .firstWhere((TaskPreviewModel task) => task.id == taskId)
-        .ownerName = name;
+    findTaskPreview(taskId)?.ownerName = name;
+
+    notifyListeners();
+  }
+
+  void setTaskProgress({required String taskId, required int progress}) {
+    if (project == null) return;
+
+    findTaskPreview(taskId)?.progress = progress;
 
     notifyListeners();
   }
@@ -48,6 +61,16 @@ class ProjectProvider extends ProviderBase {
     if (project == null) return;
 
     _project!.taskPreviews.add(taskPreview);
+
+    notifyListeners();
+  }
+
+  void deleteTaskPreview(String taskId) {
+    if (project == null) return;
+
+    _project!.taskPreviews.removeWhere(
+      (TaskPreviewModel taskPreview) => taskPreview.id == taskId,
+    );
 
     notifyListeners();
   }
