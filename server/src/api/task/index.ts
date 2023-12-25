@@ -70,10 +70,6 @@ async function postTask(req: Request, res: Response) {
             return res.status(400).send({ success: false, message: "No access token or project id sent" });
         }
 
-        if (!task.name || !task.description || !task.startDate || !task.endDate || !task.ownerId) {
-            return res.status(409).send({ success: false, message: "Missing parameters" });
-        }
-
         const userId = decodeAccessToken(token) as Token;
 
         if (!userId) {
@@ -100,6 +96,24 @@ async function postTask(req: Request, res: Response) {
 
         if (userInProject.role !== "owner" && userInProject.role !== "writer") {
             return res.status(409).send({ success: false, message: "User not owner or writer in the project" });
+        }
+
+        // if no body or empty body create empty task
+        if (!task.name || !task.description || !task.startDate || !task.endDate || !task.ownerId) {
+            task._id = new ObjectId();
+
+            task.ownerId = userId.userId;
+            task.description = "";
+            task.name = "";
+
+            const newTask = await ProjectModel.updateOne({ _id: projectId }, { $push: { tasks: task } });
+
+            if (!newTask || !newTask.modifiedCount) {
+                return res.status(400).send({ success: false, message: "Can't add task to the project" });
+            }
+
+            return res.status(200).send({ success: true, message: "Task successfully created", data: { id: task._id } });
+
         }
 
         const ownerOfTaskId = await UserModel.findOne({ _id: task.ownerId });
