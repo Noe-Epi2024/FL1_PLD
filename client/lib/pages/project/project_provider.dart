@@ -43,4 +43,12 @@ class ProjectProvider extends ProviderBase {
 
     notifyListeners();
   }
+
+  void addTaskPreview(TaskPreviewModel taskPreview) {
+    if (project == null) return;
+
+    _project!.taskPreviews.add(taskPreview);
+
+    notifyListeners();
+  }
 }

@@ -3,10 +3,12 @@ import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/get_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
+import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/components/dates/task_end_date.dart';
 import 'package:hyper_tools/pages/task/components/dates/task_start_date.dart';
 import 'package:hyper_tools/pages/task/components/description/task_description.dart';
@@ -83,37 +85,37 @@ class _TaskPageBuilder extends StatelessWidget {
   }
 
   Widget _progressBar(BuildContext context) {
-    final List<SubtaskModel> subtasks =
-        context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
-
-    final double progress = subtasks.isEmpty
-        ? 0
-        : subtasks.where((SubtaskModel subtask) => subtask.isDone).length /
-            subtasks.length;
+    final double? progress = context.watch<TaskProvider>().progress;
 
     return Card(
       margin: 16.horizontal,
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: LinearProgressIndicator(
-                backgroundColor: Theme.of(context).colorScheme.background,
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius:
-                    BorderRadius.circular(ThemeGenerator.kBorderRadius),
-                minHeight: 15,
-                value: progress,
+        child: progress == null
+            ? const Row(
+                children: <Widget>[
+                  Expanded(child: Text('Aucune sous-tâche')),
+                ],
+              )
+            : Row(
+                children: <Widget>[
+                  Expanded(
+                    child: LinearProgressIndicator(
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius:
+                          BorderRadius.circular(ThemeGenerator.kBorderRadius),
+                      minHeight: 15,
+                      value: progress,
+                    ),
+                  ),
+                  16.width,
+                  Text(
+                    '${(progress * 100).ceil()}%',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
-            ),
-            16.width,
-            Text(
-              '${(progress * 100).ceil()}%',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -193,19 +195,26 @@ class _TaskPageBuilder extends StatelessWidget {
   AppBar _appBar(BuildContext context) =>
       AppBar(title: TaskName(projectId: projectId, taskId: taskId));
 
+  FloatingActionButton _createSubtaskButton(BuildContext context) =>
+      FloatingActionButton(
+        onPressed: () async => _onClickCreateSubtask(context),
+        child: const Icon(Icons.add),
+      );
+
   @override
   Widget build(BuildContext context) => ProviderResolver<TaskProvider>.future(
         future: () async => _loadTask(context),
         loader: const TaskPageLoader(),
         builder: (BuildContext builderContext) => Scaffold(
           appBar: _appBar(builderContext),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () async => _onClickCreateSubtask(context),
-            child: const Icon(Icons.add),
-          ),
+          floatingActionButton: RoleHelper.canEditTask(
+            context.read<ProjectProvider>().project!.role,
+          )
+              ? _createSubtaskButton(context)
+              : null,
           body: SafeArea(
             child: ListView(
-              padding: const EdgeInsets.only(top: 16, bottom: 100),
+              padding: const EdgeInsets.only(top: 16, bottom: 128),
               children: <Widget>[
                 _progress(builderContext),
                 _informations(builderContext),

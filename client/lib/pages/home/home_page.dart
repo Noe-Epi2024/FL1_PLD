@@ -147,7 +147,7 @@ class _HomePageBuilder extends HookWidget {
   Widget _builder(BuildContext context, TextEditingController controller) =>
       ListView(
         padding:
-            const EdgeInsets.only(top: 32, bottom: 100, left: 16, right: 16),
+            const EdgeInsets.only(top: 32, bottom: 128, left: 16, right: 16),
         children: <Widget>[
           _welcomeText(context),
           32.height,

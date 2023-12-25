@@ -87,7 +87,9 @@ class LoginPage extends StatelessWidget {
         children: <Widget>[
           const Text('Rester connecter'),
           Checkbox(
-            value: context.watch<LoginProvider>().shouldStayLoggedIn,
+            value: context.select<LoginProvider, bool>(
+              (LoginProvider provider) => provider.shouldStayLoggedIn,
+            ),
             onChanged: (bool? value) =>
                 context.read<LoginProvider>().shouldStayLoggedIn = value!,
           ),

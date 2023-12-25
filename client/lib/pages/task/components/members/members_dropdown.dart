@@ -67,14 +67,17 @@ class ProjectMembersDropdown extends StatelessWidget {
 
     return Dropdown<ProjectMemberModel>.lazy(
       labelText: 'Membre',
-      initialValue: DropdownEntry<ProjectMemberModel>(
-        key: provider.task!.ownerName,
-        value: ProjectMemberModel(
-          name: provider.task!.ownerName,
-          role: ProjectRole.owner,
-          userId: provider.task!.ownerId,
-        ),
-      ),
+      initialValue:
+          provider.task?.ownerId == null || provider.task?.ownerName == null
+              ? null
+              : DropdownEntry<ProjectMemberModel>(
+                  key: provider.task!.ownerName!,
+                  value: ProjectMemberModel(
+                    name: provider.task!.ownerName!,
+                    role: ProjectRole.owner,
+                    userId: provider.task!.ownerId!,
+                  ),
+                ),
       fetch: _getMembers,
       onSelect: (ProjectMemberModel member) async =>
           _onSelected(member, context),

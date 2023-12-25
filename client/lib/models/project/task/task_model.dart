@@ -4,12 +4,12 @@ class TaskModel {
   TaskModel({
     required this.ownerName,
     required this.id,
-    required this.name,
-    required this.description,
-    required this.ownerId,
-    required this.startDate,
-    required this.endDate,
-    required this.substasks,
+    this.name,
+    this.description,
+    this.ownerId,
+    this.startDate,
+    this.endDate,
+    this.substasks,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) => TaskModel(
@@ -17,8 +17,8 @@ class TaskModel {
         name: json['name'],
         description: json['description'],
         ownerId: json['ownerId'],
-        startDate: DateTime.parse(json['startDate']),
-        endDate: DateTime.parse(json['endDate']),
+        startDate: DateTime.tryParse(json['startDate'] ?? ''),
+        endDate: DateTime.tryParse(json['endDate'] ?? ''),
         substasks: List<Map<String, dynamic>>.from(json['subtasks'])
             .map(SubtaskModel.fromJson)
             .toList(),
@@ -26,11 +26,11 @@ class TaskModel {
       );
 
   final String id;
-  String name;
-  String description;
-  String ownerId;
-  String ownerName;
-  DateTime startDate;
-  DateTime endDate;
-  List<SubtaskModel> substasks;
+  String? name;
+  String? description;
+  String? ownerId;
+  String? ownerName;
+  DateTime? startDate;
+  DateTime? endDate;
+  List<SubtaskModel>? substasks;
 }

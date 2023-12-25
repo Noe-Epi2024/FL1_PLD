@@ -103,7 +103,9 @@ class RegisterPage extends StatelessWidget {
         children: <Widget>[
           const Text('Rester connecter'),
           Checkbox(
-            value: context.watch<RegisterProvider>().shouldStayLoggedIn,
+            value: context.select<RegisterProvider, bool>(
+              (RegisterProvider provider) => provider.shouldStayLoggedIn,
+            ),
             onChanged: (bool? value) =>
                 context.read<RegisterProvider>().shouldStayLoggedIn = value!,
           ),

@@ -22,7 +22,7 @@ class TaskName extends StatelessWidget {
   Widget build(BuildContext context) =>
       ChangeNotifierProvider<TaskNameProvider>(
         create: (_) => TaskNameProvider(
-          initialName: context.read<TaskProvider>().task!.name,
+          initialName: context.read<TaskProvider>().task?.name,
         ),
         child: _TaskNameBuilder(
           projectId: projectId,
@@ -60,7 +60,7 @@ class _TaskNameBuilder extends HookWidget {
 
   Future<void> _onClickSave(BuildContext context) async {
     try {
-      final String name = context.read<TaskNameProvider>().currentName;
+      final String? name = context.read<TaskNameProvider>().currentName;
 
       await PatchTask(
         projectId: projectId,
@@ -78,17 +78,10 @@ class _TaskNameBuilder extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = useTextEditingController(
-      text: context.read<TaskProvider>().task!.name,
-    );
+    final TextEditingController controller =
+        useTextEditingController(text: context.read<TaskProvider>().task?.name);
 
     useEffect(() => _initializeController(context, controller));
-
-    final String oldName = context.watch<TaskProvider>().task!.name;
-
-    final String currentName = context.select<TaskNameProvider, String>(
-      (TaskNameProvider provider) => provider.currentName,
-    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,12 +93,16 @@ class _TaskNameBuilder extends HookWidget {
             textCapitalization: TextCapitalization.sentences,
             controller: controller,
             decoration: const InputDecoration(
+              hintText: 'Écrire un nom',
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
             ),
           ),
         ),
-        if (currentName != oldName)
+        if (context.select<TaskNameProvider, String?>(
+              (TaskNameProvider provider) => provider.currentName,
+            ) !=
+            context.watch<TaskProvider>().task?.name)
           TextButton(
             onPressed: () async => _onClickSave(context),
             child: const Text('Enregistrer'),

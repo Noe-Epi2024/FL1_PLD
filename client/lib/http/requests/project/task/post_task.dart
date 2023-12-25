@@ -4,27 +4,27 @@ import 'package:hyper_tools/http/requests/post_request.dart';
 class PostTask extends PostRequest<String> {
   PostTask({
     required this.projectId,
-    required this.name,
-    required this.description,
-    required this.ownerId,
-    required this.startDate,
-    required this.endDate,
+    this.name,
+    this.description,
+    this.ownerId,
+    this.startDate,
+    this.endDate,
   });
 
   final String projectId;
-  final String name;
-  final String description;
-  final String ownerId;
-  final DateTime startDate;
-  final DateTime endDate;
+  final String? name;
+  final String? description;
+  final String? ownerId;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
   @override
   Map<String, dynamic>? get body => <String, dynamic>{
-        'ownerId': ownerId,
-        'description': description,
-        'name': name,
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate.toIso8601String(),
+        if (ownerId != null) 'ownerId': ownerId,
+        if (description != null) 'description': description,
+        if (name != null) 'name': name,
+        if (startDate != null) 'startDate': startDate!.toIso8601String(),
+        if (endDate != null) 'endDate': endDate!.toIso8601String(),
       };
 
   @override

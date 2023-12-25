@@ -22,7 +22,7 @@ class TaskDescription extends StatelessWidget {
   Widget build(BuildContext context) =>
       ChangeNotifierProvider<TaskDescriptionProvider>(
         create: (_) => TaskDescriptionProvider(
-          initialDescription: context.read<TaskProvider>().task!.description,
+          initialDescription: context.read<TaskProvider>().task?.description,
         ),
         child: _TaskDescriptionBuilder(
           projectId: projectId,
@@ -61,7 +61,7 @@ class _TaskDescriptionBuilder extends HookWidget {
 
   Future<void> _onClickSave(BuildContext context) async {
     try {
-      final String description =
+      final String? description =
           context.read<TaskDescriptionProvider>().currentDescription;
 
       await PatchTask(
@@ -81,18 +81,10 @@ class _TaskDescriptionBuilder extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController(
-      text: context.read<TaskProvider>().task!.description,
+      text: context.read<TaskProvider>().task?.description,
     );
 
     useEffect(() => _initializeController(context, controller));
-
-    final String oldDescription =
-        context.watch<TaskProvider>().task!.description;
-
-    final String currentDescription =
-        context.select<TaskDescriptionProvider, String>(
-      (TaskDescriptionProvider provider) => provider.currentDescription,
-    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,6 +98,7 @@ class _TaskDescriptionBuilder extends HookWidget {
           textCapitalization: TextCapitalization.sentences,
           controller: controller,
           decoration: InputDecoration(
+            hintText: 'Écrire une description',
             enabledBorder: InputBorder.none,
             focusedBorder: UnderlineInputBorder(
               borderSide: BorderSide(
@@ -116,7 +109,10 @@ class _TaskDescriptionBuilder extends HookWidget {
           minLines: 1,
           maxLines: 3,
         ),
-        if (currentDescription != oldDescription)
+        if (context.select<TaskDescriptionProvider, String?>(
+              (TaskDescriptionProvider provider) => provider.currentDescription,
+            ) !=
+            context.watch<TaskProvider>().task?.description)
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(

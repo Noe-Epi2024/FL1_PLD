@@ -38,7 +38,7 @@ class TaskStartDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime initialDate = context.read<TaskProvider>().task!.startDate;
+    final DateTime? initialDate = context.read<TaskProvider>().task?.startDate;
 
     return DatePicker(
       label: 'Début',

@@ -1,10 +1,10 @@
 class TaskPreviewModel {
   TaskPreviewModel({
     required this.id,
-    required this.name,
-    required this.ownerName,
-    required this.startDate,
-    required this.endDate,
+    this.name,
+    this.ownerName,
+    this.startDate,
+    this.endDate,
     this.progress,
   });
 
@@ -13,15 +13,15 @@ class TaskPreviewModel {
         id: json['id'],
         name: json['name'],
         ownerName: json['ownerName'],
-        startDate: DateTime.parse(json['startDate']),
-        endDate: DateTime.parse(json['endDate']),
+        startDate: DateTime.tryParse(json['startDate'] ?? ''),
+        endDate: DateTime.tryParse(json['endDate'] ?? ''),
         progress: json['progress'],
       );
 
   final String id;
-  String name;
-  String ownerName;
-  DateTime startDate;
-  DateTime endDate;
+  String? name;
+  String? ownerName;
+  DateTime? startDate;
+  DateTime? endDate;
   int? progress;
 }

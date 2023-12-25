@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
-import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/http/requests/project/get_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/project_model.dart';
-import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 import 'package:hyper_tools/pages/project/components/members/project_members_tab.dart';
 import 'package:hyper_tools/pages/project/components/project_page_loading.dart';
-import 'package:hyper_tools/pages/project/components/task_preview.dart';
+import 'package:hyper_tools/pages/project/components/tasks/project_tasks_tab.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -45,20 +43,12 @@ class _ProjectPageBuilder extends StatelessWidget {
     }
   }
 
-  AppBar _appBar(BuildContext context) {
-    final String name = context.watch<ProjectProvider>().project!.name;
-
-    return AppBar(
-      title: Text(name, style: const TextStyle(color: Colors.black)),
-    );
-  }
-
-  List<Widget> _taskPreviews(BuildContext context) {
-    final List<TaskPreviewModel> taskPreviews =
-        context.watch<ProjectProvider>().project!.taskPreviews;
-
-    return taskPreviews.map(TaskPreview.new).toList();
-  }
+  AppBar _appBar(BuildContext context) => AppBar(
+        title: Text(
+          context.watch<ProjectProvider>().project!.name,
+          style: const TextStyle(color: Colors.black),
+        ),
+      );
 
   Widget _navigationBar(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
@@ -75,21 +65,6 @@ class _ProjectPageBuilder extends StatelessWidget {
         ),
       );
 
-  Scaffold _tasksTab(BuildContext context) => Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: const Icon(Icons.add),
-        ),
-        body: ListView(
-          padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 100),
-          children: <Widget>[
-            const TitleText('Tâches'),
-            ..._taskPreviews(context),
-          ],
-        ),
-      );
-
   Widget _builder(BuildContext context) => DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -98,7 +73,7 @@ class _ProjectPageBuilder extends StatelessWidget {
           body: SafeArea(
             child: TabBarView(
               children: <Widget>[
-                _tasksTab(context),
+                ProjectTasksTab(projectId: projectId),
                 ProjectMembersTab(projectId: projectId),
               ],
             ),

@@ -17,7 +17,9 @@ class LoginPageMobile extends LoginPage {
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: SafeArea(
           child: AuthenticationLayoutMobile(
-            child: context.watch<LoginProvider>().isLoading
+            child: context.select<LoginProvider, bool>(
+              (LoginProvider provider) => provider.isLoading,
+            )
                 ? _loading
                 : form(context),
           ),

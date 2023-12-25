@@ -50,7 +50,7 @@ class _DropdownList<T> extends HookWidget {
         color: Theme.of(context).colorScheme.surface,
         border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
       ),
-      child: ListView(shrinkWrap: true, children: items),
+      child: ListView(children: items),
     );
   }
 
@@ -79,7 +79,7 @@ class _DropdownList<T> extends HookWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             _searchBar(controller),
-            _choices(resolverContext),
+            Expanded(child: _choices(resolverContext)),
           ],
         ),
       ),

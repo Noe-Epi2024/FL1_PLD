@@ -4,11 +4,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/member/get_project_members.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/member/project_member_model.dart';
 import 'package:hyper_tools/models/project/member/project_members_model.dart';
-import 'package:hyper_tools/models/project/project_role.dart';
 import 'package:hyper_tools/pages/project/components/members/add/add_project_member_modal.dart';
 import 'package:hyper_tools/pages/project/components/members/project_member.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
@@ -130,16 +130,17 @@ class _ProjecMembersTabBuilder extends HookWidget {
     return ProviderResolver<ProjectMembersProvider>.future(
       future: () async => _loadMembers(context),
       builder: (BuildContext resolverContext) => Scaffold(
-        floatingActionButton:
-            context.watch<ProjectProvider>().project!.role == ProjectRole.owner
-                ? _floatingActionButton(context)
-                : null,
+        floatingActionButton: RoleHelper.canManageMembers(
+          context.read<ProjectProvider>().project!.role,
+        )
+            ? _floatingActionButton(context)
+            : null,
         body: ListView(
           padding: const EdgeInsets.only(
             left: 16,
             right: 16,
             top: 30,
-            bottom: 100,
+            bottom: 128,
           ),
           children: <Widget>[
             const TitleText('Membres'),

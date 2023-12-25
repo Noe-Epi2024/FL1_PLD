@@ -25,7 +25,8 @@ class Subtask extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<SubtaskProvider>(
         create: (_) => SubtaskProvider(
-          initialName: context.read<TaskProvider>().findSubtask(subtaskId).name,
+          initialName:
+              context.read<TaskProvider>().findSubtask(subtaskId)?.name,
         ),
         child: _SubtaskBuilder(
           projectId: projectId,
@@ -101,7 +102,7 @@ class _SubtaskBuilder extends HookWidget {
 
   Future<void> _onPressSave(BuildContext context) async {
     try {
-      final String name = context.read<SubtaskProvider>().currentName;
+      final String? name = context.read<SubtaskProvider>().currentName;
 
       await PatchSubtask(
         projectId: projectId,
@@ -148,24 +149,17 @@ class _SubtaskBuilder extends HookWidget {
       );
 
   Checkbox _checkbox(BuildContext context) => Checkbox(
-        value: context.watch<TaskProvider>().findSubtask(subtaskId).isDone,
+        value: context.watch<TaskProvider>().findSubtask(subtaskId)?.isDone,
         onChanged: (bool? value) async => _onCheckboxChanged(context, value!),
       );
 
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController(
-      text: context.watch<TaskProvider>().findSubtask(subtaskId).name,
+      text: context.read<TaskProvider>().findSubtask(subtaskId)?.name,
     );
 
     useEffect(() => _initializeController(context, controller));
-
-    final String oldName =
-        context.watch<TaskProvider>().findSubtask(subtaskId).name;
-
-    final String currentName = context.select<SubtaskProvider, String>(
-      (SubtaskProvider provider) => provider.currentName,
-    );
 
     return Slidable(
       endActionPane: ActionPane(
@@ -179,7 +173,11 @@ class _SubtaskBuilder extends HookWidget {
           children: <Widget>[
             _checkbox(context),
             Expanded(child: _nameField(context, controller)),
-            if (oldName != currentName) _saveButton(context),
+            if (context.watch<TaskProvider>().findSubtask(subtaskId)?.name !=
+                context.select<SubtaskProvider, String?>(
+                  (SubtaskProvider provider) => provider.currentName,
+                ))
+              _saveButton(context),
           ],
         ),
       ),

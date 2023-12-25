@@ -14,55 +14,64 @@ class TaskProvider extends ProviderBase {
     notifyListeners();
   }
 
-  SubtaskModel findSubtask(String id) =>
-      _task!.substasks.firstWhere((SubtaskModel subtask) => subtask.id == id);
+  SubtaskModel? findSubtask(String id) =>
+      _task?.substasks?.firstWhere((SubtaskModel subtask) => subtask.id == id);
 
   void setSubtaskIsDone({required String subtaskId, required bool value}) {
     if (task == null) return;
 
-    findSubtask(subtaskId).isDone = value;
+    findSubtask(subtaskId)?.isDone = value;
 
     notifyListeners();
   }
 
-  void setSubtaskName({required String subtaskId, required String value}) {
+  void setSubtaskName({required String subtaskId, required String? value}) {
     if (task == null) return;
 
-    findSubtask(subtaskId).name = value;
+    findSubtask(subtaskId)?.name = value;
 
     notifyListeners();
   }
 
   void deleteSubtask({required String subtaskId}) {
-    if (task == null) return;
+    if (task?.substasks == null) return;
 
-    _task!.substasks
+    _task?.substasks!
         .removeWhere((SubtaskModel subtask) => subtask.id == subtaskId);
 
     notifyListeners();
   }
 
   void addSubtask(SubtaskModel subtask) {
-    if (task == null) return;
+    if (task?.substasks == null) return;
 
-    _task!.substasks.add(subtask);
-
-    notifyListeners();
-  }
-
-  void setDescription(String description) {
-    if (task == null) return;
-
-    _task!.description = description;
+    _task?.substasks!.add(subtask);
 
     notifyListeners();
   }
 
-  void setName(String name) {
+  void setDescription(String? description) {
     if (task == null) return;
 
-    _task!.name = name;
+    _task?.description = description;
 
     notifyListeners();
+  }
+
+  void setName(String? name) {
+    if (task == null) return;
+
+    _task?.name = name;
+
+    notifyListeners();
+  }
+
+  double? get progress {
+    if ((task?.substasks ?? <SubtaskModel>[]).isEmpty) return null;
+
+    return task!.substasks!
+            .where((SubtaskModel subtask) => subtask.isDone)
+            .length /
+        task!.substasks!.length;
   }
 }

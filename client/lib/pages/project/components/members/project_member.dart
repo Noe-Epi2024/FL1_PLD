@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/member/delete_project_member.dart';
 import 'package:hyper_tools/http/requests/project/member/patch_project_member.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -72,10 +73,10 @@ class ProjectMember extends StatelessWidget {
       );
 
   Widget _icons(BuildContext context) {
-    final ProjectRole userRole = context.watch<ProjectProvider>().project!.role;
+    final ProjectRole userRole = context.read<ProjectProvider>().project!.role;
 
     final ProjectMemberModel member =
-        context.watch<ProjectMembersProvider>().findMember(memberId);
+        context.read<ProjectMembersProvider>().findMember(memberId);
 
     final ProjectRole role = member.role;
 
@@ -116,10 +117,10 @@ class ProjectMember extends StatelessWidget {
     final String name =
         context.read<ProjectMembersProvider>().findMember(memberId).name;
 
-    final ProjectRole role = context.watch<ProjectProvider>().project!.role;
+    final ProjectRole role = context.read<ProjectProvider>().project!.role;
 
     return Slidable(
-      endActionPane: role == ProjectRole.owner
+      endActionPane: RoleHelper.canManageMembers(role)
           ? ActionPane(
               motion: const ScrollMotion(),
               children: <Widget>[_deleteButton(context)],

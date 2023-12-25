@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:hyper_tools/extensions/datetime_extension.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/extensions/string_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
-import 'package:hyper_tools/helpers/date_helper.dart';
 import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
@@ -32,7 +33,7 @@ class TaskPreview extends StatelessWidget {
   }
 
   Widget _name() => Text(
-        taskPreviewModel.name,
+        taskPreviewModel.name.or('Tâche sans nom'),
         style: const TextStyle(fontWeight: FontWeight.bold),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -47,13 +48,14 @@ class TaskPreview extends StatelessWidget {
           ),
           8.width,
           Text(
-            '${DateHelper.formatDateToFrench(taskPreviewModel.startDate)} - ${DateHelper.formatDateToFrench(taskPreviewModel.endDate)}',
+            '${taskPreviewModel.startDate?.toFrench ?? "Indefini"} - ${taskPreviewModel.endDate?.toFrench ?? "Indefini"}',
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ],
       );
 
-  Text _assignedTo() => Text('Assigné à ${taskPreviewModel.ownerName}');
+  Text _assignedTo() =>
+      Text('Assigné à ${taskPreviewModel.ownerName ?? "personne"}');
 
   Widget _progressBar(BuildContext context) => Row(
         children: <Widget>[
