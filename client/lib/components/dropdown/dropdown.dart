@@ -18,6 +18,7 @@ class Dropdown<T> extends StatelessWidget {
     this.onSelect,
     this.initialValue,
     this.labelText,
+    this.readonly = false,
   })  : isLazy = false,
         fetch = null;
 
@@ -27,6 +28,7 @@ class Dropdown<T> extends StatelessWidget {
     this.onSelect,
     this.initialValue,
     this.labelText,
+    this.readonly = false,
   })  : isLazy = true,
         entries = null;
 
@@ -36,6 +38,7 @@ class Dropdown<T> extends StatelessWidget {
   final FutureOr<bool> Function(T)? onSelect;
   final Future<List<DropdownEntry<T>>> Function()? fetch;
   final bool isLazy;
+  final bool readonly;
 
   Future<void> _openList(BuildContext context) async {
     final DropdownProvider<T> provider = context.read<DropdownProvider<T>>()
@@ -88,24 +91,22 @@ class Dropdown<T> extends StatelessWidget {
       (DropdownProvider<T> provider) => provider.isOpen,
     );
 
-    return Builder(
-      builder: (BuildContext builderContext) => InkWell(
-        onTap: () async => _onClick(builderContext),
-        child: InputDecorator(
-          isFocused: isOpen,
-          isEmpty: selectedValue == null,
-          decoration: InputDecoration(
-            enabledBorder: InputBorder.none,
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            labelText: labelText,
-            prefixIcon: const Icon(Icons.person),
-            suffixIcon: isOpen
-                ? const Icon(Icons.arrow_drop_up_rounded)
-                : const Icon(Icons.arrow_drop_down_rounded),
-          ),
-          child: selectedValue != null ? Text(selectedValue) : null,
+    return InkWell(
+      onTap: readonly ? null : () async => _onClick(context),
+      child: InputDecorator(
+        isFocused: isOpen,
+        isEmpty: selectedValue == null,
+        decoration: InputDecoration(
+          enabledBorder: InputBorder.none,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          labelText: labelText,
+          prefixIcon: const Icon(Icons.person),
+          suffixIcon: isOpen
+              ? const Icon(Icons.arrow_drop_up_rounded)
+              : const Icon(Icons.arrow_drop_down_rounded),
         ),
+        child: selectedValue != null ? Text(selectedValue) : null,
       ),
     );
   }

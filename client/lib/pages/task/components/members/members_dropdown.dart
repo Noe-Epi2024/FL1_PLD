@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/dropdown/dropdown.dart';
 import 'package:hyper_tools/components/dropdown/dropdown_entry.dart';
 import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/member/get_project_members.dart';
 import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -66,6 +67,8 @@ class ProjectMembersDropdown extends StatelessWidget {
     final TaskProvider provider = context.read<TaskProvider>();
 
     return Dropdown<ProjectMemberModel>.lazy(
+      readonly: !RoleHelper.canEditTask(
+          context.read<ProjectProvider>().project!.role),
       labelText: 'Membre',
       initialValue:
           provider.task?.ownerId == null || provider.task?.ownerName == null

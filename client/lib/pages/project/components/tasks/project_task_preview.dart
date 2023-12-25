@@ -39,20 +39,44 @@ class TaskPreview extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget _dates(BuildContext context) => Row(
-        children: <Widget>[
-          Icon(
-            Boxicons.bx_calendar,
-            size: 16,
-            color: Theme.of(context).hintColor,
+  Widget _dates(BuildContext context) {
+    final DateTime? startDate = taskPreviewModel.startDate;
+    final DateTime? endDate = taskPreviewModel.endDate;
+    final DateTime today = DateTime.now();
+    final bool isOngoing = !(startDate == null && endDate == null) &&
+        (startDate?.isBefore(today) ?? true) &&
+        (endDate?.isAfter(today) ?? true);
+
+    return Row(
+      children: <Widget>[
+        Icon(
+          Boxicons.bx_calendar,
+          size: 16,
+          color: Theme.of(context).hintColor,
+        ),
+        8.width,
+        Text(
+          '${startDate?.toFrench ?? "Indefini"} - ${endDate?.toFrench ?? "Indefini"}',
+          style: TextStyle(color: Theme.of(context).hintColor),
+        ),
+        16.width,
+        if (isOngoing)
+          Container(
+            alignment: Alignment.centerRight,
+            padding: 4.horizontal,
+            decoration: BoxDecoration(
+              border: Border.all(color: const Color(0xFFFFBF00)),
+              color: const Color(0xFFFFBF00).withAlpha(50),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: const Text(
+              'En cours',
+              style: TextStyle(color: Color(0xFFFFBF00)),
+            ),
           ),
-          8.width,
-          Text(
-            '${taskPreviewModel.startDate?.toFrench ?? "Indefini"} - ${taskPreviewModel.endDate?.toFrench ?? "Indefini"}',
-            style: TextStyle(color: Theme.of(context).hintColor),
-          ),
-        ],
-      );
+      ],
+    );
+  }
 
   Text _assignedTo() =>
       Text('Assigné à ${taskPreviewModel.ownerName ?? "personne"}');

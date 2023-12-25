@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/components/description/task_description_provider.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
@@ -94,17 +96,16 @@ class _TaskDescriptionBuilder extends HookWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         TextField(
+          readOnly: !RoleHelper.canEditTask(
+            context.read<ProjectProvider>().project!.role,
+          ),
           onTapOutside: (_) => FocusScope.of(context).unfocus(),
           textCapitalization: TextCapitalization.sentences,
           controller: controller,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Écrire une description',
             enabledBorder: InputBorder.none,
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
+            focusedBorder: InputBorder.none,
           ),
           minLines: 1,
           maxLines: 3,

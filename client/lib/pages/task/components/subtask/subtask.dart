@@ -3,9 +3,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/subtask/delete_subtask.dart';
 import 'package:hyper_tools/http/requests/project/task/subtask/patch_subtask.dart';
 import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/components/subtask/subtask_provider.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
@@ -150,7 +152,11 @@ class _SubtaskBuilder extends HookWidget {
 
   Checkbox _checkbox(BuildContext context) => Checkbox(
         value: context.watch<TaskProvider>().findSubtask(subtaskId)?.isDone,
-        onChanged: (bool? value) async => _onCheckboxChanged(context, value!),
+        onChanged: (bool? value) async => RoleHelper.canEditTask(
+          context.read<ProjectProvider>().project!.role,
+        )
+            ? _onCheckboxChanged(context, value!)
+            : null,
       );
 
   @override

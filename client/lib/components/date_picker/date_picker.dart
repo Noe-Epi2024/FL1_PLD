@@ -12,11 +12,13 @@ class DatePicker extends StatelessWidget {
     super.key,
     this.label,
     this.initialDate,
+    this.readonly = false,
   });
 
   final FutureOr<bool> Function(DateTime date) onSelected;
   final String? label;
   final DateTime? initialDate;
+  final bool readonly;
 
   @override
   Widget build(BuildContext context) =>
@@ -25,6 +27,7 @@ class DatePicker extends StatelessWidget {
         child: _DatePickerBuilder(
           onSelected: onSelected,
           label: label,
+          readonly: readonly,
         ),
       );
 }
@@ -33,10 +36,12 @@ class _DatePickerBuilder extends StatelessWidget {
   const _DatePickerBuilder({
     required this.onSelected,
     this.label,
+    this.readonly = false,
   });
 
   final FutureOr<bool> Function(DateTime date) onSelected;
   final String? label;
+  final bool readonly;
 
   Future<void> _onClick(BuildContext context) async {
     final DatePickerProvider provider = context.read<DatePickerProvider>();
@@ -64,7 +69,7 @@ class _DatePickerBuilder extends StatelessWidget {
     );
 
     return InkWell(
-      onTap: () async => _onClick(context),
+      onTap: readonly ? null : () async => _onClick(context),
       child: InputDecorator(
         isFocused: isOpen,
         isEmpty: selectedDate == null,

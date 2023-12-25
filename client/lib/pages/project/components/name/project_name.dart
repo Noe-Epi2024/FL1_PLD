@@ -3,50 +3,44 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
-import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
+import 'package:hyper_tools/http/requests/project/patch_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/pages/project/components/name/project_name_provider.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
-import 'package:hyper_tools/pages/task/components/name/task_name_provider.dart';
-import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
-class TaskName extends StatelessWidget {
-  const TaskName({
+class ProjectName extends StatelessWidget {
+  const ProjectName({
     required this.projectId,
-    required this.taskId,
     super.key,
   });
 
   final String projectId;
-  final String taskId;
 
   @override
   Widget build(BuildContext context) =>
-      ChangeNotifierProvider<TaskNameProvider>(
-        create: (_) => TaskNameProvider(
-          initialName: context.read<TaskProvider>().task?.name,
+      ChangeNotifierProvider<ProjectNameProvider>(
+        create: (_) => ProjectNameProvider(
+          initialName: context.read<ProjectProvider>().project!.name,
         ),
-        child: _TaskNameBuilder(
+        child: _ProjectNameBuilder(
           projectId: projectId,
-          taskId: taskId,
         ),
       );
 }
 
-class _TaskNameBuilder extends HookWidget {
-  const _TaskNameBuilder({
+class _ProjectNameBuilder extends HookWidget {
+  const _ProjectNameBuilder({
     required this.projectId,
-    required this.taskId,
   });
 
   final String projectId;
-  final String taskId;
 
   void _onNameChanged(
     BuildContext context,
     TextEditingController controller,
   ) {
-    context.read<TaskNameProvider>().currentName = controller.text;
+    context.read<ProjectNameProvider>().currentName = controller.text;
   }
 
   void Function() _initializeController(
@@ -62,15 +56,14 @@ class _TaskNameBuilder extends HookWidget {
 
   Future<void> _onClickSave(BuildContext context) async {
     try {
-      final String? name = context.read<TaskNameProvider>().currentName;
+      final String name = context.read<ProjectNameProvider>().currentName;
 
-      await PatchTask(
+      await PatchProject(
         projectId: projectId,
-        taskId: taskId,
         name: name,
       ).patch();
 
-      context.read<TaskProvider>().setName(name);
+      context.read<ProjectProvider>().setName(name);
       Messenger.showSnackBarQuickInfo('Sauvegardé', context);
       FocusScope.of(context).unfocus();
     } on ErrorModel catch (e) {
@@ -80,8 +73,9 @@ class _TaskNameBuilder extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller =
-        useTextEditingController(text: context.read<TaskProvider>().task?.name);
+    final TextEditingController controller = useTextEditingController(
+      text: context.read<ProjectProvider>().project?.name,
+    );
 
     useEffect(() => _initializeController(context, controller));
 
@@ -90,7 +84,7 @@ class _TaskNameBuilder extends HookWidget {
       children: <Widget>[
         Expanded(
           child: TextField(
-            readOnly: !RoleHelper.canEditTask(
+            readOnly: !RoleHelper.canEditProject(
               context.read<ProjectProvider>().project!.role,
             ),
             style: Theme.of(context).appBarTheme.titleTextStyle,
@@ -104,10 +98,10 @@ class _TaskNameBuilder extends HookWidget {
             ),
           ),
         ),
-        if (context.select<TaskNameProvider, String?>(
-              (TaskNameProvider provider) => provider.currentName,
+        if (context.select<ProjectNameProvider, String?>(
+              (ProjectNameProvider provider) => provider.currentName,
             ) !=
-            context.watch<TaskProvider>().task?.name)
+            context.watch<ProjectProvider>().project?.name)
           TextButton(
             onPressed: () async => _onClickSave(context),
             child: const Text('Enregistrer'),

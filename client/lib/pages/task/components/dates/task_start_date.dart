@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/date_picker/date_picker.dart';
 import 'package:hyper_tools/global/messenger.dart';
+import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
@@ -42,6 +43,9 @@ class TaskStartDate extends StatelessWidget {
 
     return DatePicker(
       label: 'Début',
+      readonly: !RoleHelper.canEditTask(
+        context.read<ProjectProvider>().project!.role,
+      ),
       initialDate: initialDate,
       onSelected: (DateTime date) async => _onSelectedStartDate(context, date),
     );

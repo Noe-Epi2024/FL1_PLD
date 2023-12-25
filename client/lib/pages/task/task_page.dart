@@ -14,7 +14,7 @@ import 'package:hyper_tools/pages/task/components/dates/task_start_date.dart';
 import 'package:hyper_tools/pages/task/components/description/task_description.dart';
 import 'package:hyper_tools/pages/task/components/members/members_dropdown.dart';
 import 'package:hyper_tools/pages/task/components/name/task_name.dart';
-import 'package:hyper_tools/pages/task/components/subtask/create_subtask_modal.dart';
+import 'package:hyper_tools/pages/task/components/subtask/create_subtask_field.dart';
 import 'package:hyper_tools/pages/task/components/subtask/subtask.dart';
 import 'package:hyper_tools/pages/task/components/task_page_loader.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
@@ -53,19 +53,6 @@ class _TaskPageBuilder extends StatelessWidget {
     } on ErrorModel catch (e) {
       provider.setErrorState(e);
     }
-  }
-
-  Future<void> _onClickCreateSubtask(BuildContext context) async {
-    await showDialog(
-      context: context,
-      builder: (_) => ChangeNotifierProvider<TaskProvider>.value(
-        value: context.read<TaskProvider>(),
-        builder: (__, ___) => CreateSubtaskModal(
-          projectId: projectId,
-          taskId: taskId,
-        ),
-      ),
-    );
   }
 
   List<Widget> _getSubtasks(BuildContext context) {
@@ -154,7 +141,15 @@ class _TaskPageBuilder extends StatelessWidget {
         initiallyExpanded: true,
         title: const TitleText('À faire'),
         children: <Widget>[
-          Column(children: _getSubtasks(context)),
+          Column(
+            children: <Widget>[
+              ..._getSubtasks(context),
+              if (RoleHelper.canEditTask(
+                context.read<ProjectProvider>().project!.role,
+              ))
+                CreateSubtaskField(projectId: projectId, taskId: taskId),
+            ],
+          ),
         ],
       );
 
@@ -195,23 +190,12 @@ class _TaskPageBuilder extends StatelessWidget {
   AppBar _appBar(BuildContext context) =>
       AppBar(title: TaskName(projectId: projectId, taskId: taskId));
 
-  FloatingActionButton _createSubtaskButton(BuildContext context) =>
-      FloatingActionButton(
-        onPressed: () async => _onClickCreateSubtask(context),
-        child: const Icon(Icons.add),
-      );
-
   @override
   Widget build(BuildContext context) => ProviderResolver<TaskProvider>.future(
         future: () async => _loadTask(context),
         loader: const TaskPageLoader(),
         builder: (BuildContext builderContext) => Scaffold(
           appBar: _appBar(builderContext),
-          floatingActionButton: RoleHelper.canEditTask(
-            context.read<ProjectProvider>().project!.role,
-          )
-              ? _createSubtaskButton(context)
-              : null,
           body: SafeArea(
             child: ListView(
               padding: const EdgeInsets.only(top: 16, bottom: 128),

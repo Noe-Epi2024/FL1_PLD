@@ -51,4 +51,12 @@ class ProjectProvider extends ProviderBase {
 
     notifyListeners();
   }
+
+  void setName(String name) {
+    if (project == null) return;
+
+    _project!.name = name;
+
+    notifyListeners();
+  }
 }

@@ -5,6 +5,7 @@ import 'package:hyper_tools/http/requests/project/get_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/project_model.dart';
 import 'package:hyper_tools/pages/project/components/members/project_members_tab.dart';
+import 'package:hyper_tools/pages/project/components/name/project_name.dart';
 import 'package:hyper_tools/pages/project/components/project_page_loading.dart';
 import 'package:hyper_tools/pages/project/components/tasks/project_tasks_tab.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
@@ -43,12 +44,8 @@ class _ProjectPageBuilder extends StatelessWidget {
     }
   }
 
-  AppBar _appBar(BuildContext context) => AppBar(
-        title: Text(
-          context.watch<ProjectProvider>().project!.name,
-          style: const TextStyle(color: Colors.black),
-        ),
-      );
+  AppBar _appBar(BuildContext context) =>
+      AppBar(title: ProjectName(projectId: projectId));
 
   Widget _navigationBar(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
