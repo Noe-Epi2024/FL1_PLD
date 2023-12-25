@@ -70,7 +70,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text('Profile')),
         body: ChangeNotifierProvider<ProfileProvider>(
-          create: (_) => ProfileProvider(),
+          create: (_) => ProfileProvider(context),
           builder: (BuildContext providerContext, _) =>
               ProviderResolver<ProfileProvider>.future(
             future: () async => _loadMe(providerContext),

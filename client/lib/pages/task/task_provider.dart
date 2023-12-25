@@ -1,9 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/future_widget/provider_base.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
+import 'package:hyper_tools/pages/project/project_provider.dart';
+import 'package:provider/provider.dart';
 
 class TaskProvider extends ProviderBase {
-  TaskProvider() : super(isInitiallyLoading: true);
+  TaskProvider(this.context, {required this.taskId})
+      : super(isInitiallyLoading: true);
+
+  final BuildContext context;
+  final String taskId;
 
   TaskModel? _task;
 
@@ -21,6 +28,7 @@ class TaskProvider extends ProviderBase {
     if (task == null) return;
 
     findSubtask(subtaskId)?.isDone = value;
+    onSubtasksChanged();
 
     notifyListeners();
   }
@@ -38,6 +46,7 @@ class TaskProvider extends ProviderBase {
 
     _task?.substasks!
         .removeWhere((SubtaskModel subtask) => subtask.id == subtaskId);
+    onSubtasksChanged();
 
     notifyListeners();
   }
@@ -46,6 +55,7 @@ class TaskProvider extends ProviderBase {
     if (task?.substasks == null) return;
 
     _task?.substasks!.add(subtask);
+    onSubtasksChanged();
 
     notifyListeners();
   }
@@ -62,6 +72,7 @@ class TaskProvider extends ProviderBase {
     if (task == null) return;
 
     _task?.name = name;
+    context.read<ProjectProvider>().setTaskName(taskId: taskId, name: name);
 
     notifyListeners();
   }
@@ -70,6 +81,9 @@ class TaskProvider extends ProviderBase {
     if (task == null) return;
 
     _task?.startDate = startDate;
+    context
+        .read<ProjectProvider>()
+        .setTaskStartDate(taskId: taskId, date: startDate);
 
     notifyListeners();
   }
@@ -78,16 +92,27 @@ class TaskProvider extends ProviderBase {
     if (task == null) return;
 
     _task?.endDate = endDate;
+    context
+        .read<ProjectProvider>()
+        .setTaskEndDate(taskId: taskId, date: endDate);
 
     notifyListeners();
   }
 
-  double? get progress {
+  void onSubtasksChanged() {
+    context
+        .read<ProjectProvider>()
+        .setTaskProgress(taskId: taskId, progress: progress);
+  }
+
+  int? get progress {
     if ((task?.substasks ?? <SubtaskModel>[]).isEmpty) return null;
 
-    return task!.substasks!
-            .where((SubtaskModel subtask) => subtask.isDone)
-            .length /
-        task!.substasks!.length;
+    return (task!.substasks!
+                .where((SubtaskModel subtask) => subtask.isDone)
+                .length /
+            task!.substasks!.length *
+            100)
+        .ceil();
   }
 }

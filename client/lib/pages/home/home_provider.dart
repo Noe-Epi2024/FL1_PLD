@@ -11,6 +11,7 @@ class HomeProvider extends ProviderBase {
 
   set projects(ProjectsModel? value) {
     _projects = value;
+
     notifyListeners();
   }
 
@@ -18,8 +19,14 @@ class HomeProvider extends ProviderBase {
 
   String get filter => _filter;
 
+  ProjectPreviewModel? findProjectPreview(String projectId) =>
+      projects?.projects.firstWhere(
+        (ProjectPreviewModel projectPreview) => projectPreview.id == projectId,
+      );
+
   set filter(String value) {
     _filter = value;
+
     notifyListeners();
   }
 
@@ -27,6 +34,41 @@ class HomeProvider extends ProviderBase {
     if (_projects == null) return;
 
     _projects!.projects.add(projectPreview);
+
+    notifyListeners();
+  }
+
+  void setUserName(String value) {
+    if (_projects == null) return;
+
+    _projects!.name = value;
+
+    notifyListeners();
+  }
+
+  void setProjectProgress({required String projectId, required int? progress}) {
+    if (_projects == null) return;
+
+    findProjectPreview(projectId)!.progress = progress;
+
+    notifyListeners();
+  }
+
+  void setProjectName({required String projectId, required String name}) {
+    if (_projects == null) return;
+
+    findProjectPreview(projectId)!.name = name;
+
+    notifyListeners();
+  }
+
+  void setProjectMembersCount({
+    required String projectId,
+    required int membersCount,
+  }) {
+    if (_projects == null) return;
+
+    findProjectPreview(projectId)!.membersCount = membersCount;
 
     notifyListeners();
   }

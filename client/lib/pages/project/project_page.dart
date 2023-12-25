@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/http/requests/project/get_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -18,7 +17,7 @@ class ProjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<ProjectProvider>(
-        create: (_) => ProjectProvider(),
+        create: (_) => ProjectProvider(context, projectId: projectId),
         child: _ProjectPageBuilder(projectId: projectId),
       );
 }
@@ -56,8 +55,8 @@ class _ProjectPageBuilder extends StatelessWidget {
         ),
         child: const TabBar(
           tabs: <Widget>[
-            Tab(icon: Icon(Boxicons.bx_list_ul), text: 'Tâches'),
-            Tab(icon: Icon(Boxicons.bx_group), text: 'Membres'),
+            Tab(text: 'Tâches'),
+            Tab(text: 'Membres'),
           ],
         ),
       );

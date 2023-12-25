@@ -23,7 +23,7 @@ class ProjectMembersTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       ChangeNotifierProvider<ProjectMembersProvider>(
-        create: (_) => ProjectMembersProvider(),
+        create: (_) => ProjectMembersProvider(context, projectId: projectId),
         child: _ProjecMembersTabBuilder(
           projectId: projectId,
         ),

@@ -1,8 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/future_widget/provider_base.dart';
 import 'package:hyper_tools/models/user/me_model.dart';
+import 'package:hyper_tools/pages/home/home_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileProvider extends ProviderBase {
-  ProfileProvider() : super(isInitiallyLoading: true);
+  ProfileProvider(this.context) : super(isInitiallyLoading: true);
+
+  final BuildContext context;
 
   MeModel? _me;
 
@@ -10,6 +15,7 @@ class ProfileProvider extends ProviderBase {
 
   set me(MeModel? value) {
     _me = value;
+
     notifyListeners();
   }
 
@@ -19,6 +25,7 @@ class ProfileProvider extends ProviderBase {
 
   set currentName(String? value) {
     _currentName = value;
+
     notifyListeners();
   }
 
@@ -28,22 +35,31 @@ class ProfileProvider extends ProviderBase {
 
   set currentEmail(String? value) {
     _currentEmail = value;
+
     notifyListeners();
   }
 
   void setSuccessState(MeModel value) {
     _me = value;
     isLoading_ = false;
+
     notifyListeners();
   }
 
   void setName(String name) {
+    if (_me == null) return;
+
     _me?.name = name;
+    context.read<HomeProvider>().setUserName(name);
+
     notifyListeners();
   }
 
   void setEmail(String email) {
+    if (_me == null) return;
+
     _me?.email = email;
+
     notifyListeners();
   }
 }

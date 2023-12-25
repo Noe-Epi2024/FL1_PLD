@@ -90,7 +90,12 @@ class _HomePageBuilder extends HookWidget {
         actions: <Widget>[
           IconButton(
             onPressed: () async {
-              await Navigation.push(const ProfilePage());
+              await Navigation.push(
+                ChangeNotifierProvider<HomeProvider>.value(
+                  value: context.read<HomeProvider>(),
+                  child: const ProfilePage(),
+                ),
+              );
             },
             icon: const Icon(Boxicons.bx_user),
           ),

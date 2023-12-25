@@ -66,7 +66,7 @@ class ProjectPreview extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(ThemeGenerator.kBorderRadius),
               minHeight: 10,
-              value: projectPreview.progress!.toDouble() / 100,
+              value: projectPreview.progress! / 100,
             ),
           ),
           16.width,

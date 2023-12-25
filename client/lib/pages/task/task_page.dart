@@ -29,7 +29,7 @@ class TaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<TaskProvider>(
-        create: (_) => TaskProvider(),
+        create: (_) => TaskProvider(context, taskId: taskId),
         child: _TaskPageBuilder(projectId, taskId),
       );
 }
@@ -72,7 +72,7 @@ class _TaskPageBuilder extends StatelessWidget {
   }
 
   Widget _progressBar(BuildContext context) {
-    final double? progress = context.watch<TaskProvider>().progress;
+    final int? progress = context.watch<TaskProvider>().progress;
 
     return Card(
       margin: 16.horizontal,
@@ -80,9 +80,7 @@ class _TaskPageBuilder extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: progress == null
             ? const Row(
-                children: <Widget>[
-                  Expanded(child: Text('Aucune sous-tâche')),
-                ],
+                children: <Widget>[Expanded(child: Text('Aucune sous-tâche'))],
               )
             : Row(
                 children: <Widget>[
@@ -93,12 +91,12 @@ class _TaskPageBuilder extends StatelessWidget {
                       borderRadius:
                           BorderRadius.circular(ThemeGenerator.kBorderRadius),
                       minHeight: 15,
-                      value: progress,
+                      value: progress / 100.0,
                     ),
                   ),
                   16.width,
                   Text(
-                    '${(progress * 100).ceil()}%',
+                    '$progress%',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -169,10 +167,7 @@ class _TaskPageBuilder extends StatelessWidget {
   Widget _progress(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TitleText(
-            'Progression',
-            padding: 16.horizontal,
-          ),
+          TitleText('Progression', padding: 16.horizontal),
           16.height,
           _progressBar(context),
         ],

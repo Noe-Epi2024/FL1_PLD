@@ -122,7 +122,7 @@ class TaskPreview extends StatelessWidget {
             color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(ThemeGenerator.kBorderRadius),
             minHeight: 10,
-            value: progress.toDouble() / 100.0,
+            value: progress / 100.0,
           ),
         ),
         16.width,

@@ -1,10 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/future_widget/provider_base.dart';
 import 'package:hyper_tools/models/project/member/project_member_model.dart';
 import 'package:hyper_tools/models/project/member/project_members_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
+import 'package:hyper_tools/pages/home/home_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProjectMembersProvider extends ProviderBase {
-  ProjectMembersProvider() : super(isInitiallyLoading: true);
+  ProjectMembersProvider(this.context, {required this.projectId})
+      : super(isInitiallyLoading: true);
+
+  final BuildContext context;
+  final String projectId;
 
   ProjectMembersModel? _members;
 
@@ -32,6 +39,7 @@ class ProjectMembersProvider extends ProviderBase {
 
     _members!.members
         .removeWhere((ProjectMemberModel member) => member.userId == memberId);
+    onMembersChanged();
 
     notifyListeners();
   }
@@ -40,6 +48,7 @@ class ProjectMembersProvider extends ProviderBase {
     if (_members == null) return;
 
     _members!.members.add(member);
+    onMembersChanged();
 
     notifyListeners();
   }
@@ -47,5 +56,14 @@ class ProjectMembersProvider extends ProviderBase {
   void setMemberRole(String memberId, ProjectRole role) {
     findMember(memberId).role = role;
     notifyListeners();
+  }
+
+  void onMembersChanged() {
+    if (members == null) return;
+
+    context.read<HomeProvider>().setProjectMembersCount(
+          projectId: projectId,
+          membersCount: members!.members.length,
+        );
   }
 }

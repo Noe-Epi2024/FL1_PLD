@@ -22,7 +22,8 @@ class ProjectTasksTab extends StatelessWidget {
     try {
       final String taskId = await PostTask(projectId: projectId).post();
 
-      final TaskPreviewModel newTaskPreview = TaskPreviewModel(id: taskId);
+      final TaskPreviewModel newTaskPreview =
+          TaskPreviewModel(id: taskId, startDate: DateTime.now());
 
       final HomeProvider homeProvider = context.read<HomeProvider>();
       final ProjectProvider projectProvider = context.read<ProjectProvider>()
