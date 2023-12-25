@@ -65,10 +65,15 @@ export async function getPicture(req: Request, res: Response) {
         }
 
         if (!user.photo) {
-            return res.status(400).send('Missing file name.');
+            res.status(200).send({ data: { url: null } });
         }
 
         const url = await getSignedUrlFromS3(user.photo);
+
+        if (!url) {
+            return res.status(400).send('Error getting picture.');
+        }
+
         res.status(200).send({ data: { url: url } });
     } catch (error) {
         console.error("Error getting picture:", error);

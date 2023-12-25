@@ -13,7 +13,6 @@ router.post('/', accessToken, isUserExist, upload.single('file'), (req, res) => 
 })
 
 router.get('/', accessToken, isUserExist, (req, res) => {
-    console.log("get picture")
     getPicture(req, res)
 })
 
