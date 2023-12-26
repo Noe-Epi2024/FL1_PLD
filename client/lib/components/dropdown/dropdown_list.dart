@@ -5,22 +5,8 @@ class _DropdownList<T> extends HookWidget {
 
   final FutureOr<bool> Function(T)? onSelect;
 
-  void _onSearchChanged(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    context.read<DropdownProvider<T>>().filter = controller.text;
-  }
-
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onSearchChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
+  void _onSearchChanged(BuildContext context, String filter) {
+    context.read<DropdownProvider<T>>().filter = filter;
   }
 
   Widget _choices(BuildContext context) {
@@ -69,7 +55,10 @@ class _DropdownList<T> extends HookWidget {
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController();
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onSearchChanged(context, value)),
+    );
 
     return Card(
       color: Theme.of(context).colorScheme.background,

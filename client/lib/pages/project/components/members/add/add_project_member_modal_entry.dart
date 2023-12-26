@@ -13,53 +13,55 @@ import 'package:provider/provider.dart';
 class AddProjectMemberModalEntry extends StatelessWidget {
   const AddProjectMemberModalEntry({
     required this.projectId,
-    required this.userId,
+    required this.user,
     super.key,
   });
 
   final String projectId;
-  final String userId;
+  final UserModel user;
 
-  Future<void> _onClickAdd(BuildContext context) async {
+  Future<void> _onClickAdd(void Function(ProjectMemberModel) onAdded) async {
     try {
       await PostProjectMember(
         userRole: ProjectRole.reader,
         projectId: projectId,
-        userId: userId,
+        userId: user.id,
       ).post();
-
-      final UserModel user =
-          context.read<AddProjectMemberModalProvider>().findUser(userId);
 
       final ProjectMemberModel member = ProjectMemberModel(
         name: user.name,
         role: ProjectRole.reader,
-        userId: userId,
+        userId: user.id,
       );
 
-      context.read<ProjectMembersProvider>().addMember(member);
-      context.read<AddProjectMemberModalProvider>().deleteUser(userId);
-
-      Messenger.showSnackBarQuickInfo('Ajouté', context);
+      onAdded(member);
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final UserModel user =
-        context.read<AddProjectMemberModalProvider>().findUser(userId);
+  void _onAdded(BuildContext context, ProjectMemberModel member) {
+    if (!context.mounted) return;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(user.name),
-        TextButton(
-          onPressed: () async => _onClickAdd(context),
-          child: const Text('Ajouter'),
-        ),
-      ],
-    );
+    context.read<ProjectMembersProvider>().addMember(member);
+    context.read<AddProjectMemberModalProvider>().deleteUser(user.id);
+
+    Messenger.showSnackBarQuickInfo('Ajouté', context);
   }
+
+  TextButton _buildAddButton(BuildContext context) => TextButton(
+        onPressed: () async => _onClickAdd(
+          (ProjectMemberModel member) => _onAdded(context, member),
+        ),
+        child: const Text('Ajouter'),
+      );
+
+  @override
+  Widget build(BuildContext context) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(user.name),
+          _buildAddButton(context),
+        ],
+      );
 }

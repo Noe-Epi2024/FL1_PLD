@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/http/requests/user/patch_me.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -13,20 +14,9 @@ class ProfileEmail extends HookWidget {
 
   void _onEmailChanged(
     BuildContext context,
-    TextEditingController controller,
+    String email,
   ) {
-    context.read<ProfileProvider>().currentEmail = controller.text;
-  }
-
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onEmailChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
+    context.read<ProfileProvider>().currentEmail = email;
   }
 
   Future<void> _onClickSave(BuildContext context) async {
@@ -69,8 +59,9 @@ class ProfileEmail extends HookWidget {
         keyboardType: TextInputType.emailAddress,
         controller: controller,
         decoration: const InputDecoration(
-            hintText: 'Écrire votre email',
-            prefixIcon: Icon(Boxicons.bx_envelope)),
+          hintText: 'Écrire votre email',
+          prefixIcon: Icon(Boxicons.bx_envelope),
+        ),
       );
 
   @override
@@ -79,7 +70,10 @@ class ProfileEmail extends HookWidget {
       text: context.read<ProfileProvider>().me?.email,
     );
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onEmailChanged(context, value)),
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

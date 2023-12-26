@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/subtask/delete_subtask.dart';
@@ -49,17 +50,6 @@ class _SubtaskBuilder extends HookWidget {
   final String taskId;
   final String subtaskId;
 
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onNameChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
-  }
-
   Future<void> _onClickDelete(BuildContext context) async {
     try {
       await DeleteSubtask(
@@ -76,11 +66,8 @@ class _SubtaskBuilder extends HookWidget {
     }
   }
 
-  void _onNameChanged(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    context.read<SubtaskProvider>().currentName = controller.text;
+  void _onNameChanged(BuildContext context, String name) {
+    context.read<SubtaskProvider>().currentName = name;
   }
 
   Future<void> _onCheckboxChanged(BuildContext context, bool value) async {
@@ -165,7 +152,10 @@ class _SubtaskBuilder extends HookWidget {
       text: context.read<TaskProvider>().findSubtask(subtaskId)?.name,
     );
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onNameChanged(context, value)),
+    );
 
     return Slidable(
       endActionPane: ActionPane(

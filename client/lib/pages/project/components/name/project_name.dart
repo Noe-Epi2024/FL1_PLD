@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/patch_project.dart';
@@ -36,22 +37,8 @@ class _ProjectNameBuilder extends HookWidget {
 
   final String projectId;
 
-  void _onNameChanged(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    context.read<ProjectNameProvider>().currentName = controller.text;
-  }
-
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onNameChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
+  void _onNameChanged(BuildContext context, String name) {
+    context.read<ProjectNameProvider>().currentName = name;
   }
 
   Future<void> _onClickSave(BuildContext context) async {
@@ -77,7 +64,10 @@ class _ProjectNameBuilder extends HookWidget {
       text: context.read<ProjectProvider>().project?.name,
     );
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onNameChanged(context, value)),
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

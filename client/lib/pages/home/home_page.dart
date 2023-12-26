@@ -3,6 +3,7 @@ import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/http/requests/projects/get_projects.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -44,20 +45,9 @@ class _HomePageBuilder extends HookWidget {
 
   void _onSearchChanged(
     BuildContext context,
-    TextEditingController controller,
+    String filter,
   ) {
-    context.read<HomeProvider>().filter = controller.text;
-  }
-
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onSearchChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
+    context.read<HomeProvider>().filter = filter;
   }
 
   Future<void> _onClickCreateProject(BuildContext context) async {
@@ -161,7 +151,10 @@ class _HomePageBuilder extends HookWidget {
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController();
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onSearchChanged(context, value)),
+    );
 
     return Scaffold(
       appBar: _appBar(context),

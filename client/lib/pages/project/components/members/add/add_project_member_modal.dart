@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
-import 'package:hyper_tools/components/shimmer_placeholder.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/http/requests/user/get_users.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/user/user_model.dart';
@@ -32,7 +32,7 @@ class _AddProjectMemberModalBuilder extends HookWidget {
 
   final String projectId;
 
-  Future<void> _loadEntries(BuildContext context, IsMounted isMounted) async {
+  Future<void> _loadEntries(BuildContext context) async {
     final AddProjectMemberModalProvider provider =
         context.read<AddProjectMemberModalProvider>();
 
@@ -41,38 +41,20 @@ class _AddProjectMemberModalBuilder extends HookWidget {
           await GetUsers(excludeProjectId: projectId, filter: provider.filter)
               .get();
 
-      if (isMounted()) provider.setSuccessState(users);
+      provider.setSuccessState(users);
     } on ErrorModel catch (e) {
-      if (isMounted()) provider.setErrorState(e);
+      provider.setErrorState(e);
     }
   }
 
-  void _onSearchChanged(
-    BuildContext context,
-    TextEditingController controller,
-    IsMounted isMounted,
-  ) {
-    context.read<AddProjectMemberModalProvider>().filter = controller.text;
+  void _onSearchChanged(BuildContext context, String filter) {
+    context.read<AddProjectMemberModalProvider>().filter = filter;
 
-    if (controller.text.isNotEmpty) {
-      unawaited(_loadEntries(context, isMounted));
+    if (filter.isNotEmpty) {
+      unawaited(_loadEntries(context));
     } else {
-      if (isMounted()) {
-        context.read<AddProjectMemberModalProvider>().setSuccessState(null);
-      }
+      context.read<AddProjectMemberModalProvider>().setSuccessState(null);
     }
-  }
-
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-    IsMounted isMounted,
-  ) {
-    void listener() => _onSearchChanged(context, controller, isMounted);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
   }
 
   TitleText get _title => const TitleText('Inviter un membre');
@@ -100,18 +82,6 @@ class _AddProjectMemberModalBuilder extends HookWidget {
     );
   }
 
-  Widget _loader() => ListView.builder(
-        shrinkWrap: true,
-        itemCount: 5,
-        itemBuilder: (_, __) => Padding(
-          padding: 8.vertical,
-          child: const ShimmerPlaceholder(
-            width: 50,
-            height: 20,
-          ),
-        ),
-      );
-
   Widget _entries(BuildContext context) {
     final UsersModel? users =
         context.watch<AddProjectMemberModalProvider>().users;
@@ -124,10 +94,8 @@ class _AddProjectMemberModalBuilder extends HookWidget {
       shrinkWrap: true,
       children: users.users
           .map(
-            (UserModel user) => AddProjectMemberModalEntry(
-              projectId: projectId,
-              userId: user.id,
-            ),
+            (UserModel user) =>
+                AddProjectMemberModalEntry(projectId: projectId, user: user),
           )
           .toList(),
     );
@@ -136,9 +104,11 @@ class _AddProjectMemberModalBuilder extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController();
-    final IsMounted isMounted = useIsMounted();
 
-    useEffect(() => _initializeController(context, controller, isMounted));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onSearchChanged(context, value)),
+    );
 
     return Dialog(
       child: Padding(

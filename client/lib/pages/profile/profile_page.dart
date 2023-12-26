@@ -9,10 +9,10 @@ import 'package:hyper_tools/local_storage/local_storage.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/user/me_model.dart';
 import 'package:hyper_tools/pages/landing/landing_page.dart';
-import 'package:hyper_tools/pages/profile/picture/profile_picture.dart';
-import 'package:hyper_tools/pages/profile/profile_provider.dart';
 import 'package:hyper_tools/pages/profile/components/profile_email.dart';
 import 'package:hyper_tools/pages/profile/components/profile_name.dart';
+import 'package:hyper_tools/pages/profile/picture/profile_picture.dart';
+import 'package:hyper_tools/pages/profile/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {

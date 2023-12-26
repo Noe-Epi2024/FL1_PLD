@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/dropdown/dropdown_entry.dart';
 import 'package:hyper_tools/components/dropdown/dropdown_provider.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:provider/provider.dart';
 
-part 'dropdown_route.dart';
 part 'dropdown_list.dart';
+part 'dropdown_route.dart';
 
 class Dropdown<T> extends StatelessWidget {
   const Dropdown({

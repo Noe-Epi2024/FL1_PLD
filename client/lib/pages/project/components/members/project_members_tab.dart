@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/member/get_project_members.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -35,22 +36,8 @@ class _ProjecMembersTabBuilder extends HookWidget {
 
   final String projectId;
 
-  void _onSearchChanged(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    context.read<ProjectMembersProvider>().filter = controller.text;
-  }
-
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onSearchChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
+  void _onSearchChanged(BuildContext context, String filter) {
+    context.read<ProjectMembersProvider>().filter = filter;
   }
 
   Future<void> _onClickAddMember(BuildContext context) async {
@@ -125,7 +112,10 @@ class _ProjecMembersTabBuilder extends HookWidget {
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController();
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onSearchChanged(context, value)),
+    );
 
     return ProviderResolver<ProjectMembersProvider>.future(
       future: () async => _loadMembers(context),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
@@ -42,23 +43,8 @@ class _TaskDescriptionBuilder extends HookWidget {
   final String projectId;
   final String taskId;
 
-  void _onDescriptionChanged(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    context.read<TaskDescriptionProvider>().currentDescription =
-        controller.text;
-  }
-
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onDescriptionChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
+  void _onDescriptionChanged(BuildContext context, String description) {
+    context.read<TaskDescriptionProvider>().currentDescription = description;
   }
 
   Future<void> _onClickSave(BuildContext context) async {
@@ -86,7 +72,11 @@ class _TaskDescriptionBuilder extends HookWidget {
       text: context.read<TaskProvider>().task?.description,
     );
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller.onValueChanged(
+        (String value) => _onDescriptionChanged(context, value),
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

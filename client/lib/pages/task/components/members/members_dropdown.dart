@@ -68,7 +68,8 @@ class ProjectMembersDropdown extends StatelessWidget {
 
     return Dropdown<ProjectMemberModel>.lazy(
       readonly: !RoleHelper.canEditTask(
-          context.read<ProjectProvider>().project!.role),
+        context.read<ProjectProvider>().project!.role,
+      ),
       labelText: 'Membre',
       initialValue:
           provider.task?.ownerId == null || provider.task?.ownerName == null

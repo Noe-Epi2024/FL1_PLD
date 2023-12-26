@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/http/requests/project/task/subtask/post_subtask.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
@@ -34,22 +35,8 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
   final String projectId;
   final String taskId;
 
-  void Function() _initializeController(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    void listener() => _onNameChanged(context, controller);
-
-    controller.addListener(listener);
-
-    return () => controller.removeListener(listener);
-  }
-
-  void _onNameChanged(
-    BuildContext context,
-    TextEditingController controller,
-  ) {
-    context.read<SubtaskProvider>().currentName = controller.text;
+  void _onNameChanged(BuildContext context, String name) {
+    context.read<SubtaskProvider>().currentName = name;
   }
 
   Future<void> _onClickCreate(
@@ -79,8 +66,9 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
     TextEditingController controller,
   ) =>
       TextButton(
-        style:
-            const ButtonStyle(shape: MaterialStatePropertyAll(CircleBorder())),
+        style: const ButtonStyle(
+          shape: MaterialStatePropertyAll<OutlinedBorder>(CircleBorder()),
+        ),
         onPressed: () async => _onClickCreate(context, controller),
         child: const Text('Ajouter'),
       );
@@ -88,7 +76,6 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
   TextField _nameField(TextEditingController controller) => TextField(
         textCapitalization: TextCapitalization.sentences,
         decoration: const InputDecoration(
-          // prefixIcon: Icon(Icons.add),
           filled: false,
           hintText: 'Ajouter une sous-tâche',
           enabledBorder: InputBorder.none,
@@ -101,7 +88,10 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController();
 
-    useEffect(() => _initializeController(context, controller));
+    useEffect(
+      controller
+          .onValueChanged((String value) => _onNameChanged(context, value)),
+    );
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
