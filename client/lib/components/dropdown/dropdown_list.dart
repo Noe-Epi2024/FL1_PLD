@@ -46,7 +46,7 @@ class _DropdownList<T> extends HookWidget {
           controller: controller,
           decoration: const InputDecoration(
             hintText: 'Filtrer',
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
           ),
         ),
       );

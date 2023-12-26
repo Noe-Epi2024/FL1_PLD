@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
@@ -87,7 +88,7 @@ class _HomePageBuilder extends HookWidget {
                 ),
               );
             },
-            icon: const Icon(Boxicons.bx_user),
+            icon: const FaIcon(FontAwesomeIcons.user),
           ),
         ],
         leadingWidth: 42,
@@ -100,7 +101,7 @@ class _HomePageBuilder extends HookWidget {
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
         onPressed: () async => _onClickCreateProject(context),
-        child: const Icon(Boxicons.bx_plus),
+        child: const FaIcon(FontAwesomeIcons.plus),
       );
 
   Text _welcomeText(BuildContext context) => Text(
@@ -120,13 +121,13 @@ class _HomePageBuilder extends HookWidget {
       controller: controller,
       decoration: InputDecoration(
         hintText: 'Chercher un projet',
-        prefixIcon: const Icon(Boxicons.bx_search),
+        prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
         suffixIcon: filter.isEmpty
             ? null
             : TextButton(
                 onPressed: controller.clear,
-                child: Icon(
-                  Boxicons.bxs_x_circle,
+                child: FaIcon(
+                  FontAwesomeIcons.circleXmark,
                   color: Theme.of(context).hintColor,
                 ),
               ),

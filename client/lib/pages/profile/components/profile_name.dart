@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
@@ -56,7 +58,7 @@ class ProfileName extends HookWidget {
         controller: controller,
         decoration: const InputDecoration(
           hintText: 'Écrire votre nom',
-          prefixIcon: Icon(Boxicons.bx_user),
+          prefixIcon: TextFieldIcon(FontAwesomeIcons.solidUser),
         ),
       );
 

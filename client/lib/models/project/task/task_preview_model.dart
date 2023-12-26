@@ -1,11 +1,12 @@
 class TaskPreviewModel {
   TaskPreviewModel({
     required this.id,
+    required this.numberOfSubtasks,
+    required this.numberOfCompletedSubtasks,
     this.name,
     this.ownerName,
     this.startDate,
     this.endDate,
-    this.progress,
   });
 
   factory TaskPreviewModel.fromJson(Map<String, dynamic> json) =>
@@ -15,7 +16,8 @@ class TaskPreviewModel {
         ownerName: json['ownerName'],
         startDate: DateTime.tryParse(json['startDate'] ?? ''),
         endDate: DateTime.tryParse(json['endDate'] ?? ''),
-        progress: json['progress'],
+        numberOfSubtasks: json['numberOfSubtasks'],
+        numberOfCompletedSubtasks: json['numberOfCompletedSubtasks'],
       );
 
   final String id;
@@ -23,5 +25,6 @@ class TaskPreviewModel {
   String? ownerName;
   DateTime? startDate;
   DateTime? endDate;
-  int? progress;
+  int numberOfSubtasks;
+  int numberOfCompletedSubtasks;
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
@@ -63,12 +64,12 @@ class ProjectMember extends StatelessWidget {
   Widget _roleIcon(BuildContext context, ProjectRole role, bool isUserRole) =>
       IconButton(
         onPressed: isUserRole ? null : () async => _onClickRole(context, role),
-        icon: Icon(
+        icon: FaIcon(
           role.icon,
           color: isUserRole
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).hintColor,
-          size: 24,
+          size: 20,
         ),
       );
 
@@ -84,9 +85,9 @@ class ProjectMember extends StatelessWidget {
         child: Shimmer.fromColors(
           baseColor: const Color.fromARGB(255, 255, 204, 0),
           highlightColor: const Color.fromARGB(255, 255, 248, 151),
-          child: Icon(
+          child: FaIcon(
             memberRole.icon,
-            size: 24,
+            size: 20,
           ),
         ),
       );
@@ -95,10 +96,10 @@ class ProjectMember extends StatelessWidget {
     if (!RoleHelper.canManageMembers(userRole)) {
       return Padding(
         padding: 12.all,
-        child: Icon(
+        child: FaIcon(
           memberRole.icon,
           color: Theme.of(context).hintColor,
-          size: 24,
+          size: 20,
         ),
       );
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/progress_bar.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/consts/consts.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
@@ -35,17 +36,29 @@ class ProfilePage extends StatelessWidget {
     await Navigation.push(const LandingPage(), replaceAll: true);
   }
 
+  Align _logoutButton() => Align(
+        child: TextButton(
+          style: const ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll<Color>(Colors.red),
+          ),
+          onPressed: _onPressLogout,
+          child: const Text('Se déconnecter'),
+        ),
+      );
+
+  Center _profilePicture() => Center(
+        child: SizedBox(
+          height: 96,
+          width: 96,
+          child: ClipOval(child: ProfilePicture()),
+        ),
+      );
+
   Widget _builder(BuildContext context) => ListView(
         padding:
             const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 128),
         children: <Widget>[
-          Center(
-            child: SizedBox(
-              height: 96,
-              width: 96,
-              child: ClipOval(child: ProfilePicture()),
-            ),
-          ),
+          _profilePicture(),
           const TitleText('Nom'),
           8.height,
           const ProfileName(),
@@ -54,15 +67,7 @@ class ProfilePage extends StatelessWidget {
           8.height,
           const ProfileEmail(),
           64.height,
-          Align(
-            child: TextButton(
-              style: const ButtonStyle(
-                foregroundColor: MaterialStatePropertyAll<Color>(Colors.red),
-              ),
-              onPressed: _onPressLogout,
-              child: const Text('Se déconnecter'),
-            ),
-          ),
+          _logoutButton(),
         ],
       );
 

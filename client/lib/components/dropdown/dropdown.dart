@@ -3,9 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/dropdown/dropdown_entry.dart';
 import 'package:hyper_tools/components/dropdown/dropdown_provider.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -104,10 +106,10 @@ class Dropdown<T> extends StatelessWidget {
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
           labelText: labelText,
-          prefixIcon: const Icon(Icons.person),
+          prefixIcon: const TextFieldIcon(FontAwesomeIcons.solidUser),
           suffixIcon: isOpen
-              ? const Icon(Icons.arrow_drop_up_rounded)
-              : const Icon(Icons.arrow_drop_down_rounded),
+              ? const TextFieldIcon(FontAwesomeIcons.angleUp)
+              : const TextFieldIcon(FontAwesomeIcons.angleDown),
         ),
         child: selectedValue != null ? Text(selectedValue) : null,
       ),

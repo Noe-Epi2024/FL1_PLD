@@ -31,15 +31,28 @@ class ProjectProvider extends ProviderBase {
     int cpt = 0;
 
     for (final TaskPreviewModel taskPreview in project!.taskPreviews) {
-      if (taskPreview.progress == null) continue;
+      final int? taskProgress = getTaskProgress(taskPreview.id);
 
-      total += taskPreview.progress!;
-      cpt++;
+      if (taskProgress == null) continue;
+
+      total += taskProgress * taskPreview.numberOfSubtasks;
+      cpt += taskPreview.numberOfSubtasks;
     }
 
     if (cpt == 0) return null;
 
-    return (total / cpt).floor();
+    return (total / cpt).ceil();
+  }
+
+  int? getTaskProgress(String taskId) {
+    final TaskPreviewModel? task = findTaskPreview(taskId);
+
+    if (task == null) return null;
+
+    if (task.numberOfSubtasks == 0) return 0;
+
+    return (task.numberOfCompletedSubtasks / task.numberOfSubtasks * 100)
+        .ceil();
   }
 
   void setTaskStartDate({required String taskId, required DateTime? date}) {
@@ -74,10 +87,16 @@ class ProjectProvider extends ProviderBase {
     notifyListeners();
   }
 
-  void setTaskProgress({required String taskId, required int? progress}) {
+  void setTaskProgress({
+    required String taskId,
+    required int numberOfCompletedSubtasks,
+    required int numberOfSubtasks,
+  }) {
     if (project == null) return;
 
-    findTaskPreview(taskId)?.progress = progress;
+    findTaskPreview(taskId)
+      ?..numberOfCompletedSubtasks = numberOfCompletedSubtasks
+      ..numberOfSubtasks = numberOfSubtasks;
     onTasksChanged();
 
     notifyListeners();

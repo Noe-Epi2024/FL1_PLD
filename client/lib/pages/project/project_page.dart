@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/http/requests/project/get_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
@@ -55,8 +56,14 @@ class _ProjectPageBuilder extends StatelessWidget {
         ),
         child: const TabBar(
           tabs: <Widget>[
-            Tab(text: 'Tâches'),
-            Tab(text: 'Membres'),
+            Tab(
+              text: 'Tâches',
+              icon: FaIcon(FontAwesomeIcons.listCheck, size: 16),
+            ),
+            Tab(
+              text: 'Membres',
+              icon: FaIcon(FontAwesomeIcons.userGroup, size: 16),
+            ),
           ],
         ),
       );

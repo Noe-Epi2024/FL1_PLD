@@ -100,9 +100,15 @@ class TaskProvider extends ProviderBase {
   }
 
   void onSubtasksChanged() {
-    context
-        .read<ProjectProvider>()
-        .setTaskProgress(taskId: taskId, progress: progress);
+    if (task?.substasks == null) return;
+
+    context.read<ProjectProvider>().setTaskProgress(
+          taskId: taskId,
+          numberOfCompletedSubtasks: task!.substasks!
+              .where((SubtaskModel subtask) => subtask.isDone)
+              .length,
+          numberOfSubtasks: task!.substasks!.length,
+        );
   }
 
   int? get progress {

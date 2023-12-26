@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/helpers/validator_helpers.dart';
 
 class PasswordField extends StatefulWidget {
@@ -29,7 +31,7 @@ class _PasswordFieldState extends State<PasswordField> {
         obscureText: _obscureText,
         decoration: InputDecoration(
           hintText: widget.hint ?? 'Entrez votre mot de passe',
-          prefixIcon: const Icon(Icons.key),
+          prefixIcon: const TextFieldIcon(FontAwesomeIcons.key),
           suffixIcon: TextButton(
             onPressed: _toggleObscureText,
             style: ButtonStyle(
@@ -40,7 +42,7 @@ class _PasswordFieldState extends State<PasswordField> {
                     : Theme.of(context).inputDecorationTheme.labelStyle!.color,
               ),
             ),
-            child: const Icon(Icons.remove_red_eye_rounded),
+            child: const TextFieldIcon(FontAwesomeIcons.solidEye),
           ),
         ),
         validator: widget.validator ??

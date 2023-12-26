@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/shimmer_placeholder.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
@@ -69,12 +70,13 @@ class ProfilePicture extends StatelessWidget {
     Object error,
     StackTrace? stackTrace,
   ) =>
-      const Center(child: Icon(Boxicons.bx_error));
+      const Center(child: FaIcon(FontAwesomeIcons.circleExclamation));
 
   ColoredBox _noPicture(BuildContext context) => ColoredBox(
         color: Theme.of(context).colorScheme.secondary,
         child: const Center(
-          child: Icon(Boxicons.bxs_user, size: 32, color: Colors.white),
+          child:
+              FaIcon(FontAwesomeIcons.solidUser, size: 32, color: Colors.white),
         ),
       );
 

@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
@@ -68,13 +70,13 @@ class _AddProjectMemberModalBuilder extends HookWidget {
       controller: controller,
       decoration: InputDecoration(
         hintText: "Nom d'utilisateur",
-        prefixIcon: const Icon(Boxicons.bx_search),
+        prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
         suffixIcon: filter.isEmpty
             ? null
             : TextButton(
                 onPressed: controller.clear,
-                child: Icon(
-                  Boxicons.bxs_x_circle,
+                child: FaIcon(
+                  FontAwesomeIcons.circleXmark,
                   color: Theme.of(context).hintColor,
                 ),
               ),

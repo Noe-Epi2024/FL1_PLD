@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
+
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/extensions/datetime_extension.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
@@ -75,8 +76,8 @@ class TaskPreview extends StatelessWidget {
 
     return Row(
       children: <Widget>[
-        Icon(
-          Boxicons.bx_calendar,
+        FaIcon(
+          FontAwesomeIcons.calendarDays,
           size: 16,
           color: Theme.of(context).hintColor,
         ),
@@ -110,7 +111,7 @@ class TaskPreview extends StatelessWidget {
 
   Widget _progress(BuildContext context) {
     final int? progress =
-        context.watch<ProjectProvider>().findTaskPreview(taskId)?.progress;
+        context.watch<ProjectProvider>().getTaskProgress(taskId);
 
     if (progress == null) return const Text('Pas encore de sous-tâche');
 
@@ -163,9 +164,11 @@ class TaskPreview extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 _name(context),
+                4.height,
                 _dates(context),
+                4.height,
                 _assignedTo(context),
-                8.height,
+                4.height,
                 _progress(context),
               ],
             ),

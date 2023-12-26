@@ -54,8 +54,7 @@ class ThemeGenerator {
   static InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         hintStyle: _textTheme.bodyLarge!.copyWith(color: _hintColor),
         labelStyle: _textTheme.bodyLarge!.copyWith(color: _labelColor),
         prefixIconColor: _hintColor,
@@ -101,10 +100,16 @@ class ThemeGenerator {
       );
 
   static TabBarTheme get _tabBarTheme => TabBarTheme(
-        labelStyle:
-            _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+        labelStyle: _textTheme.bodyMedium!
+            .copyWith(fontWeight: FontWeight.bold, fontSize: 14),
+        unselectedLabelStyle: _textTheme.bodyMedium!.copyWith(fontSize: 12),
         labelColor: _colorScheme.primary,
-        indicator: const BoxDecoration(color: Colors.transparent),
+        unselectedLabelColor: _labelColor,
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BoxDecoration(
+          border:
+              Border(top: BorderSide(color: _colorScheme.primary, width: 3)),
+        ),
       );
 
   static FloatingActionButtonThemeData get _floatingActionButtonTheme =>
@@ -132,7 +137,7 @@ class ThemeGenerator {
         color: _colorScheme.surface,
         foregroundColor: _colorScheme.onSurface,
         elevation: 0,
-        // titleTextStyle: const TextStyle(fontSize: 20),
+        iconTheme: const IconThemeData(size: 20),
         shape: Border(bottom: BorderSide(color: _dividerTheme.color!)),
       );
 

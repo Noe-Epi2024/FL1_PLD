@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Messenger {
   static late GlobalKey<ScaffoldMessengerState> _messengerKey;
@@ -20,8 +21,8 @@ class Messenger {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(
-                Icons.error,
+              child: FaIcon(
+                FontAwesomeIcons.circleExclamation,
                 color: Colors.white,
               ),
             ),
@@ -45,7 +46,10 @@ class Messenger {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(Icons.check_circle, color: Colors.white),
+              child: FaIcon(
+                FontAwesomeIcons.solidCircleCheck,
+                color: Colors.white,
+              ),
             ),
             Text(content, style: const TextStyle(color: Colors.white)),
           ],
@@ -69,7 +73,10 @@ class Messenger {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(Icons.check_circle, color: Colors.white),
+              child: FaIcon(
+                FontAwesomeIcons.solidCircleCheck,
+                color: Colors.white,
+              ),
             ),
             Text(content, style: const TextStyle(color: Colors.white)),
           ],

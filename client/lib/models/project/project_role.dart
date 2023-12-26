@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum ProjectRole {
-  owner(icon: Boxicons.bx_crown),
-  admin(icon: Boxicons.bx_cog),
-  writer(icon: Boxicons.bx_edit),
-  reader(icon: Icons.remove_red_eye_outlined);
+  owner(icon: FontAwesomeIcons.crown),
+  admin(icon: FontAwesomeIcons.screwdriverWrench),
+  writer(icon: FontAwesomeIcons.pen),
+  reader(icon: FontAwesomeIcons.solidEye);
 
   const ProjectRole({required this.icon});
 

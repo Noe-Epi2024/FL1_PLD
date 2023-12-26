@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
@@ -13,7 +15,7 @@ import 'package:hyper_tools/pages/task/task_page.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 
-class ProjectTasksTab extends StatelessWidget {
+class ProjectTasksTab extends HookWidget {
   const ProjectTasksTab({required this.projectId, super.key});
 
   final String projectId;
@@ -22,8 +24,12 @@ class ProjectTasksTab extends StatelessWidget {
     try {
       final String taskId = await PostTask(projectId: projectId).post();
 
-      final TaskPreviewModel newTaskPreview =
-          TaskPreviewModel(id: taskId, startDate: DateTime.now());
+      final TaskPreviewModel newTaskPreview = TaskPreviewModel(
+        id: taskId,
+        startDate: DateTime.now(),
+        numberOfCompletedSubtasks: 0,
+        numberOfSubtasks: 0,
+      );
 
       final HomeProvider homeProvider = context.read<HomeProvider>();
       final ProjectProvider projectProvider = context.read<ProjectProvider>()
@@ -60,11 +66,13 @@ class ProjectTasksTab extends StatelessWidget {
   FloatingActionButton _createTaskButton(BuildContext context) =>
       FloatingActionButton(
         onPressed: () async => _onClickCreateTask(context),
-        child: const Icon(Icons.add),
+        child: const FaIcon(FontAwesomeIcons.plus),
       );
 
   @override
   Widget build(BuildContext context) {
+    useAutomaticKeepAlive();
+
     final bool canCreateTask =
         RoleHelper.canCreateTask(context.read<ProjectProvider>().project!.role);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
@@ -21,9 +22,9 @@ class ProjectPreview extends StatelessWidget {
     );
   }
 
-  Widget _roleIcon(BuildContext context) => Icon(
+  Widget _roleIcon(BuildContext context) => FaIcon(
         projectPreview.role.icon,
-        size: 16,
+        size: 14,
         color: Theme.of(context).hintColor,
       );
 

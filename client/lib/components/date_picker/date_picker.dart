@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/date_picker/date_picker_provider.dart';
+import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/helpers/date_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -77,7 +78,7 @@ class _DatePickerBuilder extends StatelessWidget {
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           labelText: label,
-          prefixIcon: const Icon(Boxicons.bx_calendar),
+          prefixIcon: const TextFieldIcon(FontAwesomeIcons.calendarDays),
         ),
         child: selectedDate != null
             ? Text(DateHelper.formatDateToFrench(selectedDate))

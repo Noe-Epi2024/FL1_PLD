@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/progress_bar.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
@@ -18,7 +19,6 @@ import 'package:hyper_tools/pages/task/components/subtask/create_subtask_field.d
 import 'package:hyper_tools/pages/task/components/subtask/subtask.dart';
 import 'package:hyper_tools/pages/task/components/task_page_loader.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
-import 'package:hyper_tools/theme/theme.dart';
 import 'package:provider/provider.dart';
 
 class TaskPage extends StatelessWidget {
@@ -85,14 +85,8 @@ class _TaskPageBuilder extends StatelessWidget {
             : Row(
                 children: <Widget>[
                   Expanded(
-                    child: LinearProgressIndicator(
-                      backgroundColor: Theme.of(context).colorScheme.background,
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius:
-                          BorderRadius.circular(ThemeGenerator.kBorderRadius),
-                      minHeight: 15,
-                      value: progress / 100.0,
-                    ),
+                    child:
+                        ProgressBar(initialValue: progress / 100.0, height: 20),
                   ),
                   16.width,
                   Text(
@@ -198,22 +192,24 @@ class _TaskPageBuilder extends StatelessWidget {
   AppBar _appBar(BuildContext context) =>
       AppBar(title: TaskName(projectId: projectId, taskId: taskId));
 
+  Widget _builder(BuildContext builderContext) => Scaffold(
+        appBar: _appBar(builderContext),
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.only(top: 16, bottom: 128),
+            children: <Widget>[
+              _progress(builderContext),
+              _informations(builderContext),
+              _subtasks(builderContext),
+            ],
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) => ProviderResolver<TaskProvider>.future(
         future: () async => _loadTask(context),
         loader: const TaskPageLoader(),
-        builder: (BuildContext builderContext) => Scaffold(
-          appBar: _appBar(builderContext),
-          body: SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.only(top: 16, bottom: 128),
-              children: <Widget>[
-                _progress(builderContext),
-                _informations(builderContext),
-                _subtasks(builderContext),
-              ],
-            ),
-          ),
-        ),
+        builder: _builder,
       );
 }

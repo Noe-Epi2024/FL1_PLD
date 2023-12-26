@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/adaptative_layout.dart';
 import 'package:hyper_tools/components/fields/password_field.dart';
+import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/components/texts/headline_text.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/consts/consts.dart';
@@ -64,7 +66,7 @@ class LoginPage extends StatelessWidget {
         textInputAction: TextInputAction.next,
         decoration: const InputDecoration(
           hintText: 'Entrez votre adresse email',
-          prefixIcon: Icon(Icons.person),
+          prefixIcon: TextFieldIcon(FontAwesomeIcons.solidUser),
         ),
         validator: (String? value) => ValidatorHelper.isNullOrEmptyValidator(
           value,
