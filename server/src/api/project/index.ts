@@ -62,7 +62,9 @@ async function getProject(req: Request, res: Response) {
                             name: task.name,
                             startDate: task.startDate,
                             endDate: task.endDate,
-                            progress: progress
+                            progress: progress,
+                            numberOfSubtasks: task.subtasks.length,
+                            numberOfCompletedSubtasks: task.subtasks.filter(subtask => subtask.isDone).length,
                         };
                     } else {
                         return {
@@ -70,7 +72,9 @@ async function getProject(req: Request, res: Response) {
                             name: task.name,
                             startDate: task.startDate,
                             endDate: task.endDate,
-                            progress: progress
+                            progress: progress,
+                            numberOfSubtasks: task.subtasks.length,
+                            numberOfCompletedSubtasks: task.subtasks.filter(subtask => subtask.isDone).length,
                         };
                     }
                 } catch (error) {
@@ -81,7 +85,9 @@ async function getProject(req: Request, res: Response) {
                         name: task.name,
                         startDate: task.startDate,
                         endDate: task.endDate,
-                        progress: 0 // If error occurs, set progress to 0
+                        progress: 0,
+                        numberOfSubtasks: 0,
+                        numberOfCompletedSubtasks: 0,
                     };
                 }
             }))

@@ -27,6 +27,8 @@ type ProjectById = {
         startDate?: Date;
         endDate?: Date;
         progress: number | null;
+        numberOfSubtasks?: number;
+        numberOfCompletedSubtasks?: number;
     }>;
 }
 
