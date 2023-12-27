@@ -13,7 +13,7 @@ class PostSubtask extends PostRequest<String> {
   final String name;
 
   @override
-  Map<String, dynamic>? get body => <String, dynamic>{'name': name};
+  Map<String, dynamic> get body => <String, dynamic>{'name': name};
 
   @override
   String builder(Map<String, dynamic> json) => json['id'];

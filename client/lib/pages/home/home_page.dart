@@ -72,7 +72,10 @@ class _HomePageBuilder extends HookWidget {
     }
 
     return projectPreviews
-        .where((ProjectPreviewModel preview) => preview.name.contains(filter))
+        .where(
+          (ProjectPreviewModel preview) =>
+              preview.name.toLowerCase().contains(filter.toLowerCase()),
+        )
         .map(ProjectPreview.new)
         .toList();
   }

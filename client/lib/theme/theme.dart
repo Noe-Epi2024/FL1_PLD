@@ -175,9 +175,6 @@ class ThemeGenerator {
               MaterialStateProperty.resolveWith((Set<MaterialState> states) {
             if (states.contains(MaterialState.hovered)) {
               return _textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-                decorationThickness: 4,
                 decorationColor: _colorScheme.primary,
               );
             }
@@ -217,6 +214,9 @@ class ThemeGenerator {
   static ExpansionTileThemeData get _expansionTileTheme =>
       const ExpansionTileThemeData(shape: Border());
 
+  static PopupMenuThemeData get _popupMenuTheme =>
+      const PopupMenuThemeData(surfaceTintColor: Colors.transparent);
+
   static ThemeData generate() => ThemeData(
         cardTheme: _cardTheme,
         hintColor: _hintColor,
@@ -235,6 +235,7 @@ class ThemeGenerator {
         switchTheme: _switchTheme,
         floatingActionButtonTheme: _floatingActionButtonTheme,
         tabBarTheme: _tabBarTheme,
+        popupMenuTheme: _popupMenuTheme,
         snackBarTheme: _snackBarTheme,
         inputDecorationTheme: _inputDecorationTheme,
         datePickerTheme: _datePickerTheme,

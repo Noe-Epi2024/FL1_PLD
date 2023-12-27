@@ -7,7 +7,7 @@ class DeleteProject extends DeleteRequest<void> {
   final String projectId;
 
   @override
-  Map<String, dynamic>? get body => null;
+  Map<String, dynamic> get body => <String, dynamic>{};
 
   @override
   void builder(Map<String, dynamic> json) {}

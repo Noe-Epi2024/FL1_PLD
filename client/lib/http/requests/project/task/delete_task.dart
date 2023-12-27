@@ -8,7 +8,7 @@ class DeleteTask extends DeleteRequest<void> {
   final String taskId;
 
   @override
-  Map<String, dynamic>? get body => <String, dynamic>{'taskId': taskId};
+  Map<String, dynamic> get body => <String, dynamic>{'taskId': taskId};
 
   @override
   void builder(Map<String, dynamic> json) {}

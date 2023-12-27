@@ -38,6 +38,14 @@ class HomeProvider extends ProviderBase {
     notifyListeners();
   }
 
+  void removeProject(String projectId) {
+    if (_projects == null) return;
+
+    _projects!.projects.remove(findProjectPreview(projectId));
+
+    notifyListeners();
+  }
+
   void setUserName(String value) {
     if (_projects == null) return;
 

@@ -14,7 +14,7 @@ class PostProjectMember extends PostRequest<void> {
   final ProjectRole userRole;
 
   @override
-  Map<String, dynamic>? get body =>
+  Map<String, dynamic> get body =>
       <String, dynamic>{'userId': userId, 'role': userRole.name};
 
   @override

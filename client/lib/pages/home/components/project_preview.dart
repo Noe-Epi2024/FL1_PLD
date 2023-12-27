@@ -84,6 +84,7 @@ class ProjectPreview extends StatelessWidget {
   Widget build(BuildContext context) => Card(
         margin: 4.vertical,
         child: InkWell(
+          borderRadius: BorderRadius.circular(16),
           onTap: () async => _onTapPreview(context),
           child: Padding(
             padding: 16.all,

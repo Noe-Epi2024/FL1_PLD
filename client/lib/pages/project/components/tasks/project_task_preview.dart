@@ -157,6 +157,7 @@ class TaskPreview extends StatelessWidget {
       child: Card(
         margin: 4.vertical,
         child: InkWell(
+          borderRadius: BorderRadius.circular(16),
           onTap: () async => _onTapPreview(context),
           child: Padding(
             padding: 16.all,

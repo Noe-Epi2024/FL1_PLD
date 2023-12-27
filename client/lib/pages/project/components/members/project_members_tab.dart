@@ -74,7 +74,10 @@ class _ProjecMembersTabBuilder extends HookWidget {
     );
 
     return members
-        .where((ProjectMemberModel member) => member.name.contains(filter))
+        .where(
+          (ProjectMemberModel member) =>
+              member.name.toLowerCase().contains(filter.toLowerCase()),
+        )
         .map(
           (ProjectMemberModel member) =>
               ProjectMember(memberId: member.userId, projectId: projectId),

@@ -8,5 +8,5 @@ abstract class DeleteRequest<T> extends HttpRequest<T> {
   Future<T> delete() => Http.delete(uri, body, builder, private: private);
 
   @protected
-  Map<String, dynamic>? get body;
+  Map<String, dynamic> get body;
 }

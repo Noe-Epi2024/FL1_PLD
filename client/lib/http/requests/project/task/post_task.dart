@@ -19,7 +19,7 @@ class PostTask extends PostRequest<String> {
   final DateTime? endDate;
 
   @override
-  Map<String, dynamic>? get body => <String, dynamic>{
+  Map<String, dynamic> get body => <String, dynamic>{
         if (ownerId != null) 'ownerId': ownerId,
         if (description != null) 'description': description,
         if (name != null) 'name': name,

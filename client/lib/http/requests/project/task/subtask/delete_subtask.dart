@@ -13,7 +13,7 @@ class DeleteSubtask extends DeleteRequest<void> {
   final String subtaskId;
 
   @override
-  Map<String, dynamic>? get body => <String, dynamic>{'subtaskId': subtaskId};
+  Map<String, dynamic> get body => <String, dynamic>{'subtaskId': subtaskId};
 
   @override
   void builder(Map<String, dynamic> json) {}

@@ -21,8 +21,10 @@ class _DropdownList<T> extends HookWidget {
 
     final List<_DropdownItem<T>> items = (filter == null
             ? entries
-            : entries
-                .where((DropdownEntry<T> entry) => entry.key.contains(filter)))
+            : entries.where(
+                (DropdownEntry<T> entry) =>
+                    entry.key.toLowerCase().contains(filter.toLowerCase()),
+              ))
         .map(
           (DropdownEntry<T> entry) => _DropdownItem<T>(
             entry: entry,

@@ -8,5 +8,5 @@ abstract class PostRequest<T> extends HttpRequest<T> {
   Future<T> post() => Http.post(uri, body, builder, private: private);
 
   @protected
-  Map<String, dynamic>? get body;
+  Map<String, dynamic> get body;
 }

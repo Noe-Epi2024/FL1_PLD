@@ -9,4 +9,8 @@ class RoleHelper {
 
   static bool canManageMembers(ProjectRole role) =>
       role == ProjectRole.owner || role == ProjectRole.admin;
+
+  static bool canLeaveProject(ProjectRole role) => role != ProjectRole.owner;
+
+  static bool canDeleteProject(ProjectRole role) => role == ProjectRole.owner;
 }
