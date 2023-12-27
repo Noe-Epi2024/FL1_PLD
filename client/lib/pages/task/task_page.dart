@@ -72,7 +72,7 @@ class _TaskPageBuilder extends StatelessWidget {
   }
 
   Widget _progressBar(BuildContext context) {
-    final int? progress = context.watch<TaskProvider>().progress;
+    final int? progress = context.watch<TaskProvider>().progressPercent;
 
     return Card(
       margin: 16.horizontal,
@@ -84,10 +84,7 @@ class _TaskPageBuilder extends StatelessWidget {
               )
             : Row(
                 children: <Widget>[
-                  Expanded(
-                    child:
-                        ProgressBar(initialValue: progress / 100.0, height: 20),
-                  ),
+                  const Expanded(child: TaskProgressBar()),
                   16.width,
                   Text(
                     '$progress%',

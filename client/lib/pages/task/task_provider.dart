@@ -111,7 +111,7 @@ class TaskProvider extends ProviderBase {
         );
   }
 
-  int? get progress {
+  int? get progressPercent {
     if ((task?.substasks ?? <SubtaskModel>[]).isEmpty) return null;
 
     return (task!.substasks!

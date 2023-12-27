@@ -1,88 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
-class ProgressBar extends StatelessWidget {
-  const ProgressBar({
-    required this.initialValue,
-    required this.height,
-    super.key,
-  });
-
-  final double initialValue;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) =>
-      ChangeNotifierProvider<ProgressBarProvider>(
-        create: (_) => ProgressBarProvider(initialValue),
-        child: _ProgressBarBuilder(initialValue: initialValue, height: height),
-      );
-}
-
-class _ProgressBarBuilder extends HookWidget {
-  const _ProgressBarBuilder({
-    required this.initialValue,
-    required this.height,
-  });
-
-  final double initialValue;
-  final double height;
-
-  FractionallySizedBox _progressBar(BuildContext context) =>
-      FractionallySizedBox(
-        widthFactor: initialValue,
-        heightFactor: 1,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-      );
+class TaskProgressBar extends HookWidget {
+  const TaskProgressBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AnimationController controller = useAnimationController(
-      duration: const Duration(seconds: 1),
+    final AnimationController controller =
+        useAnimationController(duration: const Duration(seconds: 1));
+    final int progressPercent = context.select<TaskProvider, int>(
+      (TaskProvider provider) => provider.progressPercent!,
+    );
+    final double currentValue = useAnimation(controller);
+
+    useEffect(
+      () {
+        controller.animateTo(
+          progressPercent / 100.0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.decelerate,
+        );
+        return () {};
+      },
+      <int?>[progressPercent],
     );
 
-    final double value = useAnimation(controller);
-
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).dividerColor),
-        borderRadius: BorderRadius.circular(16),
-        color: Theme.of(context).colorScheme.background,
-      ),
-      alignment: Alignment.centerLeft,
-      child: _progressBar(context),
-    );
-  }
-}
-
-class ProgressBarProvider with ChangeNotifier {
-  ProgressBarProvider(double initialValue) : _value = initialValue;
-
-  double _value;
-
-  double get value => _value;
-
-  set value(double v) {
-    _value = v;
-    notifyListeners();
-  }
-}
-
-class ProgressBarController {
-  AnimationController? animationController;
-
-  void setAnimationValue(double value) {
-    if (animationController == null) return;
-
-    final double oldValue = animationController!.value;
-
-    animationController!.value = value;
+    return LinearProgressIndicator(minHeight: 20, value: currentValue);
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
-import 'package:hyper_tools/components/progress_bar.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/consts/consts.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';

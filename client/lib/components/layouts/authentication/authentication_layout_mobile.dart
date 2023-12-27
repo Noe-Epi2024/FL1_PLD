@@ -16,7 +16,7 @@ class AuthenticationLayoutMobile extends StatelessWidget {
           children: <Widget>[
             DecorationGenerator.logo(),
             32.height,
-            Resources.illustration(height: 300),
+            Resources.illustration(),
             32.height,
             if (child != null) child!,
           ],
