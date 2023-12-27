@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/generators/decoration_generator.dart';
-import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/resources/resources.dart';
 
 class AuthenticationLayoutMobile extends StatelessWidget {

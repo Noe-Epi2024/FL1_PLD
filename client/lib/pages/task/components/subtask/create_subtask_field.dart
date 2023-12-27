@@ -73,17 +73,6 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
         child: const Text('Ajouter'),
       );
 
-  TextField _nameField(TextEditingController controller) => TextField(
-        textCapitalization: TextCapitalization.sentences,
-        decoration: const InputDecoration(
-          filled: false,
-          hintText: 'Ajouter une sous-tâche',
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-        ),
-        controller: controller,
-      );
-
   @override
   Widget build(BuildContext context) {
     final TextEditingController controller = useTextEditingController();
@@ -110,21 +99,5 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
         ),
       ),
     );
-
-    // return Card(
-    //   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-    //   child: Row(
-    //     children: <Widget>[
-    //       Expanded(child: _nameField(controller)),
-    //       if (context
-    //               .select<SubtaskProvider, String?>(
-    //                 (SubtaskProvider provider) => provider.currentName,
-    //               )
-    //               ?.isNotEmpty ??
-    //           false)
-    //         _createButton(context, controller),
-    //     ],
-    //   ),
-    // );
   }
 }
