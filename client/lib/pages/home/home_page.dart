@@ -56,7 +56,7 @@ class _HomePageBuilder extends HookWidget {
       context: context,
       builder: (_) => ChangeNotifierProvider<HomeProvider>.value(
         value: context.read<HomeProvider>(),
-        builder: (__, ___) => const CreateProjectModal(),
+        builder: (__, ___) => const CreateProjectDialog(),
       ),
     );
   }

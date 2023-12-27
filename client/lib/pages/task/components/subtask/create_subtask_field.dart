@@ -93,20 +93,38 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
           .onValueChanged((String value) => _onNameChanged(context, value)),
     );
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Row(
-        children: <Widget>[
-          Expanded(child: _nameField(controller)),
-          if (context
-                  .select<SubtaskProvider, String?>(
-                    (SubtaskProvider provider) => provider.currentName,
-                  )
-                  ?.isNotEmpty ??
-              false)
-            _createButton(context, controller),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: 'Ajouter une sous-tâche',
+          suffixIcon: context
+                      .select<SubtaskProvider, String?>(
+                        (SubtaskProvider provider) => provider.currentName,
+                      )
+                      ?.isNotEmpty ??
+                  false
+              ? _createButton(context, controller)
+              : null,
+        ),
       ),
     );
+
+    // return Card(
+    //   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    //   child: Row(
+    //     children: <Widget>[
+    //       Expanded(child: _nameField(controller)),
+    //       if (context
+    //               .select<SubtaskProvider, String?>(
+    //                 (SubtaskProvider provider) => provider.currentName,
+    //               )
+    //               ?.isNotEmpty ??
+    //           false)
+    //         _createButton(context, controller),
+    //     ],
+    //   ),
+    // );
   }
 }

@@ -55,20 +55,22 @@ class _TaskPageBuilder extends StatelessWidget {
     }
   }
 
-  List<Widget> _getSubtasks(BuildContext context) {
+  Widget _subtasksList(BuildContext context) {
     final List<SubtaskModel> subtasks =
         context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
 
-    return subtasks
-        .map(
-          (SubtaskModel subtask) => Subtask(
-            key: Key(subtask.id),
-            projectId: projectId,
-            taskId: taskId,
-            subtaskId: subtask.id,
-          ),
-        )
-        .toList();
+    return Column(
+      children: subtasks
+          .map(
+            (SubtaskModel subtask) => Subtask(
+              key: Key(subtask.id),
+              projectId: projectId,
+              taskId: taskId,
+              subtaskId: subtask.id,
+            ),
+          )
+          .toList(),
+    );
   }
 
   Widget _progressBar(BuildContext context) {
@@ -136,7 +138,7 @@ class _TaskPageBuilder extends StatelessWidget {
         children: <Widget>[
           Column(
             children: <Widget>[
-              ..._getSubtasks(context),
+              _subtasksList(context),
               if (RoleHelper.canEditTask(
                 context.read<ProjectProvider>().project!.role,
               ))

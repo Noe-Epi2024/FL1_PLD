@@ -9,8 +9,8 @@ import 'package:hyper_tools/models/project/project_role.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:provider/provider.dart';
 
-class CreateProjectModal extends HookWidget {
-  const CreateProjectModal({super.key});
+class CreateProjectDialog extends HookWidget {
+  const CreateProjectDialog({super.key});
 
   Future<void> _onClickCreate(
     BuildContext context,
@@ -30,8 +30,9 @@ class CreateProjectModal extends HookWidget {
     Navigator.pop(context);
   }
 
-  Text get _description => const Text(
+  Text _description(BuildContext context) => Text(
         'En créant un projet vous en devenez propriétaire et avez la possibilité de gérer vos collaborateurs.',
+        style: TextStyle(color: Theme.of(context).hintColor),
       );
 
   TitleText get _title => const TitleText('Créer un nouveau projet');
@@ -69,7 +70,7 @@ class CreateProjectModal extends HookWidget {
           children: <Widget>[
             _title,
             16.height,
-            _description,
+            _description(context),
             32.height,
             _nameField(controller),
             16.height,

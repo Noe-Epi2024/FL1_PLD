@@ -137,13 +137,16 @@ class _SubtaskBuilder extends HookWidget {
         child: const Text('Sauvegarder'),
       );
 
-  Checkbox _checkbox(BuildContext context) => Checkbox(
-        value: context.watch<TaskProvider>().findSubtask(subtaskId)?.isDone,
-        onChanged: (bool? value) async => RoleHelper.canEditTask(
-          context.read<ProjectProvider>().project!.role,
-        )
-            ? _onCheckboxChanged(context, value!)
-            : null,
+  Widget _checkbox(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(left: 16),
+        child: Checkbox(
+          value: context.watch<TaskProvider>().findSubtask(subtaskId)?.isDone,
+          onChanged: (bool? value) async => RoleHelper.canEditTask(
+            context.read<ProjectProvider>().project!.role,
+          )
+              ? _onCheckboxChanged(context, value!)
+              : null,
+        ),
       );
 
   @override

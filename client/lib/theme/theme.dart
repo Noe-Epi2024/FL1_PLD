@@ -171,15 +171,9 @@ class ThemeGenerator {
           animationDuration: Duration.zero,
           overlayColor:
               const MaterialStatePropertyAll<Color>(Colors.transparent),
-          textStyle:
-              MaterialStateProperty.resolveWith((Set<MaterialState> states) {
-            if (states.contains(MaterialState.hovered)) {
-              return _textTheme.bodyMedium!.copyWith(
-                decorationColor: _colorScheme.primary,
-              );
-            }
-            return _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold);
-          }),
+          textStyle: MaterialStateProperty.all(
+            _textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+          ),
         ),
       );
 
