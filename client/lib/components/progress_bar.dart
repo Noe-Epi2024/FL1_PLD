@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,7 @@ class TaskProgressBar extends HookWidget {
     final int progressPercent = context.select<TaskProvider, int>(
       (TaskProvider provider) => provider.progressPercent!,
     );
-    final double currentValue = useAnimation(controller);
+    final double value = useAnimation(controller);
 
     useEffect(
       () {
@@ -27,6 +28,21 @@ class TaskProgressBar extends HookWidget {
       <int?>[progressPercent],
     );
 
-    return LinearProgressIndicator(minHeight: 20, value: currentValue);
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: LinearProgressIndicator(
+            minHeight: 20,
+            value: value,
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        16.width,
+        Text(
+          '${(value * 100).ceil()}%',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
   }
 }

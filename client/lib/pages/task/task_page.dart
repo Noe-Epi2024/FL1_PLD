@@ -82,16 +82,7 @@ class _TaskPageBuilder extends StatelessWidget {
             ? const Row(
                 children: <Widget>[Expanded(child: Text('Aucune sous-tâche'))],
               )
-            : Row(
-                children: <Widget>[
-                  const Expanded(child: TaskProgressBar()),
-                  16.width,
-                  Text(
-                    '$progress%',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+            : const TaskProgressBar(),
       ),
     );
   }
