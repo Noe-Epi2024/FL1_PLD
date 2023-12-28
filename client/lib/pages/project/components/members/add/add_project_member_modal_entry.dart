@@ -21,6 +21,11 @@ class AddProjectMemberModalEntry extends StatelessWidget {
   final UserModel user;
 
   Future<void> _onClickAdd(BuildContext context) async {
+    final ProjectMembersProvider provider =
+        context.read<ProjectMembersProvider>();
+    final AddProjectMemberModalProvider modalProvider =
+        context.read<AddProjectMemberModalProvider>();
+
     try {
       await PostProjectMember(
         userRole: ProjectRole.reader,
@@ -28,26 +33,26 @@ class AddProjectMemberModalEntry extends StatelessWidget {
         userId: user.id,
       ).post();
 
-      if (!context.mounted) return;
-
       final ProjectMemberModel member = ProjectMemberModel(
         name: user.name,
         role: ProjectRole.reader,
         userId: user.id,
       );
 
-      context.read<ProjectMembersProvider>().addMember(member);
-      context.read<AddProjectMemberModalProvider>().deleteUser(user.id);
+      provider.addMember(member);
+      modalProvider.deleteUser(user.id);
 
-      Messenger.showSnackBarQuickInfo('Ajouté', context);
+      if (context.mounted) Messenger.showSnackBarQuickInfo('Ajouté', context);
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  TextButton _buildAddButton(BuildContext context) => TextButton(
-        onPressed: () async => _onClickAdd(context),
-        child: const Text('Ajouter'),
+  Widget _buildAddButton() => Builder(
+        builder: (BuildContext context) => TextButton(
+          onPressed: () async => _onClickAdd(context),
+          child: const Text('Ajouter'),
+        ),
       );
 
   @override
@@ -55,7 +60,7 @@ class AddProjectMemberModalEntry extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(user.name),
-          _buildAddButton(context),
+          _buildAddButton(),
         ],
       );
 }

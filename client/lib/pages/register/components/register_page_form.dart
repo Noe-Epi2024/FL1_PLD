@@ -1,24 +1,28 @@
-part of '../login_page.dart';
+part of '../register_page.dart';
 
-class _LoginPageForm extends HookWidget {
+class _RegisterForm extends HookWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _onEmailChanged(BuildContext context, String value) {
-    context.read<LoginProvider>().email = value;
+    context.read<RegisterProvider>().email = value;
   }
 
   void _onPasswordChanged(BuildContext context, String value) {
-    context.read<LoginProvider>().password = value;
+    context.read<RegisterProvider>().password = value;
+  }
+
+  void _onConfirmPasswordChanged(BuildContext context, String value) {
+    context.read<RegisterProvider>().confirmPassword = value;
   }
 
   Future<void> _onClickSubmit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
-    final LoginProvider provider = context.read<LoginProvider>()
+    final RegisterProvider provider = context.read<RegisterProvider>()
       ..isLoading = true;
 
     try {
-      final AuthenticationModel authenticationModel = await PostLogin(
+      final AuthenticationModel authenticationModel = await PostRegister(
         email: provider.email,
         password: provider.password,
       ).post();
@@ -49,8 +53,6 @@ class _LoginPageForm extends HookWidget {
   Widget _buildEmailField(TextEditingController controller) => TextFormField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: controller,
-        keyboardType: TextInputType.emailAddress,
-        textInputAction: TextInputAction.next,
         decoration: const InputDecoration(
           hintText: 'Entrez votre adresse email',
           prefixIcon: TextFieldIcon(FontAwesomeIcons.solidUser),
@@ -64,39 +66,59 @@ class _LoginPageForm extends HookWidget {
   Widget _buildPasswordField(TextEditingController controller) =>
       PasswordField(controller: controller);
 
-  Widget _buildLoginButton() => Builder(
+  Widget _buildConfirmPasswordField(TextEditingController controller) =>
+      Builder(
+        builder: (BuildContext context) => PasswordField(
+          controller: controller,
+          hint: 'Confirmez votre mot de passe',
+          validator: (String? value) =>
+              ValidatorHelper.isNullOrEmpty(
+                value,
+                'Veuillez confirmer votre mot de passe',
+              ) ??
+              ValidatorHelper.match(
+                value,
+                context.read<RegisterProvider>().confirmPassword,
+                'Le mot de passe ne correspond pas',
+              ),
+        ),
+      );
+
+  Widget _buildRegisterButton() => Builder(
         builder: (BuildContext context) => ElevatedButton(
           onPressed: () async => _onClickSubmit(context),
-          child: const Text('Connexion'),
+          child: const Text('Inscription'),
         ),
       );
 
-  Widget _buildStayLoggedInCheckbox() => Builder(
-        builder: (BuildContext context) => Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            const Text('Rester connecter'),
-            Checkbox(
-              value: context.select<LoginProvider, bool>(
-                (LoginProvider provider) => provider.shouldStayLoggedIn,
+  Widget _buildStayLoggedIn() => Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          const Text('Rester connecter'),
+          Builder(
+            builder: (BuildContext context) => Checkbox(
+              value: context.select<RegisterProvider, bool>(
+                (RegisterProvider provider) => provider.shouldStayLoggedIn,
               ),
               onChanged: (bool? value) =>
-                  context.read<LoginProvider>().shouldStayLoggedIn = value!,
+                  context.read<RegisterProvider>().shouldStayLoggedIn = value!,
             ),
-          ],
-        ),
+          ),
+        ],
       );
 
-  Widget _buildCreateAccountButton() => TextButton(
+  Widget _buildLoginButton() => TextButton(
         onPressed: () async =>
-            Navigation.push(const RegisterPage(), replaceOne: true),
-        child: const Text('Créer un compte'),
+            Navigation.push(const LoginPage(), replaceOne: true),
+        child: const Text('Se connecter'),
       );
 
   @override
   Widget build(BuildContext context) {
     final TextEditingController emailController = useTextEditingController();
     final TextEditingController passwordController = useTextEditingController();
+    final TextEditingController confirmPasswordController =
+        useTextEditingController();
 
     useEffect(
       () {
@@ -105,21 +127,24 @@ class _LoginPageForm extends HookWidget {
         passwordController.onValueChanged(
           (String value) => _onPasswordChanged(context, value),
         );
+        confirmPasswordController.onValueChanged(
+          (String value) => _onConfirmPasswordChanged(context, value),
+        );
 
         return null;
       },
       <Object?>[],
     );
 
-    return ProviderResolver<LoginProvider>(
+    return ProviderResolver<RegisterProvider>(
       loader: _buildLoader(),
-      builder: (BuildContext resolverContext) => Form(
+      builder: (_) => Form(
         key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            const HeadlineText('Connexion à HyperTools'),
+            const HeadlineText('Inscription à HyperTools'),
             32.height,
             const TitleText('Adresse email'),
             8.height,
@@ -129,12 +154,14 @@ class _LoginPageForm extends HookWidget {
             8.height,
             _buildPasswordField(passwordController),
             8.height,
-            _buildStayLoggedInCheckbox(),
+            _buildConfirmPasswordField(confirmPasswordController),
+            8.height,
+            _buildStayLoggedIn(),
             16.height,
-            SizedBox(height: 50, child: _buildLoginButton()),
+            SizedBox(height: 50, child: _buildRegisterButton()),
             8.height,
             const Center(child: Text('ou')),
-            _buildCreateAccountButton(),
+            _buildLoginButton(),
           ],
         ),
       ),

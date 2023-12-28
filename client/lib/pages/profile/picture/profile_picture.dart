@@ -24,12 +24,8 @@ class ProfilePicture extends StatelessWidget {
     try {
       final PictureModel picture = await GetPicture().get();
 
-      if (!context.mounted) return;
-
       provider.setSuccessState(picture);
     } on ErrorModel catch (e) {
-      if (!context.mounted) return;
-
       provider.setErrorState(e);
     }
   }
@@ -84,25 +80,25 @@ class ProfilePicture extends StatelessWidget {
         ),
       );
 
-  Image _picture(ProfilePictureProvider provider) => Image.network(
-        provider.picture!.url!,
-        fit: BoxFit.cover,
-        errorBuilder: _imageErrorBuilder,
-        loadingBuilder: _imageLoadingBuilder,
+  Widget _buildPicture() => Builder(
+        builder: (BuildContext context) {
+          final ProfilePictureProvider provider =
+              context.watch<ProfilePictureProvider>();
+
+          if (provider.picture?.url == null) return _noPicture(context);
+
+          return Image.network(
+            provider.picture!.url!,
+            fit: BoxFit.cover,
+            errorBuilder: _imageErrorBuilder,
+            loadingBuilder: _imageLoadingBuilder,
+          );
+        },
       );
 
   Widget _builder(BuildContext context) => InkWell(
         onTap: () async => _onTapPicture(context),
-        child: Builder(
-          builder: (BuildContext builderContext) {
-            final ProfilePictureProvider provider =
-                builderContext.watch<ProfilePictureProvider>();
-
-            if (provider.picture?.url == null) return _noPicture(context);
-
-            return _picture(provider);
-          },
-        ),
+        child: _buildPicture(),
       );
 
   @override

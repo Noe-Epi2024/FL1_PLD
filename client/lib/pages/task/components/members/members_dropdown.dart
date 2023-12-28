@@ -45,6 +45,8 @@ class ProjectMembersDropdown extends StatelessWidget {
     ProjectMemberModel member,
     BuildContext context,
   ) async {
+    final ProjectProvider provider = context.read<ProjectProvider>();
+
     try {
       await PatchTask(
         projectId: projectId,
@@ -52,11 +54,11 @@ class ProjectMembersDropdown extends StatelessWidget {
         ownerId: member.userId,
       ).patch();
 
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      provider.setTaskOwner(taskId: taskId, name: member.name);
 
-      context
-          .read<ProjectProvider>()
-          .setTaskOwner(taskId: taskId, name: member.name);
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      }
 
       return true;
     } on ErrorModel catch (e) {

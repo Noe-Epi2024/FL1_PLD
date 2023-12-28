@@ -1,13 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/layouts/authentication/authentication_layout_mobile.dart';
-import 'package:hyper_tools/pages/register/register_page.dart';
+part of 'register_page.dart';
 
-class RegisterPageMobile extends RegisterPage {
-  RegisterPageMobile({super.key});
-
+class _RegisterPageMobile extends RegisterPage {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: SafeArea(child: AuthenticationLayoutMobile(child: form(context))),
+        body:
+            SafeArea(child: AuthenticationLayoutMobile(child: _RegisterForm())),
       );
 }

@@ -52,8 +52,6 @@ class Dropdown<T> extends StatelessWidget {
 
     await _pushList(context);
 
-    if (!context.mounted) return;
-
     provider.isOpen = false;
   }
 
@@ -70,12 +68,8 @@ class Dropdown<T> extends StatelessWidget {
 
         final List<DropdownEntry<T>> fetchedEntries = await fetch!();
 
-        if (!context.mounted) return;
-
         provider.setSuccessState(fetchedEntries);
       } on ErrorModel catch (e) {
-        if (!context.mounted) return;
-
         provider.setErrorState(e);
       }
     }
@@ -94,34 +88,37 @@ class Dropdown<T> extends StatelessWidget {
         ),
       );
 
-  Widget _button(BuildContext context) {
-    final String? selectedValue = context.select<DropdownProvider<T>, String?>(
-      (DropdownProvider<T> provider) => provider.selectedValue?.key,
-    );
+  Widget _buildButton() => Builder(
+        builder: (BuildContext context) {
+          final String? selectedValue =
+              context.select<DropdownProvider<T>, String?>(
+            (DropdownProvider<T> provider) => provider.selectedValue?.key,
+          );
 
-    final bool isOpen = context.select<DropdownProvider<T>, bool>(
-      (DropdownProvider<T> provider) => provider.isOpen,
-    );
+          final bool isOpen = context.select<DropdownProvider<T>, bool>(
+            (DropdownProvider<T> provider) => provider.isOpen,
+          );
 
-    return InkWell(
-      onTap: readonly ? null : () async => _onClick(context),
-      child: InputDecorator(
-        isFocused: isOpen,
-        isEmpty: selectedValue == null,
-        decoration: InputDecoration(
-          enabledBorder: InputBorder.none,
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          labelText: labelText,
-          prefixIcon: const TextFieldIcon(FontAwesomeIcons.solidUser),
-          suffixIcon: isOpen
-              ? const TextFieldIcon(FontAwesomeIcons.angleUp)
-              : const TextFieldIcon(FontAwesomeIcons.angleDown),
-        ),
-        child: selectedValue != null ? Text(selectedValue) : null,
-      ),
-    );
-  }
+          return InkWell(
+            onTap: readonly ? null : () async => _onClick(context),
+            child: InputDecorator(
+              isFocused: isOpen,
+              isEmpty: selectedValue == null,
+              decoration: InputDecoration(
+                enabledBorder: InputBorder.none,
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                labelText: labelText,
+                prefixIcon: const TextFieldIcon(FontAwesomeIcons.solidUser),
+                suffixIcon: isOpen
+                    ? const TextFieldIcon(FontAwesomeIcons.angleUp)
+                    : const TextFieldIcon(FontAwesomeIcons.angleDown),
+              ),
+              child: selectedValue != null ? Text(selectedValue) : null,
+            ),
+          );
+        },
+      );
 
   @override
   Widget build(BuildContext context) =>
@@ -132,6 +129,6 @@ class Dropdown<T> extends StatelessWidget {
                 entries: entries!,
                 initialValue: initialValue,
               ),
-        builder: (BuildContext providerContext, _) => _button(providerContext),
+        child: _buildButton(),
       );
 }

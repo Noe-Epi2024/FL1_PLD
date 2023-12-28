@@ -51,6 +51,8 @@ class _SubtaskBuilder extends HookWidget {
   final String subtaskId;
 
   Future<void> _onClickDelete(BuildContext context) async {
+    final TaskProvider provider = context.read<TaskProvider>();
+
     try {
       await DeleteSubtask(
         projectId: projectId,
@@ -58,11 +60,9 @@ class _SubtaskBuilder extends HookWidget {
         subtaskId: subtaskId,
       ).delete();
 
-      if (!context.mounted) return;
+      provider.deleteSubtask(subtaskId: subtaskId);
 
-      Messenger.showSnackBarQuickInfo('Supprimé', context);
-
-      context.read<TaskProvider>().deleteSubtask(subtaskId: subtaskId);
+      if (context.mounted) Messenger.showSnackBarQuickInfo('Supprimé', context);
     } on ErrorModel catch (e) {
       e.show();
     }
@@ -73,6 +73,8 @@ class _SubtaskBuilder extends HookWidget {
   }
 
   Future<void> _onCheckboxChanged(BuildContext context, bool value) async {
+    final TaskProvider provider = context.read<TaskProvider>();
+
     try {
       await PatchSubtask(
         projectId: projectId,
@@ -81,20 +83,21 @@ class _SubtaskBuilder extends HookWidget {
         isDone: value,
       ).patch();
 
-      context
-          .read<TaskProvider>()
-          .setSubtaskIsDone(subtaskId: subtaskId, value: value);
+      provider.setSubtaskIsDone(subtaskId: subtaskId, value: value);
 
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      }
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
   Future<void> _onPressSave(BuildContext context) async {
-    try {
-      final String? name = context.read<SubtaskProvider>().currentName;
+    final String? name = context.read<SubtaskProvider>().currentName;
+    final TaskProvider provider = context.read<TaskProvider>();
 
+    try {
       await PatchSubtask(
         projectId: projectId,
         taskId: taskId,
@@ -102,21 +105,17 @@ class _SubtaskBuilder extends HookWidget {
         name: name,
       ).patch();
 
-      context
-          .read<TaskProvider>()
-          .setSubtaskName(subtaskId: subtaskId, value: name);
+      provider.setSubtaskName(subtaskId: subtaskId, value: name);
 
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      }
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  TextField _nameField(
-    BuildContext context,
-    TextEditingController controller,
-  ) =>
-      TextField(
+  TextField _nameField(TextEditingController controller) => TextField(
         textCapitalization: TextCapitalization.sentences,
         controller: controller,
         decoration: const InputDecoration(
@@ -134,20 +133,24 @@ class _SubtaskBuilder extends HookWidget {
         borderRadius: BorderRadius.circular(16),
       );
 
-  TextButton _saveButton(BuildContext context) => TextButton(
-        onPressed: () async => _onPressSave(context),
-        child: const Text('Sauvegarder'),
+  Widget _saveButton() => Builder(
+        builder: (BuildContext context) => TextButton(
+          onPressed: () async => _onPressSave(context),
+          child: const Text('Sauvegarder'),
+        ),
       );
 
-  Widget _checkbox(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(left: 16),
-        child: Checkbox(
-          value: context.watch<TaskProvider>().findSubtask(subtaskId)?.isDone,
-          onChanged: (bool? value) async => RoleHelper.canEditTask(
-            context.read<ProjectProvider>().project!.role,
-          )
-              ? _onCheckboxChanged(context, value!)
-              : null,
+  Widget _buildCheckbox() => Builder(
+        builder: (BuildContext context) => Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Checkbox(
+            value: context.watch<TaskProvider>().findSubtask(subtaskId)?.isDone,
+            onChanged: (bool? value) async => RoleHelper.canEditTask(
+              context.read<ProjectProvider>().project!.role,
+            )
+                ? _onCheckboxChanged(context, value!)
+                : null,
+          ),
         ),
       );
 
@@ -173,13 +176,13 @@ class _SubtaskBuilder extends HookWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            _checkbox(context),
-            Expanded(child: _nameField(context, controller)),
+            _buildCheckbox(),
+            Expanded(child: _nameField(controller)),
             if (context.watch<TaskProvider>().findSubtask(subtaskId)?.name !=
                 context.select<SubtaskProvider, String?>(
                   (SubtaskProvider provider) => provider.currentName,
                 ))
-              _saveButton(context),
+              _saveButton(),
           ],
         ),
       ),

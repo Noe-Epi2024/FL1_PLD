@@ -25,21 +25,25 @@ class ProjectMember extends StatelessWidget {
   final String memberId;
 
   Future<void> _onClickDelete(BuildContext context) async {
+    final ProjectMembersProvider provider =
+        context.read<ProjectMembersProvider>();
+
     try {
       await DeleteProjectMember(projectId: projectId, userId: memberId)
           .delete();
 
-      if (!context.mounted) return;
+      provider.deleteMember(memberId);
 
-      Messenger.showSnackBarQuickInfo('Supprimé', context);
-
-      context.read<ProjectMembersProvider>().deleteMember(memberId);
+      if (context.mounted) Messenger.showSnackBarQuickInfo('Supprimé', context);
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
   Future<void> _onClickRole(BuildContext context, ProjectRole role) async {
+    final ProjectMembersProvider provider =
+        context.read<ProjectMembersProvider>();
+
     try {
       await PatchProjectMember(
         projectId: projectId,
@@ -47,15 +51,17 @@ class ProjectMember extends StatelessWidget {
         userRole: role,
       ).patch();
 
-      Messenger.showSnackBarQuickInfo('Rôle modifié', context);
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Rôle modifié', context);
+      }
 
-      context.read<ProjectMembersProvider>().setMemberRole(memberId, role);
+      provider.setMemberRole(memberId, role);
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  SlidableAction _deleteButton(BuildContext context) => SlidableAction(
+  SlidableAction _buildDeleteButton() => SlidableAction(
         onPressed: _onClickDelete,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.red,
@@ -63,86 +69,82 @@ class ProjectMember extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       );
 
-  Widget _roleIcon(BuildContext context, ProjectRole role, bool isUserRole) =>
-      IconButton(
-        onPressed: isUserRole ? null : () async => _onClickRole(context, role),
-        icon: FaIcon(
-          role.icon,
-          color: isUserRole
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).hintColor,
-          size: 20,
-        ),
+  Widget _buildRoleIcon(ProjectRole role) => Builder(
+        builder: (BuildContext context) {
+          final ProjectRole memberRole =
+              context.read<ProjectMembersProvider>().findMember(memberId).role;
+
+          return IconButton(
+            onPressed: memberRole == role
+                ? null
+                : () async => _onClickRole(context, role),
+            icon: FaIcon(
+              role.icon,
+              color: memberRole == role
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).hintColor,
+              size: 20,
+            ),
+          );
+        },
       );
 
-  Widget _icons(BuildContext context) {
-    final ProjectRole userRole = context.read<ProjectProvider>().project!.role;
+  Widget _buildIcons() => Builder(
+        builder: (BuildContext context) {
+          final ProjectRole userRole =
+              context.read<ProjectProvider>().project!.role;
+          final ProjectRole memberRole =
+              context.read<ProjectMembersProvider>().findMember(memberId).role;
 
-    final ProjectRole memberRole =
-        context.read<ProjectMembersProvider>().findMember(memberId).role;
+          if (memberRole == ProjectRole.owner) {
+            return Padding(
+              padding: 12.all,
+              child: Shimmer.fromColors(
+                baseColor: const Color.fromARGB(255, 255, 204, 0),
+                highlightColor: const Color.fromARGB(255, 255, 248, 151),
+                child: FaIcon(
+                  memberRole.icon,
+                  size: 20,
+                ),
+              ),
+            );
+          }
 
-    if (memberRole == ProjectRole.owner) {
-      return Padding(
-        padding: 12.all,
-        child: Shimmer.fromColors(
-          baseColor: const Color.fromARGB(255, 255, 204, 0),
-          highlightColor: const Color.fromARGB(255, 255, 248, 151),
-          child: FaIcon(
-            memberRole.icon,
-            size: 20,
-          ),
-        ),
+          if (!RoleHelper.canManageMembers(userRole)) {
+            return Padding(
+              padding: 12.all,
+              child: FaIcon(
+                memberRole.icon,
+                color: Theme.of(context).hintColor,
+                size: 20,
+              ),
+            );
+          }
+          return Row(
+            children: <Widget>[
+              _buildRoleIcon(ProjectRole.admin),
+              _buildRoleIcon(ProjectRole.writer),
+              _buildRoleIcon(ProjectRole.reader),
+            ],
+          );
+        },
       );
-    }
-
-    if (!RoleHelper.canManageMembers(userRole)) {
-      return Padding(
-        padding: 12.all,
-        child: FaIcon(
-          memberRole.icon,
-          color: Theme.of(context).hintColor,
-          size: 20,
-        ),
-      );
-    }
-
-    return Row(
-      children: <Widget>[
-        _roleIcon(
-          context,
-          ProjectRole.admin,
-          memberRole == ProjectRole.admin,
-        ),
-        _roleIcon(
-          context,
-          ProjectRole.writer,
-          memberRole == ProjectRole.writer,
-        ),
-        _roleIcon(
-          context,
-          ProjectRole.reader,
-          memberRole == ProjectRole.reader,
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    final String name =
-        context.read<ProjectMembersProvider>().findMember(memberId).name;
+    final ProjectMembersProvider provider =
+        context.read<ProjectMembersProvider>();
 
+    final String name = provider.findMember(memberId).name;
+    final ProjectRole memberRole = provider.findMember(memberId).role;
     final ProjectRole userRole = context.read<ProjectProvider>().project!.role;
-
-    final ProjectRole memberRole =
-        context.read<ProjectMembersProvider>().findMember(memberId).role;
 
     return Slidable(
       endActionPane: RoleHelper.canManageMembers(userRole) &&
               memberRole != ProjectRole.owner
           ? ActionPane(
               motion: const ScrollMotion(),
-              children: <Widget>[_deleteButton(context)],
+              children: <Widget>[_buildDeleteButton()],
             )
           : null,
       child: Card(
@@ -153,7 +155,7 @@ class ProjectMember extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              _icons(context),
+              _buildIcons(),
             ],
           ),
         ),

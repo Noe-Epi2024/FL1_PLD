@@ -1,20 +1,11 @@
 part of 'login_page.dart';
 
 class _LoginPageMobile extends StatelessWidget {
-  SizedBox _buildLoader() => const SizedBox(
-        height: 300,
-        child: Center(child: CircularProgressIndicator()),
-      );
-
   @override
   Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: SafeArea(
-          child: AuthenticationLayoutMobile(
-            child: ProviderResolver<LoginProvider>(
-              loader: _buildLoader(),
-              builder: (_) => _LoginPageForm(),
-            ),
-          ),
+          child: AuthenticationLayoutMobile(child: _LoginPageForm()),
         ),
       );
 }

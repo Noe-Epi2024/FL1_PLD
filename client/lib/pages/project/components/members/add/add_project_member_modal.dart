@@ -42,12 +42,8 @@ class _AddProjectMemberModalBuilder extends HookWidget {
           await GetUsers(excludeProjectId: projectId, filter: provider.filter)
               .get();
 
-      if (!context.mounted) return;
-
       provider.setSuccessState(users);
     } on ErrorModel catch (e) {
-      if (!context.mounted) return;
-
       provider.setErrorState(e);
     }
   }
@@ -64,47 +60,53 @@ class _AddProjectMemberModalBuilder extends HookWidget {
 
   TitleText get _title => const TitleText('Inviter un membre');
 
-  TextField _searchBar(BuildContext context, TextEditingController controller) {
-    final String filter = context.select<AddProjectMemberModalProvider, String>(
-      (AddProjectMemberModalProvider provider) => provider.filter,
-    );
+  Widget _buildSearchBar(TextEditingController controller) => Builder(
+        builder: (BuildContext context) {
+          final String filter =
+              context.select<AddProjectMemberModalProvider, String>(
+            (AddProjectMemberModalProvider provider) => provider.filter,
+          );
+          return TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: "Nom d'utilisateur",
+              prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
+              suffixIcon: filter.isEmpty
+                  ? null
+                  : TextButton(
+                      onPressed: controller.clear,
+                      child: FaIcon(
+                        FontAwesomeIcons.circleXmark,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+            ),
+          );
+        },
+      );
 
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: "Nom d'utilisateur",
-        prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
-        suffixIcon: filter.isEmpty
-            ? null
-            : TextButton(
-                onPressed: controller.clear,
-                child: FaIcon(
-                  FontAwesomeIcons.circleXmark,
-                  color: Theme.of(context).hintColor,
-                ),
-              ),
-      ),
-    );
-  }
+  Widget _buildEntries() => Builder(
+        builder: (BuildContext context) {
+          final UsersModel? users =
+              context.watch<AddProjectMemberModalProvider>().users;
 
-  Widget _entries(BuildContext context) {
-    final UsersModel? users =
-        context.watch<AddProjectMemberModalProvider>().users;
+          if (users == null || users.users.isEmpty) {
+            return const Text('Pas de résultat');
+          }
 
-    if (users == null || users.users.isEmpty) {
-      return const Text('Pas de résultat');
-    }
-
-    return ListView(
-      shrinkWrap: true,
-      children: users.users
-          .map(
-            (UserModel user) =>
-                AddProjectMemberModalEntry(projectId: projectId, user: user),
-          )
-          .toList(),
-    );
-  }
+          return ListView(
+            shrinkWrap: true,
+            children: users.users
+                .map(
+                  (UserModel user) => AddProjectMemberModalEntry(
+                    projectId: projectId,
+                    user: user,
+                  ),
+                )
+                .toList(),
+          );
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +127,11 @@ class _AddProjectMemberModalBuilder extends HookWidget {
           children: <Widget>[
             _title,
             16.height,
-            _searchBar(context, controller),
+            _buildSearchBar(controller),
             16.height,
-            ProviderResolver<AddProjectMemberModalProvider>(builder: _entries),
+            ProviderResolver<AddProjectMemberModalProvider>(
+              builder: (_) => _buildEntries(),
+            ),
           ],
         ),
       ),

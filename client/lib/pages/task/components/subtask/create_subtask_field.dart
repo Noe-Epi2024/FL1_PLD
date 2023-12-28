@@ -43,36 +43,34 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
     BuildContext context,
     TextEditingController controller,
   ) async {
+    final TaskProvider taskProvider = context.read<TaskProvider>();
+    final SubtaskProvider subtaskProvider = context.read<SubtaskProvider>();
+
     try {
       final String subtaskId = await PostSubtask(
         projectId: projectId,
         taskId: taskId,
-        name: controller.text,
+        name: subtaskProvider.currentName!,
       ).post();
 
-      if (!context.mounted) return;
-
       final SubtaskModel subtask =
-          SubtaskModel(id: subtaskId, name: controller.text);
+          SubtaskModel(id: subtaskId, name: subtaskProvider.currentName!);
 
-      context.read<TaskProvider>().addSubtask(subtask);
-
+      taskProvider.addSubtask(subtask);
       controller.clear();
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  Widget _createButton(
-    BuildContext context,
-    TextEditingController controller,
-  ) =>
-      TextButton(
-        style: const ButtonStyle(
-          shape: MaterialStatePropertyAll<OutlinedBorder>(CircleBorder()),
+  Widget _buildCreateButton(TextEditingController controller) => Builder(
+        builder: (BuildContext context) => TextButton(
+          style: const ButtonStyle(
+            shape: MaterialStatePropertyAll<OutlinedBorder>(CircleBorder()),
+          ),
+          onPressed: () async => _onClickCreate(context, controller),
+          child: const Text('Ajouter'),
         ),
-        onPressed: () async => _onClickCreate(context, controller),
-        child: const Text('Ajouter'),
       );
 
   @override
@@ -97,7 +95,7 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
                       )
                       ?.isNotEmpty ??
                   false
-              ? _createButton(context, controller)
+              ? _buildCreateButton(controller)
               : null,
         ),
       ),

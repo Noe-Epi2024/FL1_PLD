@@ -19,17 +19,17 @@ class TaskEndDate extends StatelessWidget {
   final String taskId;
 
   Future<bool> _onSelectedEndDate(BuildContext context, DateTime date) async {
+    final TaskProvider provider = context.read<TaskProvider>();
+
     try {
       await PatchTask(projectId: projectId, taskId: taskId, endDate: date)
           .patch();
 
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      provider.setEndDate(date);
 
-      context.read<TaskProvider>().setEndDate(date);
-
-      context
-          .read<ProjectProvider>()
-          .setTaskEndDate(taskId: taskId, date: date);
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      }
 
       return true;
     } on ErrorModel catch (e) {

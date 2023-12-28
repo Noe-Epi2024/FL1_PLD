@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PasswordFieldProvider with ChangeNotifier {
-  bool _obscureText = false;
+  bool _obscureText = true;
 
   bool get obscureText => _obscureText;
 

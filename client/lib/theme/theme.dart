@@ -18,7 +18,9 @@ class ThemeGenerator {
   static final Color _labelColor = Colors.grey.shade600;
 
   static CheckboxThemeData get _checkBoxTheme => CheckboxThemeData(
-        shape: const CircleBorder(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
         side: BorderSide(color: _borderColor),
         fillColor: MaterialStateProperty.resolveWith(
           (Set<MaterialState> states) {

@@ -1,14 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/layouts/authentication/authentication_layout_desktop.dart';
-import 'package:hyper_tools/pages/register/register_page.dart';
+part of 'register_page.dart';
 
-class RegisterPageDekstop extends RegisterPage {
-  RegisterPageDekstop({super.key});
-
+class _RegisterPageDekstop extends RegisterPage {
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body:
-            SafeArea(child: AuthenticationLayoutDesktop(child: form(context))),
+        body: SafeArea(
+          child: AuthenticationLayoutDesktop(child: _RegisterForm()),
+        ),
       );
 }

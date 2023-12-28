@@ -47,51 +47,54 @@ class _TaskPageBuilder extends StatelessWidget {
       final TaskModel task =
           await GetTask(projectId: projectId, taskId: taskId).get();
 
-      if (!context.mounted) return;
-
       provider.setSuccessState(task);
     } on ErrorModel catch (e) {
-      if (!context.mounted) return;
-
       provider.setErrorState(e);
     }
   }
 
-  Widget _subtasksList(BuildContext context) {
-    final List<SubtaskModel> subtasks =
-        context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
+  Widget _buildSubtasksList() => Builder(
+        builder: (BuildContext context) {
+          final List<SubtaskModel> subtasks =
+              context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
 
-    return Column(
-      children: subtasks
-          .map(
-            (SubtaskModel subtask) => Subtask(
-              key: Key(subtask.id),
-              projectId: projectId,
-              taskId: taskId,
-              subtaskId: subtask.id,
-            ),
-          )
-          .toList(),
-    );
-  }
+          return Column(
+            children: subtasks
+                .map(
+                  (SubtaskModel subtask) => Subtask(
+                    key: Key(subtask.id),
+                    projectId: projectId,
+                    taskId: taskId,
+                    subtaskId: subtask.id,
+                  ),
+                )
+                .toList(),
+          );
+        },
+      );
 
-  Widget _progressBar(BuildContext context) {
-    final int? progress = context.watch<TaskProvider>().progressPercent;
+  Widget _buildProgressBar() => Card(
+        margin: 16.horizontal,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Builder(
+            builder: (BuildContext context) {
+              final int? progress =
+                  context.watch<TaskProvider>().progressPercent;
 
-    return Card(
-      margin: 16.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: progress == null
-            ? const Row(
-                children: <Widget>[Expanded(child: Text('Aucune sous-tâche'))],
-              )
-            : const TaskProgressBar(),
-      ),
-    );
-  }
+              return progress == null
+                  ? const Row(
+                      children: <Widget>[
+                        Expanded(child: Text('Aucune sous-tâche')),
+                      ],
+                    )
+                  : const TaskProgressBar();
+            },
+          ),
+        ),
+      );
 
-  Widget _assignedTo(BuildContext context) => Column(
+  Widget _buildAssignedTo() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Text(
@@ -105,19 +108,23 @@ class _TaskPageBuilder extends StatelessWidget {
         ],
       );
 
-  Widget _remainingTime(BuildContext context) {
-    final TaskProvider provider = context.watch<TaskProvider>();
-    final DateTime? startDate = provider.task!.startDate;
-    final DateTime? endDate = provider.task!.endDate;
+  Widget _buildRemainingTime() => Builder(
+        builder: (BuildContext context) {
+          final TaskProvider provider = context.watch<TaskProvider>();
+          final DateTime? startDate = provider.task!.startDate;
+          final DateTime? endDate = provider.task!.endDate;
 
-    if (startDate == null || endDate == null) return const SizedBox.shrink();
+          if (startDate == null || endDate == null) {
+            return const SizedBox.shrink();
+          }
 
-    return Text(
-      'Durée estimée : ${endDate.difference(startDate).inDays} jours',
-    );
-  }
+          return Text(
+            'Durée estimée : ${endDate.difference(startDate).inDays} jours',
+          );
+        },
+      );
 
-  Widget _dates(BuildContext context) => Column(
+  Widget _buildDates() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           const Text(
@@ -130,36 +137,38 @@ class _TaskPageBuilder extends StatelessWidget {
               TaskEndDate(projectId: projectId, taskId: taskId),
             ],
           ),
-          Builder(builder: _remainingTime),
+          _buildRemainingTime(),
         ],
       );
 
-  Widget _subtasks(BuildContext context) => ExpansionTile(
+  Widget _buildSubtasks() => ExpansionTile(
         initiallyExpanded: true,
         title: const TitleText('À faire'),
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              _subtasksList(context),
-              if (RoleHelper.canEditTask(
-                context.read<ProjectProvider>().project!.role,
-              ))
-                CreateSubtaskField(projectId: projectId, taskId: taskId),
-            ],
+          Builder(
+            builder: (BuildContext context) => Column(
+              children: <Widget>[
+                _buildSubtasksList(),
+                if (RoleHelper.canEditTask(
+                  context.read<ProjectProvider>().project!.role,
+                ))
+                  CreateSubtaskField(projectId: projectId, taskId: taskId),
+              ],
+            ),
           ),
         ],
       );
 
-  Widget _progress(BuildContext context) => Column(
+  Widget _buildProgress() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TitleText('Progression', padding: 16.horizontal),
           16.height,
-          _progressBar(context),
+          _buildProgressBar(),
         ],
       );
 
-  Widget _informations(BuildContext context) => ExpansionTile(
+  Widget _buildInformations() => ExpansionTile(
         initiallyExpanded: true,
         title: const TitleText('Informations'),
         children: <Widget>[
@@ -171,9 +180,9 @@ class _TaskPageBuilder extends StatelessWidget {
                 children: <Widget>[
                   TaskDescription(projectId: projectId, taskId: taskId),
                   8.height,
-                  _dates(context),
+                  _buildDates(),
                   8.height,
-                  _assignedTo(context),
+                  _buildAssignedTo(),
                 ],
               ),
             ),
@@ -181,18 +190,18 @@ class _TaskPageBuilder extends StatelessWidget {
         ],
       );
 
-  AppBar _appBar(BuildContext context) =>
+  AppBar _appBar() =>
       AppBar(title: TaskName(projectId: projectId, taskId: taskId));
 
   Widget _builder(BuildContext builderContext) => Scaffold(
-        appBar: _appBar(builderContext),
+        appBar: _appBar(),
         body: SafeArea(
           child: ListView(
             padding: const EdgeInsets.only(top: 16, bottom: 128),
             children: <Widget>[
-              _progress(builderContext),
-              _informations(builderContext),
-              _subtasks(builderContext),
+              _buildProgress(),
+              _buildInformations(),
+              _buildSubtasks(),
             ],
           ),
         ),

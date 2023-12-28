@@ -36,20 +36,13 @@ class _HomePageBuilder extends HookWidget {
     try {
       final ProjectsModel projects = await GetProjects().get();
 
-      if (!context.mounted) return;
-
       provider.setSuccessState(projects);
     } on ErrorModel catch (e) {
-      if (!context.mounted) return;
-
       provider.setErrorState(e);
     }
   }
 
-  void _onSearchChanged(
-    BuildContext context,
-    String filter,
-  ) {
+  void _onSearchChanged(BuildContext context, String filter) {
     context.read<HomeProvider>().filter = filter;
   }
 
@@ -58,7 +51,7 @@ class _HomePageBuilder extends HookWidget {
       context: context,
       builder: (_) => ChangeNotifierProvider<HomeProvider>.value(
         value: context.read<HomeProvider>(),
-        builder: (__, ___) => const CreateProjectDialog(),
+        child: const CreateProjectDialog(),
       ),
     );
   }
@@ -109,45 +102,49 @@ class _HomePageBuilder extends HookWidget {
         child: const FaIcon(FontAwesomeIcons.plus),
       );
 
-  Text _welcomeText(BuildContext context) => Text(
-        'Bonjour, ${context.watch<HomeProvider>().projects?.name}',
-        style: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(fontWeight: FontWeight.bold),
+  Widget _buildWelcomeText() => Builder(
+        builder: (BuildContext context) => Text(
+          'Bonjour, ${context.watch<HomeProvider>().projects?.name}',
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
       );
 
-  TextField _searchBar(BuildContext context, TextEditingController controller) {
-    final String filter = context.select<HomeProvider, String>(
-      (HomeProvider provider) => provider.filter,
-    );
+  Widget _buildSearchBar(TextEditingController controller) => Builder(
+        builder: (BuildContext context) {
+          final String filter = context.select<HomeProvider, String>(
+            (HomeProvider provider) => provider.filter,
+          );
 
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: 'Chercher un projet',
-        prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
-        suffixIcon: filter.isEmpty
-            ? null
-            : TextButton(
-                onPressed: controller.clear,
-                child: FaIcon(
-                  FontAwesomeIcons.circleXmark,
-                  color: Theme.of(context).hintColor,
-                ),
-              ),
-      ),
-    );
-  }
+          return TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'Chercher un projet',
+              prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
+              suffixIcon: filter.isEmpty
+                  ? null
+                  : TextButton(
+                      onPressed: controller.clear,
+                      child: FaIcon(
+                        FontAwesomeIcons.circleXmark,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+            ),
+          );
+        },
+      );
 
   Widget _builder(BuildContext context, TextEditingController controller) =>
       ListView(
         padding:
             const EdgeInsets.only(top: 32, bottom: 128, left: 16, right: 16),
         children: <Widget>[
-          _welcomeText(context),
+          _buildWelcomeText(),
           32.height,
-          _searchBar(context, controller),
+          _buildSearchBar(controller),
           8.height,
           ..._getPreviews(context),
         ],

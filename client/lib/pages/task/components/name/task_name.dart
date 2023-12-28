@@ -49,21 +49,49 @@ class _TaskNameBuilder extends HookWidget {
 
   Future<void> _onClickSave(BuildContext context) async {
     try {
-      final String? name = context.read<TaskNameProvider>().currentName;
+      final TaskNameProvider provider = context.read<TaskNameProvider>();
+      final TaskProvider taskProvider = context.read<TaskProvider>();
 
       await PatchTask(
         projectId: projectId,
         taskId: taskId,
-        name: name,
+        name: provider.currentName,
       ).patch();
 
-      context.read<TaskProvider>().setName(name);
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
-      FocusScope.of(context).unfocus();
+      taskProvider.setName(provider.currentName);
+
+      if (context.mounted) {
+        FocusScope.of(context).unfocus();
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      }
     } on ErrorModel catch (e) {
       e.show();
     }
   }
+
+  Widget _buildNameField(TextEditingController controller) => Builder(
+        builder: (BuildContext context) => TextField(
+          readOnly: !RoleHelper.canEditTask(
+            context.read<ProjectProvider>().project!.role,
+          ),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
+          textCapitalization: TextCapitalization.sentences,
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Écrire un nom',
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+          ),
+        ),
+      );
+
+  Widget _buildSaveButton() => Builder(
+        builder: (BuildContext context) => TextButton(
+          onPressed: () async => _onClickSave(context),
+          child: const Text('Enregistrer'),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -79,30 +107,12 @@ class _TaskNameBuilder extends HookWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Expanded(
-          child: TextField(
-            readOnly: !RoleHelper.canEditTask(
-              context.read<ProjectProvider>().project!.role,
-            ),
-            style: Theme.of(context).appBarTheme.titleTextStyle,
-            onTapOutside: (_) => FocusScope.of(context).unfocus(),
-            textCapitalization: TextCapitalization.sentences,
-            controller: controller,
-            decoration: const InputDecoration(
-              hintText: 'Écrire un nom',
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-            ),
-          ),
-        ),
+        Expanded(child: _buildNameField(controller)),
         if (context.select<TaskNameProvider, String?>(
               (TaskNameProvider provider) => provider.currentName,
             ) !=
             context.watch<TaskProvider>().task?.name)
-          TextButton(
-            onPressed: () async => _onClickSave(context),
-            child: const Text('Enregistrer'),
-          ),
+          _buildSaveButton(),
       ],
     );
   }

@@ -5,7 +5,7 @@ class _LandingPageMobile extends LandingPage {
 
   @protected
   Widget _buildRegisterButton() => ElevatedButton(
-        onPressed: () async => Navigation.push(RegisterPage()),
+        onPressed: () async => Navigation.push(const RegisterPage()),
         child: const Text('Inscription'),
       );
 
@@ -15,9 +15,11 @@ class _LandingPageMobile extends LandingPage {
         child: const Text('Connexion'),
       );
 
-  Widget _buildTextTitle(BuildContext context, {TextStyle? style}) => Text(
-        'Bienvenue dans une nouvelle ère de collaboration et de réussite professionnelle.',
-        style: style ?? Theme.of(context).textTheme.displaySmall,
+  Widget _buildTextTitle({TextStyle? style}) => Builder(
+        builder: (BuildContext context) => Text(
+          'Bienvenue dans une nouvelle ère de collaboration et de réussite professionnelle.',
+          style: style ?? Theme.of(context).textTheme.displaySmall,
+        ),
       );
 
   @override
@@ -28,10 +30,7 @@ class _LandingPageMobile extends LandingPage {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                _buildTextTitle(
-                  context,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                _buildTextTitle(style: Theme.of(context).textTheme.titleLarge),
                 64.height,
                 SizedBox(height: 56, child: _buildRegisterButton()),
                 8.height,

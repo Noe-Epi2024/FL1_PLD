@@ -22,19 +22,19 @@ class Navigation {
 
     if (replaceAll) {
       return _navigatorKey.currentState!.pushAndRemoveUntil(
-        MaterialPageRoute<T>(builder: (BuildContext context) => child),
+        MaterialPageRoute<T>(builder: (_) => child),
         (_) => false,
       );
     }
 
     if (replaceOne) {
       return _navigatorKey.currentState!.pushReplacement(
-        MaterialPageRoute<T>(builder: (BuildContext context) => child),
+        MaterialPageRoute<T>(builder: (_) => child),
       );
     }
 
     return _navigatorKey.currentState!
-        .push(MaterialPageRoute<T>(builder: (BuildContext context) => child));
+        .push(MaterialPageRoute<T>(builder: (_) => child));
   }
 
   static void pop<T extends Object?>([T? result]) =>

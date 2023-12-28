@@ -19,10 +19,10 @@ class CreateProjectDialog extends HookWidget {
     BuildContext context,
     TextEditingController controller,
   ) async {
+    final HomeProvider provider = context.read<HomeProvider>();
+
     try {
       final String id = await PostProject(name: controller.text).post();
-
-      if (!context.mounted) return;
 
       final ProjectPreviewModel projectPreview = ProjectPreviewModel(
         id: id,
@@ -31,7 +31,7 @@ class CreateProjectDialog extends HookWidget {
         role: ProjectRole.owner,
       );
 
-      context.read<HomeProvider>().addProject(projectPreview);
+      provider.addProject(projectPreview);
     } on ErrorModel catch (e) {
       e.show();
     } finally {
@@ -39,23 +39,23 @@ class CreateProjectDialog extends HookWidget {
     }
   }
 
-  Text _description(BuildContext context) => Text(
-        'En créant un projet vous en devenez propriétaire et avez la possibilité de gérer vos collaborateurs.',
-        style: TextStyle(color: Theme.of(context).hintColor),
+  Widget _buildDescription() => Builder(
+        builder: (BuildContext context) => Text(
+          'En créant un projet vous en devenez propriétaire et avez la possibilité de gérer vos collaborateurs.',
+          style: TextStyle(color: Theme.of(context).hintColor),
+        ),
       );
 
-  TitleText get _title => const TitleText('Créer un nouveau projet');
+  TitleText _buildTitle() => const TitleText('Créer un nouveau projet');
 
-  ElevatedButton _createButton(
-    BuildContext context,
-    TextEditingController controller,
-  ) =>
-      ElevatedButton(
-        onPressed: () async => _onClickCreate(context, controller),
-        child: const Text('Créer'),
+  Widget _buildCreateButton(TextEditingController controller) => Builder(
+        builder: (BuildContext context) => ElevatedButton(
+          onPressed: () async => _onClickCreate(context, controller),
+          child: const Text('Créer'),
+        ),
       );
 
-  TextButton _cancelButton(BuildContext context) => const TextButton(
+  TextButton _cancelButton() => const TextButton(
         onPressed: Navigation.pop,
         child: Text('Annuler'),
       );
@@ -77,16 +77,16 @@ class CreateProjectDialog extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            _title,
+            _buildTitle(),
             16.height,
-            _description(context),
+            _buildDescription(),
             32.height,
             _nameField(controller),
             16.height,
             EvenlySizedChildren(
               children: <Widget>[
-                _cancelButton(context),
-                _createButton(context, controller),
+                _cancelButton(),
+                _buildCreateButton(controller),
               ],
             ),
           ],

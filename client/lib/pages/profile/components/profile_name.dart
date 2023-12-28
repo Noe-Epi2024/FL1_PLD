@@ -19,46 +19,50 @@ class ProfileName extends HookWidget {
   }
 
   Future<void> _onClickSave(BuildContext context) async {
+    final ProfileProvider provider = context.read<ProfileProvider>();
+
     try {
-      final String? name = context.read<ProfileProvider>().currentName;
+      final String? name = provider.currentName;
 
       await PatchMe(name: name).patch();
 
-      context.read<ProfileProvider>().setName(name!);
+      provider.setName(name!);
 
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
-      FocusScope.of(context).unfocus();
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+        FocusScope.of(context).unfocus();
+      }
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  Widget _saveButton(BuildContext context) {
-    final ProfileProvider provider = context.watch<ProfileProvider>();
+  Widget _buildSaveButton() => Builder(
+        builder: (BuildContext context) {
+          final ProfileProvider provider = context.watch<ProfileProvider>();
 
-    if (provider.currentName != null &&
-        provider.currentName!.isNotEmpty &&
-        provider.currentName != provider.me?.name) {
-      return TextButton(
-        onPressed: () async => _onClickSave(context),
-        child: const Text('Enregistrer'),
+          if (provider.currentName != null &&
+              provider.currentName!.isNotEmpty &&
+              provider.currentName != provider.me?.name) {
+            return TextButton(
+              onPressed: () async => _onClickSave(context),
+              child: const Text('Enregistrer'),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       );
-    }
-    return const SizedBox.shrink();
-  }
 
-  TextField _textField(
-    BuildContext context,
-    TextEditingController controller,
-  ) =>
-      TextField(
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-        onTapOutside: (_) => FocusScope.of(context).unfocus(),
-        textCapitalization: TextCapitalization.sentences,
-        controller: controller,
-        decoration: const InputDecoration(
-          hintText: 'Écrire votre nom',
-          prefixIcon: TextFieldIcon(FontAwesomeIcons.solidUser),
+  Widget _buildNameTextField(TextEditingController controller) => Builder(
+        builder: (BuildContext context) => TextField(
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
+          textCapitalization: TextCapitalization.sentences,
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Écrire votre nom',
+            prefixIcon: TextFieldIcon(FontAwesomeIcons.solidUser),
+          ),
         ),
       );
 
@@ -77,8 +81,8 @@ class ProfileName extends HookWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Expanded(child: _textField(context, controller)),
-        _saveButton(context),
+        Expanded(child: _buildNameTextField(controller)),
+        _buildSaveButton(),
       ],
     );
   }

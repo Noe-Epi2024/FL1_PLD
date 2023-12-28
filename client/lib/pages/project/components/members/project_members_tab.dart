@@ -46,7 +46,7 @@ class _ProjecMembersTabBuilder extends HookWidget {
       context: context,
       builder: (_) => ChangeNotifierProvider<ProjectMembersProvider>.value(
         value: context.read<ProjectMembersProvider>(),
-        builder: (__, ___) => AddProjectMemberModal(projectId: projectId),
+        child: AddProjectMemberModal(projectId: projectId),
       ),
     );
   }
@@ -59,12 +59,8 @@ class _ProjecMembersTabBuilder extends HookWidget {
       final ProjectMembersModel members =
           await GetProjectMembers(projectId: projectId).get();
 
-      if (!context.mounted) return;
-
       provider.setSuccessState(members);
     } on ErrorModel catch (e) {
-      if (!context.mounted) return;
-
       provider.setErrorState(e);
     }
   }
@@ -89,32 +85,35 @@ class _ProjecMembersTabBuilder extends HookWidget {
         .toList();
   }
 
-  TextField _searchBar(BuildContext context, TextEditingController controller) {
-    final String filter = context.select<ProjectMembersProvider, String>(
-      (ProjectMembersProvider provider) => provider.filter,
-    );
+  Widget _buildSearchBar(TextEditingController controller) => Builder(
+        builder: (BuildContext context) {
+          final String filter = context.select<ProjectMembersProvider, String>(
+            (ProjectMembersProvider provider) => provider.filter,
+          );
+          return TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'Chercher un membre',
+              prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
+              suffixIcon: filter.isEmpty
+                  ? null
+                  : TextButton(
+                      onPressed: controller.clear,
+                      child: FaIcon(
+                        FontAwesomeIcons.circleXmark,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+            ),
+          );
+        },
+      );
 
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: 'Chercher un membre',
-        prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
-        suffixIcon: filter.isEmpty
-            ? null
-            : TextButton(
-                onPressed: controller.clear,
-                child: FaIcon(
-                  FontAwesomeIcons.circleXmark,
-                  color: Theme.of(context).hintColor,
-                ),
-              ),
-      ),
-    );
-  }
-
-  Widget _floatingActionButton(BuildContext context) => FloatingActionButton(
-        child: const FaIcon(FontAwesomeIcons.plus),
-        onPressed: () async => _onClickAddMember(context),
+  Widget _buildFloatingActionButton() => Builder(
+        builder: (BuildContext context) => FloatingActionButton(
+          child: const FaIcon(FontAwesomeIcons.plus),
+          onPressed: () async => _onClickAddMember(context),
+        ),
       );
 
   @override
@@ -134,7 +133,7 @@ class _ProjecMembersTabBuilder extends HookWidget {
         floatingActionButton: RoleHelper.canManageMembers(
           context.read<ProjectProvider>().project!.role,
         )
-            ? _floatingActionButton(context)
+            ? _buildFloatingActionButton()
             : null,
         body: ListView(
           padding: const EdgeInsets.only(
@@ -146,7 +145,7 @@ class _ProjecMembersTabBuilder extends HookWidget {
           children: <Widget>[
             const TitleText('Membres'),
             8.height,
-            _searchBar(resolverContext, controller),
+            _buildSearchBar(controller),
             8.height,
             ..._membersList(resolverContext),
           ],

@@ -24,12 +24,8 @@ class ProfilePage extends StatelessWidget {
     try {
       final MeModel me = await GetMe().get();
 
-      if (!context.mounted) return;
-
       provider.setSuccessState(me);
     } on ErrorModel catch (e) {
-      if (!context.mounted) return;
-
       provider.setErrorState(e);
     }
   }

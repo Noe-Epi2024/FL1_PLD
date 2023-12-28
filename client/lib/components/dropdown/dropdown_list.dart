@@ -9,40 +9,45 @@ class _DropdownList<T> extends HookWidget {
     context.read<DropdownProvider<T>>().filter = filter;
   }
 
-  Widget _choices(BuildContext context) {
-    final List<DropdownEntry<T>> entries =
-        context.select<DropdownProvider<T>, List<DropdownEntry<T>>>(
-      (DropdownProvider<T> provider) => provider.entries!,
-    );
+  Widget _buildChoices() => Builder(
+        builder: (BuildContext context) {
+          final List<DropdownEntry<T>> entries =
+              context.select<DropdownProvider<T>, List<DropdownEntry<T>>>(
+            (DropdownProvider<T> provider) => provider.entries!,
+          );
 
-    final String? filter = context.select<DropdownProvider<T>, String?>(
-      (DropdownProvider<T> p) => p.filter,
-    );
+          final String? filter = context.select<DropdownProvider<T>, String?>(
+            (DropdownProvider<T> p) => p.filter,
+          );
 
-    final List<_DropdownItem<T>> items = (filter == null
-            ? entries
-            : entries.where(
-                (DropdownEntry<T> entry) =>
-                    entry.key.toLowerCase().contains(filter.toLowerCase()),
-              ))
-        .map(
-          (DropdownEntry<T> entry) => _DropdownItem<T>(
-            entry: entry,
-            onSelect: onSelect,
-          ),
-        )
-        .toList();
+          final List<_DropdownItem<T>> items = (filter == null
+                  ? entries
+                  : entries.where(
+                      (DropdownEntry<T> entry) => entry.key
+                          .toLowerCase()
+                          .contains(filter.toLowerCase()),
+                    ))
+              .map(
+                (DropdownEntry<T> entry) => _DropdownItem<T>(
+                  entry: entry,
+                  onSelect: onSelect,
+                ),
+              )
+              .toList();
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
-      ),
-      child: ListView(children: items),
-    );
-  }
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              border: Border(
+                top: BorderSide(color: Theme.of(context).dividerColor),
+              ),
+            ),
+            child: ListView(children: items),
+          );
+        },
+      );
 
-  Widget _searchBar(TextEditingController controller) => Padding(
+  Widget _buildSearchBar(TextEditingController controller) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: TextField(
           controller: controller,
@@ -70,8 +75,8 @@ class _DropdownList<T> extends HookWidget {
         builder: (BuildContext resolverContext) => Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            _searchBar(controller),
-            Expanded(child: _choices(resolverContext)),
+            _buildSearchBar(controller),
+            Expanded(child: _buildChoices()),
           ],
         ),
       ),

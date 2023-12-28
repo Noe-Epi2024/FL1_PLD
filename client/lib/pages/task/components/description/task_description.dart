@@ -48,23 +48,56 @@ class _TaskDescriptionBuilder extends HookWidget {
   }
 
   Future<void> _onClickSave(BuildContext context) async {
-    try {
-      final String? description =
-          context.read<TaskDescriptionProvider>().currentDescription;
+    final String? description =
+        context.read<TaskDescriptionProvider>().currentDescription;
 
+    final TaskProvider provider = context.read<TaskProvider>();
+
+    try {
       await PatchTask(
         projectId: projectId,
         taskId: taskId,
         description: description,
       ).patch();
 
-      context.read<TaskProvider>().setDescription(description);
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
-      FocusScope.of(context).unfocus();
+      provider.setDescription(description);
+
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+        FocusScope.of(context).unfocus();
+      }
     } on ErrorModel catch (e) {
       e.show();
     }
   }
+
+  Widget _buildDescription(TextEditingController controller) => Builder(
+        builder: (BuildContext context) => TextField(
+          readOnly: !RoleHelper.canEditTask(
+            context.read<ProjectProvider>().project!.role,
+          ),
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
+          textCapitalization: TextCapitalization.sentences,
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Écrire une description',
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+          ),
+          minLines: 1,
+          maxLines: 3,
+        ),
+      );
+
+  Widget _buildSaveButton() => Builder(
+        builder: (BuildContext context) => Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: () async => _onClickSave(context),
+            child: const Text('Enregistrer'),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -86,32 +119,12 @@ class _TaskDescriptionBuilder extends HookWidget {
           'Description',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        TextField(
-          readOnly: !RoleHelper.canEditTask(
-            context.read<ProjectProvider>().project!.role,
-          ),
-          onTapOutside: (_) => FocusScope.of(context).unfocus(),
-          textCapitalization: TextCapitalization.sentences,
-          controller: controller,
-          decoration: const InputDecoration(
-            hintText: 'Écrire une description',
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ),
-          minLines: 1,
-          maxLines: 3,
-        ),
+        _buildDescription(controller),
         if (context.select<TaskDescriptionProvider, String?>(
               (TaskDescriptionProvider provider) => provider.currentDescription,
             ) !=
             context.watch<TaskProvider>().task?.description)
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () async => _onClickSave(context),
-              child: const Text('Enregistrer'),
-            ),
-          ),
+          _buildSaveButton(),
       ],
     );
   }

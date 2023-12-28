@@ -14,55 +14,55 @@ import 'package:provider/provider.dart';
 class ProfileEmail extends HookWidget {
   const ProfileEmail({super.key});
 
-  void _onEmailChanged(
-    BuildContext context,
-    String email,
-  ) {
+  void _onEmailChanged(BuildContext context, String email) {
     context.read<ProfileProvider>().currentEmail = email;
   }
 
   Future<void> _onClickSave(BuildContext context) async {
+    final ProfileProvider provider = context.read<ProfileProvider>();
+
     try {
-      final String? email = context.read<ProfileProvider>().currentEmail;
+      final String? email = provider.currentEmail;
 
       await PatchMe(email: email).patch();
 
-      context.read<ProfileProvider>().setEmail(email!);
+      provider.setEmail(email!);
 
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
-
-      FocusScope.of(context).unfocus();
+      if (context.mounted) {
+        FocusScope.of(context).unfocus();
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+      }
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  Widget _saveButton(BuildContext context) {
-    final ProfileProvider provider = context.watch<ProfileProvider>();
+  Widget _buildSaveButton() => Builder(
+        builder: (BuildContext context) {
+          final ProfileProvider provider = context.watch<ProfileProvider>();
 
-    if (provider.currentEmail != null &&
-        provider.currentEmail!.isNotEmpty &&
-        provider.currentEmail != provider.me?.email) {
-      return TextButton(
-        onPressed: () async => _onClickSave(context),
-        child: const Text('Enregistrer'),
+          if (provider.currentEmail != null &&
+              provider.currentEmail!.isNotEmpty &&
+              provider.currentEmail != provider.me?.email) {
+            return TextButton(
+              onPressed: () async => _onClickSave(context),
+              child: const Text('Enregistrer'),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       );
-    }
-    return const SizedBox.shrink();
-  }
 
-  TextField _textField(
-    BuildContext context,
-    TextEditingController controller,
-  ) =>
-      TextField(
-        style: Theme.of(context).appBarTheme.titleTextStyle,
-        onTapOutside: (_) => FocusScope.of(context).unfocus(),
-        keyboardType: TextInputType.emailAddress,
-        controller: controller,
-        decoration: const InputDecoration(
-          hintText: 'Écrire votre email',
-          prefixIcon: TextFieldIcon(FontAwesomeIcons.solidEnvelope),
+  Widget _buildEmailTextField(TextEditingController controller) => Builder(
+        builder: (BuildContext context) => TextField(
+          style: Theme.of(context).appBarTheme.titleTextStyle,
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
+          keyboardType: TextInputType.emailAddress,
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Écrire votre email',
+            prefixIcon: TextFieldIcon(FontAwesomeIcons.solidEnvelope),
+          ),
         ),
       );
 
@@ -81,8 +81,8 @@ class ProfileEmail extends HookWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Expanded(child: _textField(context, controller)),
-        _saveButton(context),
+        Expanded(child: _buildEmailTextField(controller)),
+        _buildSaveButton(),
       ],
     );
   }

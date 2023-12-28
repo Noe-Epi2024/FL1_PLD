@@ -42,17 +42,21 @@ class _ProjectNameBuilder extends HookWidget {
   }
 
   Future<void> _onClickSave(BuildContext context) async {
-    try {
-      final String name = context.read<ProjectNameProvider>().currentName;
+    final ProjectProvider provider = context.read<ProjectProvider>();
+    final String name = context.read<ProjectNameProvider>().currentName;
 
+    try {
       await PatchProject(
         projectId: projectId,
         name: name,
       ).patch();
 
-      context.read<ProjectProvider>().setName(name);
-      Messenger.showSnackBarQuickInfo('Sauvegardé', context);
-      FocusScope.of(context).unfocus();
+      provider.setName(name);
+
+      if (context.mounted) {
+        Messenger.showSnackBarQuickInfo('Sauvegardé', context);
+        FocusScope.of(context).unfocus();
+      }
     } on ErrorModel catch (e) {
       e.show();
     }

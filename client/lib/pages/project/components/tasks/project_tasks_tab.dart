@@ -21,10 +21,11 @@ class ProjectTasksTab extends HookWidget {
   final String projectId;
 
   Future<void> _onClickCreateTask(BuildContext context) async {
+    final HomeProvider homeProvider = context.read<HomeProvider>();
+    final ProjectProvider projectProvider = context.read<ProjectProvider>();
+
     try {
       final String taskId = await PostTask(projectId: projectId).post();
-
-      if (!context.mounted) return;
 
       final TaskPreviewModel newTaskPreview = TaskPreviewModel(
         id: taskId,
@@ -33,9 +34,7 @@ class ProjectTasksTab extends HookWidget {
         numberOfSubtasks: 0,
       );
 
-      final HomeProvider homeProvider = context.read<HomeProvider>();
-      final ProjectProvider projectProvider = context.read<ProjectProvider>()
-        ..addTaskPreview(newTaskPreview);
+      projectProvider.addTaskPreview(newTaskPreview);
 
       await Navigation.push(
         MultiProvider(
@@ -65,10 +64,11 @@ class ProjectTasksTab extends HookWidget {
         .toList();
   }
 
-  FloatingActionButton _createTaskButton(BuildContext context) =>
-      FloatingActionButton(
-        onPressed: () async => _onClickCreateTask(context),
-        child: const FaIcon(FontAwesomeIcons.plus),
+  Widget _buildCreateTaskButton() => Builder(
+        builder: (BuildContext context) => FloatingActionButton(
+          onPressed: () async => _onClickCreateTask(context),
+          child: const FaIcon(FontAwesomeIcons.plus),
+        ),
       );
 
   @override
@@ -79,7 +79,7 @@ class ProjectTasksTab extends HookWidget {
         RoleHelper.canCreateTask(context.read<ProjectProvider>().project!.role);
 
     return Scaffold(
-      floatingActionButton: canCreateTask ? _createTaskButton(context) : null,
+      floatingActionButton: canCreateTask ? _buildCreateTaskButton() : null,
       body: ListView(
         padding:
             const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 128),

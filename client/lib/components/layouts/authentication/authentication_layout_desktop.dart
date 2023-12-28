@@ -15,39 +15,43 @@ class AuthenticationLayoutDesktop extends StatelessWidget {
 
   @protected
   Widget _buildRegisterButton() => ElevatedButton(
-        onPressed: () async => Navigation.push(RegisterPage()),
+        onPressed: () async =>
+            Navigation.push(const RegisterPage(), replaceOne: true),
         child: const Text('Inscription'),
       );
 
   @protected
   Widget _buildLoginButton() => TextButton(
-        onPressed: () async => Navigation.push(const LoginPage()),
+        onPressed: () async =>
+            Navigation.push(const LoginPage(), replaceOne: true),
         child: const Text('Connexion'),
       );
 
-  Widget _buildHeader(BuildContext context) => Container(
-        height: kHeaderHeight,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          border: Border(
-            bottom: BorderSide(color: Theme.of(context).dividerTheme.color!),
+  Widget _buildHeader() => Builder(
+        builder: (BuildContext context) => Container(
+          height: kHeaderHeight,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            border: Border(
+              bottom: BorderSide(color: Theme.of(context).dividerTheme.color!),
+            ),
           ),
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              DecorationGenerator.logo(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  _buildRegisterButton(),
-                  16.width,
-                  _buildLoginButton(),
-                ],
-              ),
-            ],
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                DecorationGenerator.logo(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    _buildRegisterButton(),
+                    16.width,
+                    _buildLoginButton(),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -64,7 +68,7 @@ class AuthenticationLayoutDesktop extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListView(
         children: <Widget>[
-          _buildHeader(context),
+          _buildHeader(),
           ConstrainedBox(
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height - kHeaderHeight,
