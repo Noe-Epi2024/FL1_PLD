@@ -24,7 +24,7 @@ class ProfileName extends HookWidget {
     try {
       final String? name = provider.currentName;
 
-      await PatchMe(name: name).patch();
+      await PatchMe(name: name).send();
 
       provider.setName(name!);
 

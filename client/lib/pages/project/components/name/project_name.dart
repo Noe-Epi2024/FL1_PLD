@@ -49,7 +49,7 @@ class _ProjectNameBuilder extends HookWidget {
       await PatchProject(
         projectId: projectId,
         name: name,
-      ).patch();
+      ).send();
 
       provider.setName(name);
 

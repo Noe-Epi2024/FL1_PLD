@@ -26,7 +26,7 @@ class ProjectMembersDropdown extends StatelessWidget {
   Future<List<DropdownEntry<ProjectMemberModel>>> _getMembers() async {
     try {
       final ProjectMembersModel members =
-          await GetProjectMembers(projectId: projectId).get();
+          await GetProjectMembers(projectId: projectId).send();
 
       return members.members
           .map(
@@ -52,7 +52,7 @@ class ProjectMembersDropdown extends StatelessWidget {
         projectId: projectId,
         taskId: taskId,
         ownerId: member.userId,
-      ).patch();
+      ).send();
 
       provider.setTaskOwner(taskId: taskId, name: member.name);
 

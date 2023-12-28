@@ -22,7 +22,7 @@ class ProfilePage extends StatelessWidget {
     final ProfileProvider provider = context.read<ProfileProvider>();
 
     try {
-      final MeModel me = await GetMe().get();
+      final MeModel me = await GetMe().send();
 
       provider.setSuccessState(me);
     } on ErrorModel catch (e) {

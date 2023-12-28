@@ -46,7 +46,7 @@ class _ProjectPageBuilder extends StatelessWidget {
     final HomeProvider provider = context.read<HomeProvider>();
 
     try {
-      await QuitProject(projectId: projectId).delete();
+      await QuitProject(projectId: projectId).send();
 
       provider.removeProject(projectId);
 
@@ -67,7 +67,7 @@ class _ProjectPageBuilder extends StatelessWidget {
     final HomeProvider provider = context.read<HomeProvider>();
 
     try {
-      await DeleteProject(projectId: projectId).delete();
+      await DeleteProject(projectId: projectId).send();
 
       provider.removeProject(projectId);
 
@@ -81,7 +81,8 @@ class _ProjectPageBuilder extends StatelessWidget {
     final ProjectProvider provider = context.read<ProjectProvider>();
 
     try {
-      final ProjectModel project = await GetProject(projectId: projectId).get();
+      final ProjectModel project =
+          await GetProject(projectId: projectId).send();
 
       provider.setSuccessState(project);
     } on ErrorModel catch (e) {

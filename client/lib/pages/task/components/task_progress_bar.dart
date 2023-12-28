@@ -32,6 +32,7 @@ class TaskProgressBar extends HookWidget {
       children: <Widget>[
         Expanded(
           child: LinearProgressIndicator(
+            backgroundColor: Theme.of(context).colorScheme.background,
             minHeight: 20,
             value: value,
             borderRadius: BorderRadius.circular(16),

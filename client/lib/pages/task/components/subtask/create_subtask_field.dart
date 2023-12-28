@@ -51,7 +51,7 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
         projectId: projectId,
         taskId: taskId,
         name: subtaskProvider.currentName!,
-      ).post();
+      ).send();
 
       final SubtaskModel subtask =
           SubtaskModel(id: subtaskId, name: subtaskProvider.currentName!);

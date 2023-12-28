@@ -5,7 +5,8 @@ import 'package:hyper_tools/http/http.dart';
 import 'package:hyper_tools/http/requests/http_request.dart';
 
 abstract class PostRequest<T> extends HttpRequest<T> {
-  Future<T> post() => Http.post(uri, body, builder, private: private);
+  @override
+  Future<T> send() => Http.post(uri, body, builder, private: private);
 
   @protected
   Map<String, dynamic> get body;

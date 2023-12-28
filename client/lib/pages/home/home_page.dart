@@ -34,7 +34,7 @@ class _HomePageBuilder extends HookWidget {
     final HomeProvider provider = context.read<HomeProvider>();
 
     try {
-      final ProjectsModel projects = await GetProjects().get();
+      final ProjectsModel projects = await GetProjects().send();
 
       provider.setSuccessState(projects);
     } on ErrorModel catch (e) {
@@ -98,6 +98,7 @@ class _HomePageBuilder extends HookWidget {
 
   FloatingActionButton _floatingActionButton(BuildContext context) =>
       FloatingActionButton(
+        heroTag: 'create_project',
         onPressed: () async => _onClickCreateProject(context),
         child: const FaIcon(FontAwesomeIcons.plus),
       );

@@ -58,7 +58,7 @@ class _TaskDescriptionBuilder extends HookWidget {
         projectId: projectId,
         taskId: taskId,
         description: description,
-      ).patch();
+      ).send();
 
       provider.setDescription(description);
 

@@ -6,6 +6,7 @@ abstract class MultipartRequest<T> extends HttpRequest<T> {
 
   final String filePath;
 
+  @override
   Future<T> send() =>
       Http.multipart('POST', uri, filePath, builder, private: private);
 }

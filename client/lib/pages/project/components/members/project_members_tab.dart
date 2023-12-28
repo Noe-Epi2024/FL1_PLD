@@ -57,7 +57,7 @@ class _ProjecMembersTabBuilder extends HookWidget {
 
     try {
       final ProjectMembersModel members =
-          await GetProjectMembers(projectId: projectId).get();
+          await GetProjectMembers(projectId: projectId).send();
 
       provider.setSuccessState(members);
     } on ErrorModel catch (e) {
@@ -111,6 +111,7 @@ class _ProjecMembersTabBuilder extends HookWidget {
 
   Widget _buildFloatingActionButton() => Builder(
         builder: (BuildContext context) => FloatingActionButton(
+          heroTag: 'add_member',
           child: const FaIcon(FontAwesomeIcons.plus),
           onPressed: () async => _onClickAddMember(context),
         ),

@@ -25,7 +25,7 @@ class ProjectTasksTab extends HookWidget {
     final ProjectProvider projectProvider = context.read<ProjectProvider>();
 
     try {
-      final String taskId = await PostTask(projectId: projectId).post();
+      final String taskId = await PostTask(projectId: projectId).send();
 
       final TaskPreviewModel newTaskPreview = TaskPreviewModel(
         id: taskId,
@@ -66,6 +66,7 @@ class ProjectTasksTab extends HookWidget {
 
   Widget _buildCreateTaskButton() => Builder(
         builder: (BuildContext context) => FloatingActionButton(
+          heroTag: 'create_task',
           onPressed: () async => _onClickCreateTask(context),
           child: const FaIcon(FontAwesomeIcons.plus),
         ),

@@ -22,7 +22,7 @@ class ProfilePicture extends StatelessWidget {
         context.read<ProfilePictureProvider>();
 
     try {
-      final PictureModel picture = await GetPicture().get();
+      final PictureModel picture = await GetPicture().send();
 
       provider.setSuccessState(picture);
     } on ErrorModel catch (e) {

@@ -40,7 +40,7 @@ class _AddProjectMemberModalBuilder extends HookWidget {
     try {
       final UsersModel users =
           await GetUsers(excludeProjectId: projectId, filter: provider.filter)
-              .get();
+              .send();
 
       provider.setSuccessState(users);
     } on ErrorModel catch (e) {

@@ -44,7 +44,7 @@ class TaskPreview extends StatelessWidget {
     final ProjectProvider provider = context.read<ProjectProvider>();
 
     try {
-      await DeleteTask(projectId: projectId, taskId: taskId).delete();
+      await DeleteTask(projectId: projectId, taskId: taskId).send();
 
       provider.deleteTaskPreview(taskId);
 

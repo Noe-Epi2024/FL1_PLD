@@ -21,7 +21,7 @@ class _LoginPageForm extends HookWidget {
       final AuthenticationModel authenticationModel = await PostLogin(
         email: provider.email,
         password: provider.password,
-      ).post();
+      ).send();
 
       Http.accessToken = authenticationModel.accessToken;
 

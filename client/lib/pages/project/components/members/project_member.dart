@@ -29,8 +29,7 @@ class ProjectMember extends StatelessWidget {
         context.read<ProjectMembersProvider>();
 
     try {
-      await DeleteProjectMember(projectId: projectId, userId: memberId)
-          .delete();
+      await DeleteProjectMember(projectId: projectId, userId: memberId).send();
 
       provider.deleteMember(memberId);
 
@@ -49,7 +48,7 @@ class ProjectMember extends StatelessWidget {
         projectId: projectId,
         userId: memberId,
         userRole: role,
-      ).patch();
+      ).send();
 
       if (context.mounted) {
         Messenger.showSnackBarQuickInfo('Rôle modifié', context);

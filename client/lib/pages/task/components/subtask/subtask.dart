@@ -58,7 +58,7 @@ class _SubtaskBuilder extends HookWidget {
         projectId: projectId,
         taskId: taskId,
         subtaskId: subtaskId,
-      ).delete();
+      ).send();
 
       provider.deleteSubtask(subtaskId: subtaskId);
 
@@ -81,7 +81,7 @@ class _SubtaskBuilder extends HookWidget {
         taskId: taskId,
         subtaskId: subtaskId,
         isDone: value,
-      ).patch();
+      ).send();
 
       provider.setSubtaskIsDone(subtaskId: subtaskId, value: value);
 
@@ -103,7 +103,7 @@ class _SubtaskBuilder extends HookWidget {
         taskId: taskId,
         subtaskId: subtaskId,
         name: name,
-      ).patch();
+      ).send();
 
       provider.setSubtaskName(subtaskId: subtaskId, value: name);
 

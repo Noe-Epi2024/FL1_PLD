@@ -9,4 +9,7 @@ abstract class HttpRequest<T> {
 
   @protected
   T builder(Map<String, dynamic> json);
+
+  @protected
+  Future<T> send();
 }

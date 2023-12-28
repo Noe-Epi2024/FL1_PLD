@@ -25,7 +25,7 @@ class _RegisterForm extends HookWidget {
       final AuthenticationModel authenticationModel = await PostRegister(
         email: provider.email,
         password: provider.password,
-      ).post();
+      ).send();
 
       Http.accessToken = authenticationModel.accessToken;
 

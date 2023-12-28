@@ -22,7 +22,7 @@ class CreateProjectDialog extends HookWidget {
     final HomeProvider provider = context.read<HomeProvider>();
 
     try {
-      final String id = await PostProject(name: controller.text).post();
+      final String id = await PostProject(name: controller.text).send();
 
       final ProjectPreviewModel projectPreview = ProjectPreviewModel(
         id: id,

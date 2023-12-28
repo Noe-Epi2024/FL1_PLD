@@ -45,7 +45,7 @@ class _TaskPageBuilder extends StatelessWidget {
 
     try {
       final TaskModel task =
-          await GetTask(projectId: projectId, taskId: taskId).get();
+          await GetTask(projectId: projectId, taskId: taskId).send();
 
       provider.setSuccessState(task);
     } on ErrorModel catch (e) {

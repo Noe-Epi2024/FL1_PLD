@@ -56,7 +56,7 @@ class _TaskNameBuilder extends HookWidget {
         projectId: projectId,
         taskId: taskId,
         name: provider.currentName,
-      ).patch();
+      ).send();
 
       taskProvider.setName(provider.currentName);
 

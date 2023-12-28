@@ -23,7 +23,7 @@ class TaskStartDate extends StatelessWidget {
 
     try {
       await PatchTask(projectId: projectId, taskId: taskId, startDate: date)
-          .patch();
+          .send();
 
       provider.setStartDate(date);
 

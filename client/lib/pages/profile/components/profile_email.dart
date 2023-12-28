@@ -24,7 +24,7 @@ class ProfileEmail extends HookWidget {
     try {
       final String? email = provider.currentEmail;
 
-      await PatchMe(email: email).patch();
+      await PatchMe(email: email).send();
 
       provider.setEmail(email!);
 

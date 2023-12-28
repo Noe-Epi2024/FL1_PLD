@@ -1,5 +1,5 @@
 import 'package:hyper_tools/helpers/route_helper.dart';
-import 'package:hyper_tools/http/requests/Patch_request.dart';
+import 'package:hyper_tools/http/requests/patch_request.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
 
 class PatchProjectMember extends PatchRequest<void> {

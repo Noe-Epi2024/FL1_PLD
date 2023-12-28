@@ -31,7 +31,7 @@ class AddProjectMemberModalEntry extends StatelessWidget {
         userRole: ProjectRole.reader,
         projectId: projectId,
         userId: user.id,
-      ).post();
+      ).send();
 
       final ProjectMemberModel member = ProjectMemberModel(
         name: user.name,

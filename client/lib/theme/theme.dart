@@ -37,7 +37,7 @@ class ThemeGenerator {
       );
 
   static ColorScheme get _colorScheme => ColorScheme(
-        background: const Color(0xFFF8F8F8),
+        background: const Color.fromARGB(255, 245, 245, 245),
         // background: Colors.white,
         onBackground: Colors.black,
         primary: _monochromaticColor.shade500,

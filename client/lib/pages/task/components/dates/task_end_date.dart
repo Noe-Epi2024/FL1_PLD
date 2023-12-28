@@ -23,7 +23,7 @@ class TaskEndDate extends StatelessWidget {
 
     try {
       await PatchTask(projectId: projectId, taskId: taskId, endDate: date)
-          .patch();
+          .send();
 
       provider.setEndDate(date);
 
