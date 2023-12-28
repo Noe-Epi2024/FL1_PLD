@@ -36,9 +36,13 @@ class _HomePageBuilder extends HookWidget {
     try {
       final ProjectsModel projects = await GetProjects().get();
 
-      if (context.mounted) provider.setSuccessState(projects);
+      if (!context.mounted) return;
+
+      provider.setSuccessState(projects);
     } on ErrorModel catch (e) {
-      if (context.mounted) provider.setErrorState(e);
+      if (!context.mounted) return;
+
+      provider.setErrorState(e);
     }
   }
 

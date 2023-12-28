@@ -22,6 +22,8 @@ class CreateProjectDialog extends HookWidget {
     try {
       final String id = await PostProject(name: controller.text).post();
 
+      if (!context.mounted) return;
+
       final ProjectPreviewModel projectPreview = ProjectPreviewModel(
         id: id,
         membersCount: 1,
@@ -29,9 +31,7 @@ class CreateProjectDialog extends HookWidget {
         role: ProjectRole.owner,
       );
 
-      if (context.mounted) {
-        context.read<HomeProvider>().addProject(projectPreview);
-      }
+      context.read<HomeProvider>().addProject(projectPreview);
     } on ErrorModel catch (e) {
       e.show();
     } finally {
