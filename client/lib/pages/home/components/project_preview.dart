@@ -22,13 +22,13 @@ class ProjectPreview extends StatelessWidget {
     );
   }
 
-  Widget _roleIcon(BuildContext context) => FaIcon(
+  Widget _buildRoleIcon(BuildContext context) => FaIcon(
         projectPreview.role.icon,
         size: 14,
         color: Theme.of(context).hintColor,
       );
 
-  Widget _picture(BuildContext context) => Container(
+  Widget _buildPicture(BuildContext context) => Container(
         height: 40,
         width: 40,
         decoration: BoxDecoration(
@@ -47,19 +47,19 @@ class ProjectPreview extends StatelessWidget {
         ),
       );
 
-  Widget _members(BuildContext context) => Text(
+  Widget _buildMembers(BuildContext context) => Text(
         '${projectPreview.membersCount} membre${projectPreview.membersCount > 1 ? "s" : ""}',
         style: TextStyle(color: Theme.of(context).hintColor),
       );
 
-  Widget _name() => Text(
+  Widget _buildName() => Text(
         projectPreview.name,
         style: const TextStyle(fontWeight: FontWeight.bold),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
 
-  Widget _progressBar(BuildContext context) => Row(
+  Widget _buildProgressBar(BuildContext context) => Row(
         children: <Widget>[
           Expanded(
             child: LinearProgressIndicator(
@@ -78,7 +78,7 @@ class ProjectPreview extends StatelessWidget {
         ],
       );
 
-  Widget _noTaskYet() => const Text('Pas encore de tâche');
+  Widget _buildNoTaskYet() => const Text('Pas encore de tâche');
 
   @override
   Widget build(BuildContext context) => Card(
@@ -95,19 +95,19 @@ class ProjectPreview extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _picture(context),
+                      _buildPicture(context),
                       16.width,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            _name(),
-                            _members(context),
+                            _buildName(),
+                            _buildMembers(context),
                             8.height,
                             if (projectPreview.progress != null)
-                              _progressBar(context)
+                              _buildProgressBar(context)
                             else
-                              _noTaskYet(),
+                              _buildNoTaskYet(),
                           ],
                         ),
                       ),
@@ -115,7 +115,7 @@ class ProjectPreview extends StatelessWidget {
                   ),
                 ),
                 16.width,
-                _roleIcon(context),
+                _buildRoleIcon(context),
               ],
             ),
           ),

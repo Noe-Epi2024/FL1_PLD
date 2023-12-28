@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/prefix_icon.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
@@ -53,15 +52,20 @@ class _ProjecMembersTabBuilder extends HookWidget {
   }
 
   Future<void> _loadMembers(BuildContext context) async {
+    final ProjectMembersProvider provider =
+        context.read<ProjectMembersProvider>();
+
     try {
       final ProjectMembersModel members =
           await GetProjectMembers(projectId: projectId).get();
 
-      context.read<ProjectMembersProvider>()
-        ..members = members
-        ..isLoading = false;
+      if (!context.mounted) return;
+
+      provider.setSuccessState(members);
     } on ErrorModel catch (e) {
-      context.read<ProjectMembersProvider>().setErrorState(e);
+      if (!context.mounted) return;
+
+      provider.setErrorState(e);
     }
   }
 
@@ -121,6 +125,7 @@ class _ProjecMembersTabBuilder extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onSearchChanged(context, value)),
+      <Object?>[],
     );
 
     return ProviderResolver<ProjectMembersProvider>.future(

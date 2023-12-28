@@ -1,4 +1,4 @@
-import 'package:hyper_tools/components/future_widget/provider_base.dart';
+import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/user/user_model.dart';
 import 'package:hyper_tools/models/user/users_model.dart';
 

@@ -12,8 +12,8 @@ import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:hyper_tools/pages/project/components/tasks/project_task_preview.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/task_page.dart';
-import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 class ProjectTasksTab extends HookWidget {
   const ProjectTasksTab({required this.projectId, super.key});
@@ -23,6 +23,8 @@ class ProjectTasksTab extends HookWidget {
   Future<void> _onClickCreateTask(BuildContext context) async {
     try {
       final String taskId = await PostTask(projectId: projectId).post();
+
+      if (!context.mounted) return;
 
       final TaskPreviewModel newTaskPreview = TaskPreviewModel(
         id: taskId,

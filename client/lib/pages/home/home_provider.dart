@@ -1,4 +1,4 @@
-import 'package:hyper_tools/components/future_widget/provider_base.dart';
+import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/project/project_preview_model.dart';
 import 'package:hyper_tools/models/projects/projects_model.dart';
 
@@ -77,6 +77,13 @@ class HomeProvider extends ProviderBase {
     if (_projects == null) return;
 
     findProjectPreview(projectId)!.membersCount = membersCount;
+
+    notifyListeners();
+  }
+
+  void setSuccessState(ProjectsModel value) {
+    _projects = value;
+    isLoading_ = false;
 
     notifyListeners();
   }

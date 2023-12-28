@@ -76,6 +76,7 @@ class _TaskDescriptionBuilder extends HookWidget {
       controller.onValueChanged(
         (String value) => _onDescriptionChanged(context, value),
       ),
+      <Object?>[],
     );
 
     return Column(

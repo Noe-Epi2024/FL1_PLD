@@ -1,23 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/consts/consts.dart';
 import 'package:hyper_tools/global/navigation.dart';
+import 'package:hyper_tools/helpers/local_storage_helper.dart';
 import 'package:hyper_tools/http/http.dart';
-import 'package:hyper_tools/local_storage/local_storage.dart';
 import 'package:hyper_tools/pages/home/home_page.dart';
 import 'package:hyper_tools/pages/landing/landing_page.dart';
 
-class DispatcherPage extends StatefulWidget {
+class DispatcherPage extends HookWidget {
   const DispatcherPage({super.key});
 
-  @override
-  State<DispatcherPage> createState() => _DispatcherPageState();
-}
-
-class _DispatcherPageState extends State<DispatcherPage> {
   Future<void> _dispatch() async {
-    final String? accessToken = await LocalStorage.read(Consts.accessTokenKey);
+    final String? accessToken =
+        await LocalStorageHelper.read(Consts.accessTokenKey);
 
     if (accessToken != null) {
       Http.accessToken = accessToken;
@@ -28,17 +25,18 @@ class _DispatcherPageState extends State<DispatcherPage> {
   }
 
   @override
-  void initState() {
-    unawaited(_dispatch());
-    super.initState();
-  }
+  Widget build(BuildContext context) {
+    useEffect(() {
+      unawaited(_dispatch());
+      return null;
+    });
 
-  @override
-  Widget build(BuildContext context) => const Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+    return const Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
-      );
+      ),
+    );
+  }
 }

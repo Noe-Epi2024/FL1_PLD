@@ -9,10 +9,10 @@ import 'package:hyper_tools/consts/consts.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/global/navigation.dart';
+import 'package:hyper_tools/helpers/local_storage_helper.dart';
 import 'package:hyper_tools/helpers/validator_helpers.dart';
 import 'package:hyper_tools/http/http.dart';
 import 'package:hyper_tools/http/requests/authentication/post_register.dart';
-import 'package:hyper_tools/local_storage/local_storage.dart';
 import 'package:hyper_tools/models/authentication/authentication_model.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/pages/home/home_page.dart';
@@ -34,7 +34,8 @@ class RegisterPage extends StatelessWidget {
   Future<void> _onClickSubmit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
-    context.read<RegisterProvider>().isLoading = true;
+    final RegisterProvider provider = context.read<RegisterProvider>()
+      ..isLoading = true;
 
     try {
       final AuthenticationModel authenticationModel = await PostRegister(
@@ -42,10 +43,12 @@ class RegisterPage extends StatelessWidget {
         password: _passwordController.text,
       ).post();
 
+      if (!context.mounted) return;
+
       Http.accessToken = authenticationModel.accessToken;
 
-      if (context.read<RegisterProvider>().shouldStayLoggedIn) {
-        await LocalStorage.write(
+      if (provider.shouldStayLoggedIn) {
+        await LocalStorageHelper.write(
           Consts.accessTokenKey,
           authenticationModel.accessToken,
         );
@@ -56,7 +59,7 @@ class RegisterPage extends StatelessWidget {
       Messenger.showSnackBarError(e.errorMessage);
     } catch (_) {
     } finally {
-      context.read<RegisterProvider>().isLoading = false;
+      provider.isLoading = false;
     }
   }
 
@@ -68,7 +71,7 @@ class RegisterPage extends StatelessWidget {
           hintText: 'Entrez votre adresse email',
           prefixIcon: TextFieldIcon(FontAwesomeIcons.solidUser),
         ),
-        validator: (String? value) => ValidatorHelper.isNullOrEmptyValidator(
+        validator: (String? value) => ValidatorHelper.isNullOrEmpty(
           value,
           'Veuillez entrer votre adresse email',
         ),
@@ -82,11 +85,11 @@ class RegisterPage extends StatelessWidget {
         controller: _confirmPasswordController,
         hint: 'Confirmez votre mot de passe',
         validator: (String? value) =>
-            ValidatorHelper.isNullOrEmptyValidator(
+            ValidatorHelper.isNullOrEmpty(
               value,
               'Veuillez confirmer votre mot de passe',
             ) ??
-            ValidatorHelper.matchValidator(
+            ValidatorHelper.match(
               value,
               _passwordController.text,
               'Le mot de passe ne correspond pas',
@@ -116,7 +119,8 @@ class RegisterPage extends StatelessWidget {
 
   @protected
   Widget get connect => TextButton(
-        onPressed: () async => Navigation.push(LoginPage(), replaceOne: true),
+        onPressed: () async =>
+            Navigation.push(const LoginPage(), replaceOne: true),
         child: const Text('Se connecter'),
       );
 

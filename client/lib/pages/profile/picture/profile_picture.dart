@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/shimmer_placeholder.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/http/requests/picture/get_picture.dart';
@@ -24,8 +24,12 @@ class ProfilePicture extends StatelessWidget {
     try {
       final PictureModel picture = await GetPicture().get();
 
+      if (!context.mounted) return;
+
       provider.setSuccessState(picture);
     } on ErrorModel catch (e) {
+      if (!context.mounted) return;
+
       provider.setErrorState(e);
     }
   }

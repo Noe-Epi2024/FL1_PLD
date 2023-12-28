@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/prefix_icon.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
@@ -43,8 +42,12 @@ class _AddProjectMemberModalBuilder extends HookWidget {
           await GetUsers(excludeProjectId: projectId, filter: provider.filter)
               .get();
 
+      if (!context.mounted) return;
+
       provider.setSuccessState(users);
     } on ErrorModel catch (e) {
+      if (!context.mounted) return;
+
       provider.setErrorState(e);
     }
   }
@@ -110,6 +113,7 @@ class _AddProjectMemberModalBuilder extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onSearchChanged(context, value)),
+      <Object?>[],
     );
 
     return Dialog(

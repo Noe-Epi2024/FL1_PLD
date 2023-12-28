@@ -67,6 +67,7 @@ class _ProjectNameBuilder extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onNameChanged(context, value)),
+      <Object?>[],
     );
 
     return Row(

@@ -20,7 +20,7 @@ class AddProjectMemberModalEntry extends StatelessWidget {
   final String projectId;
   final UserModel user;
 
-  Future<void> _onClickAdd(void Function(ProjectMemberModel) onAdded) async {
+  Future<void> _onClickAdd(BuildContext context) async {
     try {
       await PostProjectMember(
         userRole: ProjectRole.reader,
@@ -28,31 +28,25 @@ class AddProjectMemberModalEntry extends StatelessWidget {
         userId: user.id,
       ).post();
 
+      if (!context.mounted) return;
+
       final ProjectMemberModel member = ProjectMemberModel(
         name: user.name,
         role: ProjectRole.reader,
         userId: user.id,
       );
 
-      onAdded(member);
+      context.read<ProjectMembersProvider>().addMember(member);
+      context.read<AddProjectMemberModalProvider>().deleteUser(user.id);
+
+      Messenger.showSnackBarQuickInfo('Ajouté', context);
     } on ErrorModel catch (e) {
       e.show();
     }
   }
 
-  void _onAdded(BuildContext context, ProjectMemberModel member) {
-    if (!context.mounted) return;
-
-    context.read<ProjectMembersProvider>().addMember(member);
-    context.read<AddProjectMemberModalProvider>().deleteUser(user.id);
-
-    Messenger.showSnackBarQuickInfo('Ajouté', context);
-  }
-
   TextButton _buildAddButton(BuildContext context) => TextButton(
-        onPressed: () async => _onClickAdd(
-          (ProjectMemberModel member) => _onAdded(context, member),
-        ),
+        onPressed: () async => _onClickAdd(context),
         child: const Text('Ajouter'),
       );
 

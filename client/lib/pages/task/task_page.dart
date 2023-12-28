@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/evenly_sized_children.dart';
-import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
-import 'package:hyper_tools/components/progress_bar.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
@@ -18,6 +17,7 @@ import 'package:hyper_tools/pages/task/components/name/task_name.dart';
 import 'package:hyper_tools/pages/task/components/subtask/create_subtask_field.dart';
 import 'package:hyper_tools/pages/task/components/subtask/subtask.dart';
 import 'package:hyper_tools/pages/task/components/task_page_loader.dart';
+import 'package:hyper_tools/pages/task/components/task_progress_bar.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -47,10 +47,12 @@ class _TaskPageBuilder extends StatelessWidget {
       final TaskModel task =
           await GetTask(projectId: projectId, taskId: taskId).get();
 
-      provider
-        ..task = task
-        ..isLoading = false;
+      if (!context.mounted) return;
+
+      provider.setSuccessState(task);
     } on ErrorModel catch (e) {
+      if (!context.mounted) return;
+
       provider.setErrorState(e);
     }
   }

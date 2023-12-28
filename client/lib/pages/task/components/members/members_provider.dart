@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/future_widget/provider_base.dart';
+import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/project/member/project_member_model.dart';
 import 'package:hyper_tools/models/project/member/project_members_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
@@ -19,6 +19,7 @@ class ProjectMembersProvider extends ProviderBase {
 
   set members(ProjectMembersModel? value) {
     _members = value;
+
     notifyListeners();
   }
 
@@ -28,6 +29,7 @@ class ProjectMembersProvider extends ProviderBase {
 
   set filter(String value) {
     _filter = value;
+
     notifyListeners();
   }
 
@@ -55,6 +57,7 @@ class ProjectMembersProvider extends ProviderBase {
 
   void setMemberRole(String memberId, ProjectRole role) {
     findMember(memberId).role = role;
+
     notifyListeners();
   }
 
@@ -65,5 +68,12 @@ class ProjectMembersProvider extends ProviderBase {
           projectId: projectId,
           membersCount: members!.members.length,
         );
+  }
+
+  void setSuccessState(ProjectMembersModel value) {
+    _members = value;
+    isLoading_ = false;
+
+    notifyListeners();
   }
 }

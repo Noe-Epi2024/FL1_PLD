@@ -29,6 +29,8 @@ class ProjectMember extends StatelessWidget {
       await DeleteProjectMember(projectId: projectId, userId: memberId)
           .delete();
 
+      if (!context.mounted) return;
+
       Messenger.showSnackBarQuickInfo('Supprimé', context);
 
       context.read<ProjectMembersProvider>().deleteMember(memberId);

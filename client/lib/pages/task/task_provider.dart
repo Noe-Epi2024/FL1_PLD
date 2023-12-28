@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/future_widget/provider_base.dart';
+import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
@@ -120,5 +120,11 @@ class TaskProvider extends ProviderBase {
             task!.substasks!.length *
             100)
         .ceil();
+  }
+
+  void setSuccessState(TaskModel value) {
+    _task = value;
+    isLoading_ = false;
+    notifyListeners();
   }
 }

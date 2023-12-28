@@ -75,6 +75,7 @@ class ProfileEmail extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onEmailChanged(context, value)),
+      <Object?>[],
     );
 
     return Row(

@@ -71,6 +71,7 @@ class ProfileName extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onNameChanged(context, value)),
+      <Object?>[],
     );
 
     return Row(

@@ -1,11 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/layouts/authentication/authentication_layout.dart';
-import 'package:hyper_tools/components/layouts/authentication/authentication_layout_mobile.dart';
-import 'package:hyper_tools/extensions/num_extension.dart';
-import 'package:hyper_tools/pages/landing/landing_page.dart';
+part of 'landing_page.dart';
 
-class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
-  const LandingPageMobile({super.key});
+class _LandingPageMobile extends LandingPage {
+  const _LandingPageMobile();
+
+  @protected
+  Widget _buildRegisterButton() => ElevatedButton(
+        onPressed: () async => Navigation.push(RegisterPage()),
+        child: const Text('Inscription'),
+      );
+
+  @protected
+  Widget _buildLoginButton() => TextButton(
+        onPressed: () async => Navigation.push(const LoginPage()),
+        child: const Text('Connexion'),
+      );
+
+  Widget _buildTextTitle(BuildContext context, {TextStyle? style}) => Text(
+        'Bienvenue dans une nouvelle ère de collaboration et de réussite professionnelle.',
+        style: style ?? Theme.of(context).textTheme.displaySmall,
+      );
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -15,14 +28,14 @@ class LandingPageMobile extends LandingPage with AuthenticationLayoutKit {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                textTitle(
+                _buildTextTitle(
                   context,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 64.height,
-                SizedBox(height: 56, child: registerButton),
+                SizedBox(height: 56, child: _buildRegisterButton()),
                 8.height,
-                connectionButton,
+                _buildLoginButton(),
               ],
             ),
           ),

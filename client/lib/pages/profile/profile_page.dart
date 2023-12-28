@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/consts/consts.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
+import 'package:hyper_tools/helpers/local_storage_helper.dart';
 import 'package:hyper_tools/http/requests/user/get_me.dart';
-import 'package:hyper_tools/local_storage/local_storage.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/user/me_model.dart';
 import 'package:hyper_tools/pages/landing/landing_page.dart';
@@ -24,18 +24,22 @@ class ProfilePage extends StatelessWidget {
     try {
       final MeModel me = await GetMe().get();
 
+      if (!context.mounted) return;
+
       provider.setSuccessState(me);
     } on ErrorModel catch (e) {
+      if (!context.mounted) return;
+
       provider.setErrorState(e);
     }
   }
 
   Future<void> _onPressLogout() async {
-    await LocalStorage.clear(Consts.accessTokenKey);
+    await LocalStorageHelper.clear(Consts.accessTokenKey);
     await Navigation.push(const LandingPage(), replaceAll: true);
   }
 
-  Align _logoutButton() => Align(
+  Align _buildLogoutButton() => Align(
         child: TextButton(
           style: const ButtonStyle(
             foregroundColor: MaterialStatePropertyAll<Color>(Colors.red),
@@ -45,7 +49,7 @@ class ProfilePage extends StatelessWidget {
         ),
       );
 
-  Center _profilePicture() => Center(
+  Center _buildProfilePicture() => Center(
         child: SizedBox(
           height: 96,
           width: 96,
@@ -57,7 +61,7 @@ class ProfilePage extends StatelessWidget {
         padding:
             const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 128),
         children: <Widget>[
-          _profilePicture(),
+          _buildProfilePicture(),
           const TitleText('Nom'),
           8.height,
           const ProfileName(),
@@ -66,7 +70,7 @@ class ProfilePage extends StatelessWidget {
           8.height,
           const ProfileEmail(),
           64.height,
-          _logoutButton(),
+          _buildLogoutButton(),
         ],
       );
 

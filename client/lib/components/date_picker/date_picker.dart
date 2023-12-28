@@ -59,7 +59,8 @@ class _DatePickerBuilder extends StatelessWidget {
         await onSelected(newDate)) provider.date = newDate;
   }
 
-  Widget _button(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     final DateTime? selectedDate =
         context.select<DatePickerProvider, DateTime?>(
       (DatePickerProvider provider) => provider.date,
@@ -86,7 +87,4 @@ class _DatePickerBuilder extends StatelessWidget {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) => _button(context);
 }

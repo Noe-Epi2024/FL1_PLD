@@ -1,5 +1,5 @@
 import 'package:hyper_tools/components/dropdown/dropdown_entry.dart';
-import 'package:hyper_tools/components/future_widget/provider_base.dart';
+import 'package:hyper_tools/components/provider/provider_base.dart';
 
 class DropdownProvider<T> extends ProviderBase {
   DropdownProvider({

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/future_widget/provider_base.dart';
+import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/project/project_model.dart';
 import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
@@ -137,5 +137,12 @@ class ProjectProvider extends ProviderBase {
     context
         .read<HomeProvider>()
         .setProjectProgress(projectId: projectId, progress: progress);
+  }
+
+  void setSuccessState(ProjectModel value) {
+    _project = value;
+    isLoading_ = false;
+
+    notifyListeners();
   }
 }

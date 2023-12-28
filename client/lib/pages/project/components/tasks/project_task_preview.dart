@@ -16,8 +16,8 @@ import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/task_page.dart';
 import 'package:hyper_tools/theme/theme.dart';
-import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 
 class TaskPreview extends StatelessWidget {
   const TaskPreview({required this.projectId, required this.taskId, super.key});
@@ -43,6 +43,8 @@ class TaskPreview extends StatelessWidget {
   Future<void> _onClickDelete(BuildContext context) async {
     try {
       await DeleteTask(projectId: projectId, taskId: taskId).delete();
+
+      if (!context.mounted) return;
 
       Messenger.showSnackBarQuickInfo('Supprimé', context);
 

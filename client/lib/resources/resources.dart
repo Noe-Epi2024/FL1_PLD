@@ -9,9 +9,14 @@ class Resources {
         height: height,
       );
 
-  static Image illustration({double? width, double? height}) => Image.asset(
+  static Image illustration({
+    double? width,
+    double? height,
+    BoxFit? fit = BoxFit.cover,
+  }) =>
+      Image.asset(
         'assets/images/illustration.png',
-        fit: BoxFit.cover,
+        fit: fit,
         width: width,
         height: height,
       );

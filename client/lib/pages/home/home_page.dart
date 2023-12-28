@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
 import 'package:hyper_tools/components/prefix_icon.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
@@ -36,11 +36,9 @@ class _HomePageBuilder extends HookWidget {
     try {
       final ProjectsModel projects = await GetProjects().get();
 
-      provider
-        ..projects = projects
-        ..isLoading = false;
+      if (context.mounted) provider.setSuccessState(projects);
     } on ErrorModel catch (e) {
-      provider.setErrorState(e);
+      if (context.mounted) provider.setErrorState(e);
     }
   }
 
@@ -158,6 +156,7 @@ class _HomePageBuilder extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onSearchChanged(context, value)),
+      <Object?>[],
     );
 
     return Scaffold(

@@ -14,9 +14,7 @@ class AuthenticationLayoutMobile extends StatelessWidget {
               const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 64),
           children: <Widget>[
             DecorationGenerator.logo(),
-            // 32.height,
-            Resources.illustration(),
-            // 32.height,
+            Resources.illustration(fit: BoxFit.contain),
             if (child != null) child!,
           ],
         ),

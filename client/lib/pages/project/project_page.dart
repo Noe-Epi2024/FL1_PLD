@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/confirmation_dialog.dart';
-import 'package:hyper_tools/components/future_widget/provider_resolver.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
@@ -41,13 +41,13 @@ class _ProjectPageBuilder extends StatelessWidget {
     try {
       final ProjectModel project = await GetProject(projectId: projectId).get();
 
-      provider
-        ..project = project
-        ..isLoading = false;
+      if (!context.mounted) return;
+
+      provider.setSuccessState(project);
     } on ErrorModel catch (e) {
-      provider
-        ..error = e
-        ..isLoading = false;
+      if (!context.mounted) return;
+
+      provider.setErrorState(e);
     }
   }
 
@@ -96,16 +96,16 @@ class _ProjectPageBuilder extends StatelessWidget {
           'Toutes les tâches qui vous sont attribuées seront désaffectées. Vous pourrez toujours être invité(e) à nouveau dans ce projet.',
     )) return;
 
-    {
-      try {
-        await QuitProject(projectId: projectId).delete();
+    try {
+      await QuitProject(projectId: projectId).delete();
 
-        context.read<HomeProvider>().removeProject(projectId);
+      if (!context.mounted) return;
 
-        Navigation.pop();
-      } on ErrorModel catch (e) {
-        e.show();
-      }
+      context.read<HomeProvider>().removeProject(projectId);
+
+      Navigation.pop();
+    } on ErrorModel catch (e) {
+      e.show();
     }
   }
 
@@ -119,6 +119,8 @@ class _ProjectPageBuilder extends StatelessWidget {
 
     try {
       await DeleteProject(projectId: projectId).delete();
+
+      if (!context.mounted) return;
 
       context.read<HomeProvider>().removeProject(projectId);
 

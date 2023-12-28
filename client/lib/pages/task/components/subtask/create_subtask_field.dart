@@ -50,6 +50,8 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
         name: controller.text,
       ).post();
 
+      if (!context.mounted) return;
+
       final SubtaskModel subtask =
           SubtaskModel(id: subtaskId, name: controller.text);
 
@@ -80,6 +82,7 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onNameChanged(context, value)),
+      <Object?>[],
     );
 
     return Padding(

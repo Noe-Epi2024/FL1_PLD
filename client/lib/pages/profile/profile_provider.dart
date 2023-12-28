@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hyper_tools/components/future_widget/provider_base.dart';
+import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/user/me_model.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:provider/provider.dart';

@@ -58,6 +58,8 @@ class _SubtaskBuilder extends HookWidget {
         subtaskId: subtaskId,
       ).delete();
 
+      if (!context.mounted) return;
+
       Messenger.showSnackBarQuickInfo('Supprimé', context);
 
       context.read<TaskProvider>().deleteSubtask(subtaskId: subtaskId);
@@ -158,6 +160,7 @@ class _SubtaskBuilder extends HookWidget {
     useEffect(
       controller
           .onValueChanged((String value) => _onNameChanged(context, value)),
+      <Object?>[],
     );
 
     return Slidable(
