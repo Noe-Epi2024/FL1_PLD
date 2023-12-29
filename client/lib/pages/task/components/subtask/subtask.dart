@@ -8,59 +8,40 @@ import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/subtask/delete_subtask.dart';
 import 'package:hyper_tools/http/requests/project/task/subtask/patch_subtask.dart';
 import 'package:hyper_tools/models/error_model.dart';
+import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/components/subtask/subtask_provider.dart';
 import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
 class Subtask extends StatelessWidget {
-  const Subtask({
-    required this.projectId,
-    required this.taskId,
-    required this.subtaskId,
-    super.key,
-  });
+  const Subtask(this.subtask, {super.key});
 
-  final String projectId;
-  final String taskId;
-  final String subtaskId;
+  final SubtaskModel subtask;
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<SubtaskProvider>(
-        create: (_) => SubtaskProvider(
-          initialName:
-              context.read<TaskProvider>().findSubtask(subtaskId)?.name,
-        ),
-        child: _SubtaskBuilder(
-          projectId: projectId,
-          taskId: taskId,
-          subtaskId: subtaskId,
-        ),
+        create: (_) => SubtaskProvider(initialName: subtask.name),
+        child: _SubtaskBuilder(subtask),
       );
 }
 
 class _SubtaskBuilder extends HookWidget {
-  const _SubtaskBuilder({
-    required this.projectId,
-    required this.taskId,
-    required this.subtaskId,
-  });
+  const _SubtaskBuilder(this.subtask);
 
-  final String projectId;
-  final String taskId;
-  final String subtaskId;
+  final SubtaskModel subtask;
 
   Future<void> _onClickDelete(BuildContext context) async {
     final TaskProvider provider = context.read<TaskProvider>();
 
     try {
       await DeleteSubtask(
-        projectId: projectId,
-        taskId: taskId,
-        subtaskId: subtaskId,
+        projectId: provider.projectId,
+        taskId: provider.taskId,
+        subtaskId: subtask.id,
       ).send();
 
-      provider.deleteSubtask(subtaskId: subtaskId);
+      provider.deleteSubtask(subtaskId: subtask.id);
 
       if (context.mounted) Messenger.showSnackBarQuickInfo('Supprimé', context);
     } on ErrorModel catch (e) {
@@ -77,13 +58,13 @@ class _SubtaskBuilder extends HookWidget {
 
     try {
       await PatchSubtask(
-        projectId: projectId,
-        taskId: taskId,
-        subtaskId: subtaskId,
+        projectId: provider.projectId,
+        taskId: provider.taskId,
+        subtaskId: subtask.id,
         isDone: value,
       ).send();
 
-      provider.setSubtaskIsDone(subtaskId: subtaskId, value: value);
+      provider.setSubtaskIsDone(subtaskId: subtask.id, value: value);
 
       if (context.mounted) {
         Messenger.showSnackBarQuickInfo('Sauvegardé', context);
@@ -99,13 +80,13 @@ class _SubtaskBuilder extends HookWidget {
 
     try {
       await PatchSubtask(
-        projectId: projectId,
-        taskId: taskId,
-        subtaskId: subtaskId,
+        projectId: provider.projectId,
+        taskId: provider.taskId,
+        subtaskId: subtask.id,
         name: name,
       ).send();
 
-      provider.setSubtaskName(subtaskId: subtaskId, value: name);
+      provider.setSubtaskName(subtaskId: subtask.id, value: name);
 
       if (context.mounted) {
         Messenger.showSnackBarQuickInfo('Sauvegardé', context);
@@ -133,7 +114,7 @@ class _SubtaskBuilder extends HookWidget {
         borderRadius: BorderRadius.circular(16),
       );
 
-  Widget _saveButton() => Builder(
+  Widget _buildSaveButton() => Builder(
         builder: (BuildContext context) => TextButton(
           onPressed: () async => _onPressSave(context),
           child: const Text('Sauvegarder'),
@@ -144,7 +125,7 @@ class _SubtaskBuilder extends HookWidget {
         builder: (BuildContext context) => Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Checkbox(
-            value: context.watch<TaskProvider>().findSubtask(subtaskId)?.isDone,
+            value: subtask.isDone,
             onChanged: (bool? value) async => RoleHelper.canEditTask(
               context.read<ProjectProvider>().project!.role,
             )
@@ -156,9 +137,8 @@ class _SubtaskBuilder extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = useTextEditingController(
-      text: context.read<TaskProvider>().findSubtask(subtaskId)?.name,
-    );
+    final TextEditingController controller =
+        useTextEditingController(text: subtask.name);
 
     useEffect(
       controller
@@ -178,11 +158,11 @@ class _SubtaskBuilder extends HookWidget {
           children: <Widget>[
             _buildCheckbox(),
             Expanded(child: _nameField(controller)),
-            if (context.watch<TaskProvider>().findSubtask(subtaskId)?.name !=
+            if (subtask.name !=
                 context.select<SubtaskProvider, String?>(
                   (SubtaskProvider provider) => provider.currentName,
                 ))
-              _saveButton(),
+              _buildSaveButton(),
           ],
         ),
       ),

@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/project/task/subtask/subtask_model.dart';
 import 'package:hyper_tools/models/project/task/task_model.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
-import 'package:provider/provider.dart';
 
 class TaskProvider extends ProviderBase {
-  TaskProvider(this.context, {required this.taskId})
-      : super(isInitiallyLoading: true);
+  TaskProvider({required this.taskId, required this.projectProvider})
+      : projectId = projectProvider.projectId,
+        super(isInitiallyLoading: true);
 
-  final BuildContext context;
   final String taskId;
+  final String projectId;
+  final ProjectProvider projectProvider;
 
   TaskModel? _task;
 
@@ -72,7 +72,7 @@ class TaskProvider extends ProviderBase {
     if (task == null) return;
 
     _task?.name = name;
-    context.read<ProjectProvider>().setTaskName(taskId: taskId, name: name);
+    projectProvider.setTaskName(taskId: taskId, name: name);
 
     notifyListeners();
   }
@@ -81,9 +81,7 @@ class TaskProvider extends ProviderBase {
     if (task == null) return;
 
     _task?.startDate = startDate;
-    context
-        .read<ProjectProvider>()
-        .setTaskStartDate(taskId: taskId, date: startDate);
+    projectProvider.setTaskStartDate(taskId: taskId, date: startDate);
 
     notifyListeners();
   }
@@ -92,9 +90,16 @@ class TaskProvider extends ProviderBase {
     if (task == null) return;
 
     _task?.endDate = endDate;
-    context
-        .read<ProjectProvider>()
-        .setTaskEndDate(taskId: taskId, date: endDate);
+    projectProvider.setTaskEndDate(taskId: taskId, date: endDate);
+
+    notifyListeners();
+  }
+
+  void setTaskOwner(String? ownerName) {
+    if (task == null) return;
+
+    _task?.ownerName = ownerName;
+    projectProvider.setTaskOwner(taskId: taskId, name: ownerName);
 
     notifyListeners();
   }
@@ -102,13 +107,13 @@ class TaskProvider extends ProviderBase {
   void onSubtasksChanged() {
     if (task?.substasks == null) return;
 
-    context.read<ProjectProvider>().setTaskProgress(
-          taskId: taskId,
-          numberOfCompletedSubtasks: task!.substasks!
-              .where((SubtaskModel subtask) => subtask.isDone)
-              .length,
-          numberOfSubtasks: task!.substasks!.length,
-        );
+    projectProvider.setTaskProgress(
+      taskId: taskId,
+      numberOfCompletedSubtasks: task!.substasks!
+          .where((SubtaskModel subtask) => subtask.isDone)
+          .length,
+      numberOfSubtasks: task!.substasks!.length,
+    );
   }
 
   int? get progressPercent {

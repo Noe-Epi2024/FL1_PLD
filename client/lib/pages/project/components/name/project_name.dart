@@ -11,12 +11,7 @@ import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProjectName extends StatelessWidget {
-  const ProjectName({
-    required this.projectId,
-    super.key,
-  });
-
-  final String projectId;
+  const ProjectName({super.key});
 
   @override
   Widget build(BuildContext context) =>
@@ -24,18 +19,12 @@ class ProjectName extends StatelessWidget {
         create: (_) => ProjectNameProvider(
           initialName: context.read<ProjectProvider>().project!.name,
         ),
-        child: _ProjectNameBuilder(
-          projectId: projectId,
-        ),
+        child: const _ProjectNameBuilder(),
       );
 }
 
 class _ProjectNameBuilder extends HookWidget {
-  const _ProjectNameBuilder({
-    required this.projectId,
-  });
-
-  final String projectId;
+  const _ProjectNameBuilder();
 
   void _onNameChanged(BuildContext context, String name) {
     context.read<ProjectNameProvider>().currentName = name;
@@ -47,7 +36,7 @@ class _ProjectNameBuilder extends HookWidget {
 
     try {
       await PatchProject(
-        projectId: projectId,
+        projectId: provider.projectId,
         name: name,
       ).send();
 

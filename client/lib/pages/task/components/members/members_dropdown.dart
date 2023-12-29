@@ -14,19 +14,16 @@ import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProjectMembersDropdown extends StatelessWidget {
-  const ProjectMembersDropdown({
-    required this.projectId,
-    required this.taskId,
-    super.key,
-  });
+  const ProjectMembersDropdown({super.key});
 
-  final String projectId;
-  final String taskId;
+  Future<List<DropdownEntry<ProjectMemberModel>>> _getMembers(
+    BuildContext context,
+  ) async {
+    final TaskProvider provider = context.read<TaskProvider>();
 
-  Future<List<DropdownEntry<ProjectMemberModel>>> _getMembers() async {
     try {
       final ProjectMembersModel members =
-          await GetProjectMembers(projectId: projectId).send();
+          await GetProjectMembers(projectId: provider.projectId).send();
 
       return members.members
           .map(
@@ -45,16 +42,16 @@ class ProjectMembersDropdown extends StatelessWidget {
     ProjectMemberModel member,
     BuildContext context,
   ) async {
-    final ProjectProvider provider = context.read<ProjectProvider>();
+    final TaskProvider provider = context.read<TaskProvider>();
 
     try {
       await PatchTask(
-        projectId: projectId,
-        taskId: taskId,
+        projectId: provider.projectId,
+        taskId: provider.taskId,
         ownerId: member.userId,
       ).send();
 
-      provider.setTaskOwner(taskId: taskId, name: member.name);
+      provider.setTaskOwner(member.name);
 
       if (context.mounted) {
         Messenger.showSnackBarQuickInfo('Sauvegardé', context);
@@ -88,7 +85,7 @@ class ProjectMembersDropdown extends StatelessWidget {
                     userId: provider.task!.ownerId!,
                   ),
                 ),
-      fetch: _getMembers,
+      fetch: () async => _getMembers(context),
       onSelect: (ProjectMemberModel member) async =>
           _onSelected(member, context),
     );

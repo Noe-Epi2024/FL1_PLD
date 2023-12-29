@@ -9,21 +9,17 @@ import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
 class TaskStartDate extends StatelessWidget {
-  const TaskStartDate({
-    required this.projectId,
-    required this.taskId,
-    super.key,
-  });
-
-  final String projectId;
-  final String taskId;
+  const TaskStartDate({super.key});
 
   Future<bool> _onSelectedStartDate(BuildContext context, DateTime date) async {
     final TaskProvider provider = context.read<TaskProvider>();
 
     try {
-      await PatchTask(projectId: projectId, taskId: taskId, startDate: date)
-          .send();
+      await PatchTask(
+        projectId: provider.projectId,
+        taskId: provider.taskId,
+        startDate: date,
+      ).send();
 
       provider.setStartDate(date);
 

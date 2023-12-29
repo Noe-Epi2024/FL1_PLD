@@ -10,30 +10,17 @@ import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
 class CreateSubtaskField extends StatelessWidget {
-  const CreateSubtaskField({
-    required this.projectId,
-    required this.taskId,
-    super.key,
-  });
-
-  final String projectId;
-  final String taskId;
+  const CreateSubtaskField({super.key});
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<SubtaskProvider>(
         create: (_) => SubtaskProvider(initialName: ''),
-        child: _CreateSubtaskFieldBuilder(projectId: projectId, taskId: taskId),
+        child: const _CreateSubtaskFieldBuilder(),
       );
 }
 
 class _CreateSubtaskFieldBuilder extends HookWidget {
-  const _CreateSubtaskFieldBuilder({
-    required this.projectId,
-    required this.taskId,
-  });
-
-  final String projectId;
-  final String taskId;
+  const _CreateSubtaskFieldBuilder();
 
   void _onNameChanged(BuildContext context, String name) {
     context.read<SubtaskProvider>().currentName = name;
@@ -48,8 +35,8 @@ class _CreateSubtaskFieldBuilder extends HookWidget {
 
     try {
       final String subtaskId = await PostSubtask(
-        projectId: projectId,
-        taskId: taskId,
+        projectId: taskProvider.projectId,
+        taskId: taskProvider.taskId,
         name: subtaskProvider.currentName!,
       ).send();
 

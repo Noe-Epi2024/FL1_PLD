@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
+import 'package:hyper_tools/extensions/bool_extension.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
@@ -16,16 +17,15 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 class ProjectTasksTab extends HookWidget {
-  const ProjectTasksTab({required this.projectId, super.key});
-
-  final String projectId;
+  const ProjectTasksTab({super.key});
 
   Future<void> _onClickCreateTask(BuildContext context) async {
     final HomeProvider homeProvider = context.read<HomeProvider>();
     final ProjectProvider projectProvider = context.read<ProjectProvider>();
 
     try {
-      final String taskId = await PostTask(projectId: projectId).send();
+      final String taskId =
+          await PostTask(projectId: projectProvider.projectId).send();
 
       final TaskPreviewModel newTaskPreview = TaskPreviewModel(
         id: taskId,
@@ -44,7 +44,7 @@ class ProjectTasksTab extends HookWidget {
               value: projectProvider,
             ),
           ],
-          child: TaskPage(projectId, taskId),
+          child: TaskPage(taskId),
         ),
       );
     } on ErrorModel catch (e) {
@@ -58,8 +58,10 @@ class ProjectTasksTab extends HookWidget {
 
     return taskPreviews
         .map(
-          (TaskPreviewModel taskPreview) =>
-              TaskPreview(projectId: projectId, taskId: taskPreview.id),
+          (TaskPreviewModel taskPreview) => TaskPreview(
+            task: taskPreview,
+            key: Key(taskPreview.id),
+          ),
         )
         .toList();
   }
@@ -80,7 +82,8 @@ class ProjectTasksTab extends HookWidget {
         RoleHelper.canCreateTask(context.read<ProjectProvider>().project!.role);
 
     return Scaffold(
-      floatingActionButton: canCreateTask ? _buildCreateTaskButton() : null,
+      floatingActionButton:
+          canCreateTask.branch(trueChild: _buildCreateTaskButton()),
       body: ListView(
         padding:
             const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 128),

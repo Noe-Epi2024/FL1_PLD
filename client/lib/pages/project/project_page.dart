@@ -1,20 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hyper_tools/components/confirmation_dialog.dart';
-import 'package:hyper_tools/components/provider/provider_resolver.dart';
-import 'package:hyper_tools/extensions/error_model_extension.dart';
-import 'package:hyper_tools/global/navigation.dart';
-import 'package:hyper_tools/helpers/role_helper.dart';
-import 'package:hyper_tools/http/requests/project/delete_project.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hyper_tools/components/adaptative_layout.dart';
 import 'package:hyper_tools/http/requests/project/get_project.dart';
-import 'package:hyper_tools/http/requests/project/member/quit_project.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/project_model.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
-import 'package:hyper_tools/pages/project/components/members/project_members_tab.dart';
-import 'package:hyper_tools/pages/project/components/name/project_name.dart';
-import 'package:hyper_tools/pages/project/components/project_page_loading.dart';
-import 'package:hyper_tools/pages/project/components/tasks/project_tasks_tab.dart';
+import 'package:hyper_tools/pages/project/project_page_desktop.dart';
+import 'package:hyper_tools/pages/project/project_page_mobile.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -25,64 +19,23 @@ class ProjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<ProjectProvider>(
-        create: (_) => ProjectProvider(context, projectId: projectId),
-        child: _ProjectPageBuilder(projectId: projectId),
+        create: (_) => ProjectProvider(
+          projectId: projectId,
+          homeProvider: context.read<HomeProvider>(),
+        ),
+        child: const _ProjectPageBuilder(),
       );
 }
 
 class _ProjectPageBuilder extends StatelessWidget {
-  const _ProjectPageBuilder({required this.projectId});
-
-  final String projectId;
-
-  Future<void> _onClickLeaveProject(BuildContext context) async {
-    if (!await confirmationDialog(
-      context,
-      title: 'Êtes-vous sûr(e) de vouloir quitter ce projet ?',
-      subtitle:
-          'Toutes les tâches qui vous sont attribuées seront désaffectées. Vous pourrez toujours être invité(e) à nouveau dans ce projet.',
-    )) return;
-
-    final HomeProvider provider = context.read<HomeProvider>();
-
-    try {
-      await QuitProject(projectId: projectId).send();
-
-      provider.removeProject(projectId);
-
-      Navigation.pop();
-    } on ErrorModel catch (e) {
-      e.show();
-    }
-  }
-
-  Future<void> _onClickDeleteProject(BuildContext context) async {
-    if (!await confirmationDialog(
-      context,
-      title: 'Êtes-vous sûr(e) de vouloir supprimer définitivement ce projet ?',
-      subtitle:
-          "La suppression du projet est irreversible et entrainera une destruction permanente de toutes les données qu'il contient.",
-    )) return;
-
-    final HomeProvider provider = context.read<HomeProvider>();
-
-    try {
-      await DeleteProject(projectId: projectId).send();
-
-      provider.removeProject(projectId);
-
-      Navigation.pop();
-    } on ErrorModel catch (e) {
-      e.show();
-    }
-  }
+  const _ProjectPageBuilder();
 
   Future<void> _loadProject(BuildContext context) async {
     final ProjectProvider provider = context.read<ProjectProvider>();
 
     try {
       final ProjectModel project =
-          await GetProject(projectId: projectId).send();
+          await GetProject(projectId: provider.projectId).send();
 
       provider.setSuccessState(project);
     } on ErrorModel catch (e) {
@@ -90,89 +43,19 @@ class _ProjectPageBuilder extends StatelessWidget {
     }
   }
 
-  Widget _buildPopupMenu() => Builder(
-        builder: (BuildContext context) => PopupMenuButton<void>(
-          itemBuilder: (BuildContext popupContext) => <PopupMenuItem<void>>[
-            if (RoleHelper.canDeleteProject(
-              context.read<ProjectProvider>().project!.role,
-            ))
-              PopupMenuItem<void>(
-                onTap: () async => _onClickDeleteProject(context),
-                child: const Text(
-                  'Supprimer le projet',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-            if (RoleHelper.canLeaveProject(
-              context.read<ProjectProvider>().project!.role,
-            ))
-              PopupMenuItem<void>(
-                onTap: () async => _onClickLeaveProject(context),
-                child: const Text(
-                  'Quitter le projet',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-          ],
-          icon: const FaIcon(FontAwesomeIcons.ellipsisVertical),
-        ),
-      );
-
-  AppBar _appBar(BuildContext context) => AppBar(
-        title: ProjectName(projectId: projectId),
-        actions: <Widget>[_buildPopupMenu()],
-      );
-
-  Widget _buildNavigationBar() => Builder(
-        builder: (BuildContext context) => DecoratedBox(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            border: Border(
-              top: BorderSide(color: Theme.of(context).dividerColor),
-            ),
-          ),
-          child: const TabBar(
-            tabs: <Widget>[
-              Tab(
-                text: 'Tâches',
-                icon: FaIcon(FontAwesomeIcons.listCheck, size: 16),
-              ),
-              Tab(
-                text: 'Membres',
-                icon: FaIcon(FontAwesomeIcons.userGroup, size: 16),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget _builder(BuildContext context) => DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          bottomNavigationBar: _buildNavigationBar(),
-          appBar: _appBar(context),
-          body: SafeArea(
-            child: TabBarView(
-              children: <Widget>[
-                ProjectTasksTab(projectId: projectId),
-                ProjectMembersTab(projectId: projectId),
-              ],
-            ),
-          ),
-        ),
-      );
-
   @override
-  Widget build(BuildContext context) =>
-      ProviderResolver<ProjectProvider>.future(
-        future: () async => _loadProject(context),
-        builder: _builder,
-        loader: const ProjectPageLoading(),
-      );
+  Widget build(BuildContext context) {
+    useEffect(
+      () {
+        unawaited(_loadProject(context));
+        return null;
+      },
+      <Object?>[],
+    );
+
+    return const AdaptativeLayout(
+      desktopLayout: ProjectPageDesktop(),
+      mobileLayout: ProjectPageMobile(),
+    );
+  }
 }

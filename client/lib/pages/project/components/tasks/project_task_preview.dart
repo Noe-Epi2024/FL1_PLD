@@ -12,6 +12,7 @@ import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/delete_task.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
+import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
 import 'package:hyper_tools/pages/project/project_provider.dart';
 import 'package:hyper_tools/pages/task/task_page.dart';
@@ -20,10 +21,9 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 class TaskPreview extends StatelessWidget {
-  const TaskPreview({required this.projectId, required this.taskId, super.key});
+  const TaskPreview({required this.task, super.key});
 
-  final String projectId;
-  final String taskId;
+  final TaskPreviewModel task;
 
   Future<void> _onTapPreview(BuildContext context) async {
     final HomeProvider homeProvider = context.read<HomeProvider>();
@@ -35,7 +35,7 @@ class TaskPreview extends StatelessWidget {
           ChangeNotifierProvider<HomeProvider>.value(value: homeProvider),
           ChangeNotifierProvider<ProjectProvider>.value(value: projectProvider),
         ],
-        child: TaskPage(projectProvider.project!.id, taskId),
+        child: TaskPage(task.id),
       ),
     );
   }
@@ -44,9 +44,9 @@ class TaskPreview extends StatelessWidget {
     final ProjectProvider provider = context.read<ProjectProvider>();
 
     try {
-      await DeleteTask(projectId: projectId, taskId: taskId).send();
+      await DeleteTask(projectId: provider.projectId, taskId: task.id).send();
 
-      provider.deleteTaskPreview(taskId);
+      provider.deleteTaskPreview(task.id);
 
       if (context.mounted) Messenger.showSnackBarQuickInfo('Supprimé', context);
     } on ErrorModel catch (e) {
@@ -56,12 +56,7 @@ class TaskPreview extends StatelessWidget {
 
   Widget _buildName() => Builder(
         builder: (BuildContext context) => Text(
-          context
-                  .watch<ProjectProvider>()
-                  .findTaskPreview(taskId)
-                  ?.name
-                  .or('Tâche sans nom') ??
-              'Tâche sans nom',
+          task.name.or('Tâche sans nom'),
           style: const TextStyle(fontWeight: FontWeight.bold),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -70,11 +65,8 @@ class TaskPreview extends StatelessWidget {
 
   Widget _buildDates() => Builder(
         builder: (BuildContext context) {
-          final ProjectProvider provider = context.watch<ProjectProvider>();
-
-          final DateTime? startDate =
-              provider.findTaskPreview(taskId)?.startDate;
-          final DateTime? endDate = provider.findTaskPreview(taskId)?.endDate;
+          final DateTime? startDate = task.startDate;
+          final DateTime? endDate = task.endDate;
           final DateTime today = DateTime.now();
           final bool isOngoing = !(startDate == null && endDate == null) &&
               (startDate?.isBefore(today) ?? true) &&
@@ -93,35 +85,36 @@ class TaskPreview extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).hintColor),
               ),
               16.width,
-              if (isOngoing)
-                Container(
-                  alignment: Alignment.centerRight,
-                  padding: 4.horizontal,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFFFBF00)),
-                    color: const Color(0xFFFFBF00).withAlpha(50),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'En cours',
-                    style: TextStyle(color: Color(0xFFFFBF00)),
-                  ),
-                ),
+              if (isOngoing) _buildOngoingTag(),
             ],
           );
         },
       );
 
+  Container _buildOngoingTag() => Container(
+        alignment: Alignment.centerRight,
+        padding: 4.horizontal,
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFFFFBF00)),
+          color: const Color(0xFFFFBF00).withAlpha(50),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Text(
+          'En cours',
+          style: TextStyle(color: Color(0xFFFFBF00)),
+        ),
+      );
+
   Widget _buildAssignedTo() => Builder(
         builder: (BuildContext context) => Text(
-          'Assigné à ${context.watch<ProjectProvider>().findTaskPreview(taskId)?.ownerName ?? "personne"}',
+          'Assigné à ${task.ownerName.or("personne")}',
         ),
       );
 
   Widget _buildProgress() => Builder(
         builder: (BuildContext context) {
           final int? progress =
-              context.watch<ProjectProvider>().getTaskProgress(taskId);
+              context.read<ProjectProvider>().getTaskProgress(task.id);
 
           if (progress == null) return const Text('Pas encore de sous-tâche');
           return Row(

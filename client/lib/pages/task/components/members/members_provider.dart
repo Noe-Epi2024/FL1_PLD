@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/project/member/project_member_model.dart';
 import 'package:hyper_tools/models/project/member/project_members_model.dart';
 import 'package:hyper_tools/models/project/project_role.dart';
-import 'package:hyper_tools/pages/home/home_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:hyper_tools/pages/project/project_provider.dart';
 
 class ProjectMembersProvider extends ProviderBase {
-  ProjectMembersProvider(this.context, {required this.projectId})
-      : super(isInitiallyLoading: true);
+  ProjectMembersProvider({required this.projectProvider})
+      : projectId = projectProvider.projectId,
+        super(isInitiallyLoading: true);
 
-  final BuildContext context;
+  final ProjectProvider projectProvider;
   final String projectId;
 
   ProjectMembersModel? _members;
@@ -64,10 +63,10 @@ class ProjectMembersProvider extends ProviderBase {
   void onMembersChanged() {
     if (members == null) return;
 
-    context.read<HomeProvider>().setProjectMembersCount(
-          projectId: projectId,
-          membersCount: members!.members.length,
-        );
+    projectProvider.homeProvider.setProjectMembersCount(
+      projectId: projectProvider.projectId,
+      membersCount: members!.members.length,
+    );
   }
 
   void setSuccessState(ProjectMembersModel value) {

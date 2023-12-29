@@ -22,30 +22,30 @@ import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
 class TaskPage extends StatelessWidget {
-  const TaskPage(this.projectId, this.taskId, {super.key});
+  const TaskPage(this.taskId, {super.key});
 
-  final String projectId;
   final String taskId;
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider<TaskProvider>(
-        create: (_) => TaskProvider(context, taskId: taskId),
-        child: _TaskPageBuilder(projectId, taskId),
+        create: (_) => TaskProvider(
+          taskId: taskId,
+          projectProvider: context.read<ProjectProvider>(),
+        ),
+        child: const _TaskPageBuilder(),
       );
 }
 
 class _TaskPageBuilder extends StatelessWidget {
-  const _TaskPageBuilder(this.projectId, this.taskId);
-
-  final String projectId;
-  final String taskId;
+  const _TaskPageBuilder();
 
   Future<void> _loadTask(BuildContext context) async {
     final TaskProvider provider = context.read<TaskProvider>();
 
     try {
       final TaskModel task =
-          await GetTask(projectId: projectId, taskId: taskId).send();
+          await GetTask(projectId: provider.projectId, taskId: provider.taskId)
+              .send();
 
       provider.setSuccessState(task);
     } on ErrorModel catch (e) {
@@ -55,18 +55,15 @@ class _TaskPageBuilder extends StatelessWidget {
 
   Widget _buildSubtasksList() => Builder(
         builder: (BuildContext context) {
+          final TaskProvider provider = context.watch<TaskProvider>();
           final List<SubtaskModel> subtasks =
-              context.watch<TaskProvider>().task?.substasks ?? <SubtaskModel>[];
+              provider.task?.substasks ?? <SubtaskModel>[];
 
           return Column(
             children: subtasks
                 .map(
-                  (SubtaskModel subtask) => Subtask(
-                    key: Key(subtask.id),
-                    projectId: projectId,
-                    taskId: taskId,
-                    subtaskId: subtask.id,
-                  ),
+                  (SubtaskModel subtask) =>
+                      Subtask(subtask, key: Key(subtask.id)),
                 )
                 .toList(),
           );
@@ -94,17 +91,14 @@ class _TaskPageBuilder extends StatelessWidget {
         ),
       );
 
-  Widget _buildAssignedTo() => Column(
+  Widget _buildAssignedTo() => const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Text(
+          Text(
             'Assigné à',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          ProjectMembersDropdown(
-            projectId: projectId,
-            taskId: taskId,
-          ),
+          ProjectMembersDropdown(),
         ],
       );
 
@@ -131,11 +125,8 @@ class _TaskPageBuilder extends StatelessWidget {
             'Dates',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          EvenlySizedChildren(
-            children: <Widget>[
-              TaskStartDate(projectId: projectId, taskId: taskId),
-              TaskEndDate(projectId: projectId, taskId: taskId),
-            ],
+          const EvenlySizedChildren(
+            children: <Widget>[TaskStartDate(), TaskEndDate()],
           ),
           _buildRemainingTime(),
         ],
@@ -152,7 +143,7 @@ class _TaskPageBuilder extends StatelessWidget {
                 if (RoleHelper.canEditTask(
                   context.read<ProjectProvider>().project!.role,
                 ))
-                  CreateSubtaskField(projectId: projectId, taskId: taskId),
+                  const CreateSubtaskField(),
               ],
             ),
           ),
@@ -178,7 +169,7 @@ class _TaskPageBuilder extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: <Widget>[
-                  TaskDescription(projectId: projectId, taskId: taskId),
+                  const TaskDescription(),
                   8.height,
                   _buildDates(),
                   8.height,
@@ -190,8 +181,7 @@ class _TaskPageBuilder extends StatelessWidget {
         ],
       );
 
-  AppBar _appBar() =>
-      AppBar(title: TaskName(projectId: projectId, taskId: taskId));
+  AppBar _appBar() => AppBar(title: const TaskName());
 
   Widget _builder(BuildContext builderContext) => Scaffold(
         appBar: _appBar(),

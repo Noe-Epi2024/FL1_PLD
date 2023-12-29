@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:hyper_tools/components/provider/provider_base.dart';
 import 'package:hyper_tools/models/project/project_model.dart';
 import 'package:hyper_tools/models/project/task/task_preview_model.dart';
 import 'package:hyper_tools/pages/home/home_provider.dart';
-import 'package:provider/provider.dart';
 
 class ProjectProvider extends ProviderBase {
-  ProjectProvider(this.context, {required this.projectId})
+  ProjectProvider({required this.projectId, required this.homeProvider})
       : super(isInitiallyLoading: true);
 
-  final BuildContext context;
+  final HomeProvider homeProvider;
   final String projectId;
 
   ProjectModel? _project;
@@ -126,17 +124,13 @@ class ProjectProvider extends ProviderBase {
     if (project == null) return;
 
     _project!.name = name;
-    context
-        .read<HomeProvider>()
-        .setProjectName(projectId: projectId, name: name);
+    homeProvider.setProjectName(projectId: projectId, name: name);
 
     notifyListeners();
   }
 
   void onTasksChanged() {
-    context
-        .read<HomeProvider>()
-        .setProjectProgress(projectId: projectId, progress: progress);
+    homeProvider.setProjectProgress(projectId: projectId, progress: progress);
   }
 
   void setSuccessState(ProjectModel value) {

@@ -18,35 +18,36 @@ import 'package:hyper_tools/pages/task/components/members/members_provider.dart'
 import 'package:provider/provider.dart';
 
 class ProjectMembersTab extends StatelessWidget {
-  const ProjectMembersTab({required this.projectId, super.key});
-
-  final String projectId;
+  const ProjectMembersTab({super.key});
 
   @override
   Widget build(BuildContext context) =>
       ChangeNotifierProvider<ProjectMembersProvider>(
-        create: (_) => ProjectMembersProvider(context, projectId: projectId),
-        child: _ProjecMembersTabBuilder(
-          projectId: projectId,
+        create: (_) => ProjectMembersProvider(
+          projectProvider: context.read<ProjectProvider>(),
         ),
+        child: const _ProjecMembersTabBuilder(),
       );
 }
 
 class _ProjecMembersTabBuilder extends HookWidget {
-  const _ProjecMembersTabBuilder({required this.projectId});
-
-  final String projectId;
+  const _ProjecMembersTabBuilder();
 
   void _onSearchChanged(BuildContext context, String filter) {
     context.read<ProjectMembersProvider>().filter = filter;
   }
 
   Future<void> _onClickAddMember(BuildContext context) async {
+    final ProjectMembersProvider provider =
+        context.read<ProjectMembersProvider>();
+
     await showDialog(
       context: context,
       builder: (_) => ChangeNotifierProvider<ProjectMembersProvider>.value(
         value: context.read<ProjectMembersProvider>(),
-        child: AddProjectMemberModal(projectId: projectId),
+        child: AddProjectMemberModal(
+          projectId: provider.projectProvider.projectId,
+        ),
       ),
     );
   }
@@ -57,7 +58,8 @@ class _ProjecMembersTabBuilder extends HookWidget {
 
     try {
       final ProjectMembersModel members =
-          await GetProjectMembers(projectId: projectId).send();
+          await GetProjectMembers(projectId: provider.projectProvider.projectId)
+              .send();
 
       provider.setSuccessState(members);
     } on ErrorModel catch (e) {
@@ -79,8 +81,10 @@ class _ProjecMembersTabBuilder extends HookWidget {
               member.name.toLowerCase().contains(filter.toLowerCase()),
         )
         .map(
-          (ProjectMemberModel member) =>
-              ProjectMember(memberId: member.userId, projectId: projectId),
+          (ProjectMemberModel member) => ProjectMember(
+            member,
+            key: Key(member.userId),
+          ),
         )
         .toList();
   }

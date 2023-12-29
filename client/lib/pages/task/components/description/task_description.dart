@@ -12,14 +12,7 @@ import 'package:hyper_tools/pages/task/task_provider.dart';
 import 'package:provider/provider.dart';
 
 class TaskDescription extends StatelessWidget {
-  const TaskDescription({
-    required this.projectId,
-    required this.taskId,
-    super.key,
-  });
-
-  final String projectId;
-  final String taskId;
+  const TaskDescription({super.key});
 
   @override
   Widget build(BuildContext context) =>
@@ -27,21 +20,12 @@ class TaskDescription extends StatelessWidget {
         create: (_) => TaskDescriptionProvider(
           initialDescription: context.read<TaskProvider>().task?.description,
         ),
-        child: _TaskDescriptionBuilder(
-          projectId: projectId,
-          taskId: taskId,
-        ),
+        child: const _TaskDescriptionBuilder(),
       );
 }
 
 class _TaskDescriptionBuilder extends HookWidget {
-  const _TaskDescriptionBuilder({
-    required this.projectId,
-    required this.taskId,
-  });
-
-  final String projectId;
-  final String taskId;
+  const _TaskDescriptionBuilder();
 
   void _onDescriptionChanged(BuildContext context, String description) {
     context.read<TaskDescriptionProvider>().currentDescription = description;
@@ -55,8 +39,8 @@ class _TaskDescriptionBuilder extends HookWidget {
 
     try {
       await PatchTask(
-        projectId: projectId,
-        taskId: taskId,
+        projectId: provider.projectId,
+        taskId: provider.taskId,
         description: description,
       ).send();
 
