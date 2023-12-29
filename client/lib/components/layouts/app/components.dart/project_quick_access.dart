@@ -18,7 +18,6 @@ class ProjectQuickAccess extends StatelessWidget {
         value: context.read<HomeProvider>(),
         child: ProjectPage(projectId: projectPreview.id),
       ),
-      replaceOne: true,
     );
   }
 

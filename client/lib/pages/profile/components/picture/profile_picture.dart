@@ -11,7 +11,7 @@ import 'package:hyper_tools/http/requests/picture/get_picture.dart';
 import 'package:hyper_tools/http/requests/picture/post_picture.dart';
 import 'package:hyper_tools/models/error_model.dart';
 import 'package:hyper_tools/models/picture/picture_model.dart';
-import 'package:hyper_tools/pages/profile/picture/profile_picture_provider.dart';
+import 'package:hyper_tools/pages/profile/components/picture/profile_picture_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +26,7 @@ class ProfilePicture extends StatelessWidget {
       );
 }
 
-class _ProfilePictureBuilder extends StatelessWidget {
+class _ProfilePictureBuilder extends HookWidget {
   _ProfilePictureBuilder();
 
   final ImagePicker _imagePicker = ImagePicker();
