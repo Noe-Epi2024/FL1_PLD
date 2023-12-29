@@ -2,8 +2,6 @@
 
 Grâce à HyperTools Generator vous allez pouvoir gérer l'avancement de votre projet d'A à Z. Notamment grace à son système de backlog vous pourrez définir les tâches à faire, celles en cours et celles que vous avez terminé !
 
-Vous pouvez également transformer ce backlog au format Project Log Document (PLD).
-
 ## Deploiement
 
 ### API
@@ -54,34 +52,34 @@ technologie: Flutter 3.13.1
 
 - flutter_hooks
   - version: 0.20.3
-  - used for:
+  - utilisé pour: gérer l'etat de l'application et réduire le boiler plate
 - flutter_secure_storage
   - version: 9.0.0
-  - used for:
+  - utilisé pour: sauvegarder et lire des informations dans l'appareil de l'utilisateur
 - flutter_slidable
   - version: 3.0.1
-  - used for:
+  - utilisé pour: afficher des boutons cachés
 - font_awesome_flutter
   - version: 10.6.0
-  - used for:
+  - utilisé pour: les icones de Font Awesome
 - google_fonts
   - version: 6.1.0
-  - used for:
+  - utilisé pour: les polices d'écritures Google
 - http
   - version: 1.1.0
-  - used for:
+  - utilisé pour: faire des requetes à l'api
 - image_picker
   - version: 1.0.5
-  - used for:
+  - utilisé pour: sélectionner une image dans la galerie photo de l'utilisateur
 - intl
   - version: 0.19.0
-  - used for:
+  - utilisé pour: formatter les dates en français
 - provider
   - version: 6.1.1
-  - used for:
+  - utilisé pour: la gestion d'état global de l'application
 - shimmer
   - version: 3.0.0
-  - used for:
+  - utilisé pour: faire des effets visuels
 
 ## Auteurs
 
