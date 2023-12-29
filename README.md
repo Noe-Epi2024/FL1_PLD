@@ -1,4 +1,4 @@
-# HyperTools Generator
+# HyperTools
 
 Grâce à HyperTools Generator vous allez pouvoir gérer l'avancement de votre projet d'A à Z. Notamment grace à son système de backlog vous pourrez définir les tâches à faire, celles en cours et celles que vous avez terminé !
 
