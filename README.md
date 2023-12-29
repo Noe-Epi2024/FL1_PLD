@@ -4,20 +4,6 @@ Grâce à HyperTools Generator vous allez pouvoir gérer l'avancement de votre p
 
 ## Deploiement
 
-### API
-
-À la racine du dossier serveur, effectuez les commandes suivantes :
-
-```bash
-  npm install
-```
-
-```bash
-  npm start
-```
-
-### Client
-
 À la racine du dossier client, effectuez la commande suivante:
 
 #### Android
@@ -42,7 +28,7 @@ Grâce à HyperTools Generator vous allez pouvoir gérer l'avancement de votre p
 
 ### Client
 
-technologie: Flutter 3.13.1
+Technologie: Flutter 3.16.5
 
 ### Dependences
 
