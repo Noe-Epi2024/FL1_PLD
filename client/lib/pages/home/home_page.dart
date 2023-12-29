@@ -7,6 +7,7 @@ import 'package:hyper_tools/components/adaptative_layout.dart';
 import 'package:hyper_tools/components/fields/search_bar_field.dart';
 import 'package:hyper_tools/components/layouts/app/app_layout_desktop.dart';
 import 'package:hyper_tools/components/provider/provider_resolver.dart';
+import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/http/requests/projects/get_projects.dart';

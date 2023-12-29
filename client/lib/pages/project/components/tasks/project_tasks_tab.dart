@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/extensions/bool_extension.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/global/navigation.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
 import 'package:hyper_tools/http/requests/project/task/post_task.dart';
@@ -78,19 +80,20 @@ class ProjectTasksTab extends HookWidget {
   Widget build(BuildContext context) {
     useAutomaticKeepAlive();
 
-    final bool canCreateTask =
-        RoleHelper.canCreateTask(context.read<ProjectProvider>().project!.role);
-
-    return Scaffold(
-      floatingActionButton:
-          canCreateTask.branch(trueChild: _buildCreateTaskButton()),
-      body: ListView(
-        padding:
-            const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 128),
-        children: <Widget>[
-          const TitleText('Tâches'),
-          ..._taskPreviews(context),
-        ],
+    return ProviderResolver<ProjectProvider>(
+      builder: (BuildContext context) => Scaffold(
+        floatingActionButton: RoleHelper.canCreateTask(
+          context.read<ProjectProvider>().project!.role,
+        ).branch<Widget>(ifTrue: _buildCreateTaskButton()),
+        body: ListView(
+          padding:
+              const EdgeInsets.only(left: 16, right: 16, top: 32, bottom: 128),
+          children: <Widget>[
+            const TitleText('Tâches'),
+            8.height,
+            ..._taskPreviews(context),
+          ],
+        ),
       ),
     );
   }

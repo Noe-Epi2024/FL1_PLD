@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hyper_tools/extensions/bool_extension.dart';
 import 'package:hyper_tools/extensions/datetime_extension.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
@@ -152,12 +153,12 @@ class TaskPreview extends StatelessWidget {
     final ProjectRole role = context.read<ProjectProvider>().project!.role;
 
     return Slidable(
-      endActionPane: RoleHelper.canEditTask(role)
-          ? ActionPane(
-              motion: const ScrollMotion(),
-              children: <Widget>[_buildDeleteButton()],
-            )
-          : null,
+      endActionPane: RoleHelper.canEditTask(role).branch<ActionPane>(
+        ifTrue: ActionPane(
+          motion: const ScrollMotion(),
+          children: <Widget>[_buildDeleteButton()],
+        ),
+      ),
       child: Card(
         margin: 4.vertical,
         child: InkWell(

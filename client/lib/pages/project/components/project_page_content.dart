@@ -1,8 +1,16 @@
-part of '../project_page_mobile.dart';
+part of '../project_page.dart';
 
-class ProjectPageContent extends StatelessWidget {
-  const ProjectPageContent({super.key});
+class _ProjectPageContent extends StatelessWidget {
+  const _ProjectPageContent();
 
   @override
-  Widget build(BuildContext context) => const Placeholder();
+  Widget build(BuildContext context) => const DefaultTabController(
+        length: 2,
+        child: TabBarView(
+          children: <Widget>[
+            ProjectTasksTab(),
+            ProjectMembersTab(),
+          ],
+        ),
+      );
 }

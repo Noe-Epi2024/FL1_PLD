@@ -54,6 +54,8 @@ class _HomePageContent extends StatelessWidget {
         _buildWelcomeText(),
         32.height,
         if (provider.projects!.projects.isNotEmpty) ...<Widget>[
+          const TitleText('Projets'),
+          8.height,
           const _HomePageSearchBar(),
           8.height,
           const _ProjectsList(),

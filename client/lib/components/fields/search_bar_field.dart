@@ -45,8 +45,8 @@ class SearchBarField extends HookWidget {
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: const TextFieldIcon(FontAwesomeIcons.magnifyingGlass),
-        suffixIcon:
-            filter.isEmpty.branch(falseChild: _buildClearButton(controller)),
+        suffixIcon: filter.isEmpty
+            .branch<Widget>(ifFalse: _buildClearButton(controller)),
       ),
     );
   }

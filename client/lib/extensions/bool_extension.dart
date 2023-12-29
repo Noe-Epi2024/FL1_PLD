@@ -1,9 +1,3 @@
-import 'package:flutter/material.dart';
-
 extension BranchBool on bool {
-  Widget? branch({
-    Widget? trueChild,
-    Widget? falseChild,
-  }) =>
-      this ? trueChild : falseChild;
+  T? branch<T>({T? ifTrue, T? ifFalse}) => this ? ifTrue : ifFalse;
 }
