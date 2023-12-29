@@ -44,10 +44,6 @@ Grâce à HyperTools Generator vous allez pouvoir gérer l'avancement de votre p
 
 technologie: Flutter 3.13.1
 
-### Librairies
-
-[Documentation](https://linktodocumentation)
-
 ### Dependences
 
 - flutter_hooks
