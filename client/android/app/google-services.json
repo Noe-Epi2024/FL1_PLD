@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "288425956198",
+    "project_id": "hypertools-87410",
+    "storage_bucket": "hypertools-87410.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288425956198:android:d585cc156abf5beaeb2ea7",
+        "android_client_info": {
+          "package_name": "com.example.pld"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8v1YRrjIC_HhazY--g8EhTQBLFUr6ix0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
