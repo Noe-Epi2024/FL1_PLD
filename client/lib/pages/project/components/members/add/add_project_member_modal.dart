@@ -131,8 +131,10 @@ class _AddProjectMemberModalBuilder extends HookWidget {
               16.height,
               _buildSearchBar(controller),
               16.height,
-              ProviderResolver<AddProjectMemberModalProvider>(
-                builder: (_) => _buildEntries(),
+              Expanded(
+                child: ProviderResolver<AddProjectMemberModalProvider>(
+                  builder: (_) => _buildEntries(),
+                ),
               ),
             ],
           ),
