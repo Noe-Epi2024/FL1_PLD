@@ -16,31 +16,34 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TitleText(title),
-              16.height,
-              Text(
-                subtitle,
-                style: TextStyle(color: Theme.of(context).hintColor),
-              ),
-              32.height,
-              EvenlySizedChildren(
-                children: <Widget>[
-                  TextButton(
-                    child: const Text('Non'),
-                    onPressed: () => Navigation.pop(false),
-                  ),
-                  ElevatedButton(
-                    child: const Text('Oui'),
-                    onPressed: () => Navigation.pop(true),
-                  ),
-                ],
-              ),
-            ],
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TitleText(title),
+                16.height,
+                Text(
+                  subtitle,
+                  style: TextStyle(color: Theme.of(context).hintColor),
+                ),
+                32.height,
+                EvenlySizedChildren(
+                  children: <Widget>[
+                    TextButton(
+                      child: const Text('Non'),
+                      onPressed: () => Navigation.pop(false),
+                    ),
+                    ElevatedButton(
+                      child: const Text('Oui'),
+                      onPressed: () => Navigation.pop(true),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );

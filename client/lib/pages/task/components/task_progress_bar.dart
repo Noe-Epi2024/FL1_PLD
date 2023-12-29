@@ -23,7 +23,7 @@ class TaskProgressBar extends HookWidget {
           duration: const Duration(milliseconds: 500),
           curve: Curves.decelerate,
         );
-        return () {};
+        return null;
       },
       <int?>[progressPercent],
     );

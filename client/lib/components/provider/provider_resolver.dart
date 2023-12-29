@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/provider/provider_base.dart';
@@ -10,29 +9,13 @@ class ProviderResolver<T extends ProviderBase> extends HookWidget {
     required this.builder,
     this.loader,
     super.key,
-  }) : future = null;
-
-  const ProviderResolver.future({
-    required this.builder,
-    required this.future,
-    this.loader,
-    super.key,
   });
 
   final Widget Function(BuildContext) builder;
-  final Future<void> Function()? future;
   final Widget? loader;
 
   @override
   Widget build(BuildContext context) {
-    useEffect(
-      () {
-        if (future != null) unawaited(future!());
-        return null;
-      },
-      <Object?>[],
-    );
-
     final bool isLoading =
         context.select<T, bool>((T provider) => provider.isLoading);
     final ErrorModel? error =

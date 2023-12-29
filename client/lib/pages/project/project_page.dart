@@ -6,7 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/adaptative_layout.dart';
 import 'package:hyper_tools/components/confirmation_dialog.dart';
 import 'package:hyper_tools/components/layouts/app/app_layout_desktop.dart';
+import 'package:hyper_tools/components/provider/provider_resolver.dart';
+import 'package:hyper_tools/components/shimmer_placeholder.dart';
 import 'package:hyper_tools/extensions/error_model_extension.dart';
+import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/global/messenger.dart';
 import 'package:hyper_tools/global/navigation.dart';
@@ -27,7 +30,7 @@ import 'package:provider/provider.dart';
 part 'components/desktop/project_page_desktop.dart';
 part 'components/mobile/project_page_mobile.dart';
 part 'components/project_page_content.dart';
-part 'components/popup_menu.dart';
+part 'components/project_popup_menu.dart';
 part 'components/name/project_name.dart';
 
 class ProjectPage extends StatelessWidget {
@@ -71,9 +74,12 @@ class _ProjectPageBuilder extends HookWidget {
       <Object?>[],
     );
 
-    return const AdaptativeLayout(
-      desktopLayout: _ProjectPageDesktop(),
-      mobileLayout: _ProjectPageMobile(),
+    return const DefaultTabController(
+      length: 2,
+      child: AdaptativeLayout(
+        desktopLayout: _ProjectPageDesktop(),
+        mobileLayout: _ProjectPageMobile(),
+      ),
     );
   }
 }

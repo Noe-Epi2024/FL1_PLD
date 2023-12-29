@@ -4,13 +4,10 @@ class _ProjectPageContent extends StatelessWidget {
   const _ProjectPageContent();
 
   @override
-  Widget build(BuildContext context) => const DefaultTabController(
-        length: 2,
-        child: TabBarView(
-          children: <Widget>[
-            ProjectTasksTab(),
-            ProjectMembersTab(),
-          ],
-        ),
+  Widget build(BuildContext context) => const TabBarView(
+        children: <Widget>[
+          ProjectTasksTab(),
+          ProjectMembersTab(),
+        ],
       );
 }

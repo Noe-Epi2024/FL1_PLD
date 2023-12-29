@@ -32,12 +32,9 @@ class _ProjectPageMobile extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          bottomNavigationBar: _buildNavigationBar(),
-          appBar: _appBar(context),
-          body: const SafeArea(child: _ProjectPageContent()),
-        ),
+  Widget build(BuildContext context) => Scaffold(
+        bottomNavigationBar: _buildNavigationBar(),
+        appBar: _appBar(context),
+        body: const SafeArea(child: _ProjectPageContent()),
       );
 }

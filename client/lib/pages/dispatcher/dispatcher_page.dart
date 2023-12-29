@@ -26,10 +26,13 @@ class DispatcherPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    useEffect(() {
-      unawaited(_dispatch());
-      return null;
-    });
+    useEffect(
+      () {
+        unawaited(_dispatch());
+        return null;
+      },
+      <Object?>[],
+    );
 
     return const Scaffold(
       body: SafeArea(

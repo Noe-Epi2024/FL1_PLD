@@ -119,20 +119,23 @@ class _AddProjectMemberModalBuilder extends HookWidget {
     );
 
     return Dialog(
-      child: Padding(
-        padding: 32.all,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _title,
-            16.height,
-            _buildSearchBar(controller),
-            16.height,
-            ProviderResolver<AddProjectMemberModalProvider>(
-              builder: (_) => _buildEntries(),
-            ),
-          ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 700),
+        child: Padding(
+          padding: 32.all,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _title,
+              16.height,
+              _buildSearchBar(controller),
+              16.height,
+              ProviderResolver<AddProjectMemberModalProvider>(
+                builder: (_) => _buildEntries(),
+              ),
+            ],
+          ),
         ),
       ),
     );

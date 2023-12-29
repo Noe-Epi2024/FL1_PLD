@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
 import 'package:hyper_tools/consts/consts.dart';
@@ -17,6 +20,16 @@ import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider<ProfileProvider>(
+        create: (_) => ProfileProvider(context),
+        child: const _ProfilePageBuilder(),
+      );
+}
+
+class _ProfilePageBuilder extends HookWidget {
+  const _ProfilePageBuilder();
 
   Future<void> _loadMe(BuildContext context) async {
     final ProfileProvider provider = context.read<ProfileProvider>();
@@ -45,7 +58,7 @@ class ProfilePage extends StatelessWidget {
         ),
       );
 
-  Center _buildProfilePicture() => Center(
+  Center _buildProfilePicture() => const Center(
         child: SizedBox(
           height: 96,
           width: 96,
@@ -71,15 +84,20 @@ class ProfilePage extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Profile')),
-        body: ChangeNotifierProvider<ProfileProvider>(
-          create: (_) => ProfileProvider(context),
-          builder: (BuildContext providerContext, _) =>
-              ProviderResolver<ProfileProvider>.future(
-            future: () async => _loadMe(providerContext),
-            builder: _builder,
-          ),
-        ),
-      );
+  Widget build(BuildContext context) {
+    useEffect(
+      () {
+        unawaited(_loadMe(context));
+        return null;
+      },
+      <Object?>[],
+    );
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
+      body: ProviderResolver<ProfileProvider>(
+        builder: _builder,
+      ),
+    );
+  }
 }

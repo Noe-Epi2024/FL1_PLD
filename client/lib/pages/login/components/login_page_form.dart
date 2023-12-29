@@ -99,15 +99,14 @@ class _LoginPageForm extends HookWidget {
     final TextEditingController passwordController = useTextEditingController();
 
     useEffect(
-      () {
-        emailController
-            .onValueChanged((String value) => _onEmailChanged(context, value));
-        passwordController.onValueChanged(
-          (String value) => _onPasswordChanged(context, value),
-        );
+      emailController
+          .onValueChanged((String value) => _onEmailChanged(context, value)),
+      <Object?>[],
+    );
 
-        return null;
-      },
+    useEffect(
+      passwordController
+          .onValueChanged((String value) => _onPasswordChanged(context, value)),
       <Object?>[],
     );
 

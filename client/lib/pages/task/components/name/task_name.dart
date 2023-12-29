@@ -1,26 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hyper_tools/extensions/error_model_extension.dart';
-import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
-import 'package:hyper_tools/global/messenger.dart';
-import 'package:hyper_tools/helpers/role_helper.dart';
-import 'package:hyper_tools/http/requests/project/task/patch_task.dart';
-import 'package:hyper_tools/models/error_model.dart';
-import 'package:hyper_tools/pages/project/project_provider.dart';
-import 'package:hyper_tools/pages/task/components/name/task_name_provider.dart';
-import 'package:hyper_tools/pages/task/task_provider.dart';
-import 'package:provider/provider.dart';
+part of '../../task_page.dart';
 
-class TaskName extends StatelessWidget {
-  const TaskName({super.key});
+class _TaskName extends StatelessWidget {
+  const _TaskName();
 
   @override
-  Widget build(BuildContext context) =>
-      ChangeNotifierProvider<TaskNameProvider>(
-        create: (_) => TaskNameProvider(
-          initialName: context.read<TaskProvider>().task?.name,
+  Widget build(BuildContext context) => ProviderResolver<TaskProvider>(
+        loader: const ShimmerPlaceholder(height: 16, width: 60),
+        builder: (BuildContext context) =>
+            ChangeNotifierProvider<TaskNameProvider>(
+          create: (_) => TaskNameProvider(
+            initialName: context.read<TaskProvider>().task?.name,
+          ),
+          child: const _TaskNameBuilder(),
         ),
-        child: const _TaskNameBuilder(),
       );
 }
 
@@ -32,10 +24,10 @@ class _TaskNameBuilder extends HookWidget {
   }
 
   Future<void> _onClickSave(BuildContext context) async {
-    try {
-      final TaskNameProvider provider = context.read<TaskNameProvider>();
-      final TaskProvider taskProvider = context.read<TaskProvider>();
+    final TaskNameProvider provider = context.read<TaskNameProvider>();
+    final TaskProvider taskProvider = context.read<TaskProvider>();
 
+    try {
       await PatchTask(
         projectId: taskProvider.projectId,
         taskId: taskProvider.taskId,
@@ -53,6 +45,18 @@ class _TaskNameBuilder extends HookWidget {
     }
   }
 
+  bool _showSaveButton(BuildContext context) {
+    final String? currentName = context.select<TaskNameProvider, String?>(
+      (TaskNameProvider provider) => provider.currentName,
+    );
+
+    final String? projectName = context.watch<TaskProvider>().task?.name;
+
+    return currentName != null &&
+        currentName.isNotEmpty &&
+        currentName != projectName;
+  }
+
   Widget _buildNameField(TextEditingController controller) => Builder(
         builder: (BuildContext context) => TextField(
           readOnly: !RoleHelper.canEditTask(
@@ -63,6 +67,7 @@ class _TaskNameBuilder extends HookWidget {
           textCapitalization: TextCapitalization.sentences,
           controller: controller,
           decoration: const InputDecoration(
+            filled: false,
             hintText: 'Écrire un nom',
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
@@ -92,11 +97,7 @@ class _TaskNameBuilder extends HookWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Expanded(child: _buildNameField(controller)),
-        if (context.select<TaskNameProvider, String?>(
-              (TaskNameProvider provider) => provider.currentName,
-            ) !=
-            context.watch<TaskProvider>().task?.name)
-          _buildSaveButton(),
+        if (_showSaveButton(context)) _buildSaveButton(),
       ],
     );
   }

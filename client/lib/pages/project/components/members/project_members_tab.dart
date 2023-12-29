@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hyper_tools/components/prefix_icon.dart';
 import 'package:hyper_tools/components/provider/provider_resolver.dart';
 import 'package:hyper_tools/components/texts/title_text.dart';
+import 'package:hyper_tools/extensions/bool_extension.dart';
 import 'package:hyper_tools/extensions/num_extension.dart';
 import 'package:hyper_tools/extensions/text_editing_controller_extension.dart';
 import 'package:hyper_tools/helpers/role_helper.dart';
@@ -132,14 +135,19 @@ class _ProjecMembersTabBuilder extends HookWidget {
       <Object?>[],
     );
 
-    return ProviderResolver<ProjectMembersProvider>.future(
-      future: () async => _loadMembers(context),
+    useEffect(
+      () {
+        unawaited(_loadMembers(context));
+        return null;
+      },
+      <Object?>[],
+    );
+
+    return ProviderResolver<ProjectMembersProvider>(
       builder: (BuildContext resolverContext) => Scaffold(
         floatingActionButton: RoleHelper.canManageMembers(
           context.read<ProjectProvider>().project!.role,
-        )
-            ? _buildFloatingActionButton()
-            : null,
+        ).branch(ifTrue: _buildFloatingActionButton()),
         body: ListView(
           padding: const EdgeInsets.only(
             left: 16,

@@ -96,6 +96,7 @@ class _CreateProjectDialogBuilder extends HookWidget {
     useEffect(
       () => controller
           .onValueChanged((String value) => _onValueChanged(context, value)),
+      <Object?>[],
     );
 
     return Dialog(

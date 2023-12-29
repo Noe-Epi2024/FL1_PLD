@@ -121,18 +121,22 @@ class _RegisterForm extends HookWidget {
         useTextEditingController();
 
     useEffect(
-      () {
-        emailController
-            .onValueChanged((String value) => _onEmailChanged(context, value));
-        passwordController.onValueChanged(
-          (String value) => _onPasswordChanged(context, value),
-        );
-        confirmPasswordController.onValueChanged(
-          (String value) => _onConfirmPasswordChanged(context, value),
-        );
+      emailController
+          .onValueChanged((String value) => _onEmailChanged(context, value)),
+      <Object?>[],
+    );
 
-        return null;
-      },
+    useEffect(
+      passwordController.onValueChanged(
+        (String value) => _onPasswordChanged(context, value),
+      ),
+      <Object?>[],
+    );
+
+    useEffect(
+      confirmPasswordController.onValueChanged(
+        (String value) => _onConfirmPasswordChanged(context, value),
+      ),
       <Object?>[],
     );
 

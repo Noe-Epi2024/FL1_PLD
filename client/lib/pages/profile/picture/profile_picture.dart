@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:hyper_tools/components/provider/provider_resolver.dart';
@@ -13,7 +16,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePicture extends StatelessWidget {
-  ProfilePicture({super.key});
+  const ProfilePicture({super.key});
+
+  @override
+  Widget build(BuildContext context) =>
+      ChangeNotifierProvider<ProfilePictureProvider>(
+        create: (_) => ProfilePictureProvider(),
+        child: _ProfilePictureBuilder(),
+      );
+}
+
+class _ProfilePictureBuilder extends StatelessWidget {
+  _ProfilePictureBuilder();
 
   final ImagePicker _imagePicker = ImagePicker();
 
@@ -102,13 +116,15 @@ class ProfilePicture extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) =>
-      ChangeNotifierProvider<ProfilePictureProvider>(
-        create: (_) => ProfilePictureProvider(),
-        builder: (BuildContext providerContext, _) =>
-            ProviderResolver<ProfilePictureProvider>.future(
-          builder: _builder,
-          future: () async => _loadPicture(providerContext),
-        ),
-      );
+  Widget build(BuildContext context) {
+    useEffect(
+      () {
+        unawaited(_loadPicture(context));
+        return null;
+      },
+      <Object?>[],
+    );
+
+    return ProviderResolver<ProfilePictureProvider>(builder: _builder);
+  }
 }
